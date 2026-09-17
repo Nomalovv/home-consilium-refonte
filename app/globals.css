@@ -1,0 +1,242 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ==========================================================================
+   Tokens de la direction artistique « Le Trait d'Union »
+   ========================================================================== */
+@layer base {
+  :root {
+    /* Neutres — mode clair (valeurs RGB brutes pour <alpha-value>) */
+    --hc-bg: 246 243 238; /* #F6F3EE */
+    --hc-text: 29 35 32; /* #1D2320 */
+    --hc-text-muted: 76 85 79; /* #4C554F */
+
+    /* Surfaces glass — mode clair */
+    --glass-bg: linear-gradient(
+      135deg,
+      rgba(255, 255, 255, 0.62),
+      rgba(255, 255, 255, 0.28)
+    );
+    --glass-border: rgba(255, 255, 255, 0.55);
+    --glass-shadow: 0 10px 40px rgba(22, 48, 44, 0.16),
+      inset 0 1px 0 rgba(255, 255, 255, 0.7);
+    /* Sous-couche opaque pour les blocs de texte long posés sur du glass */
+    --glass-solid: rgba(255, 255, 255, 0.94);
+    --glass-saturate: 170%;
+
+    /* Blobs d'arrière-plan */
+    --blob-a: rgba(60, 107, 97, 0.38);
+    --blob-b: rgba(199, 120, 80, 0.3);
+    --blob-c: rgba(143, 179, 170, 0.35);
+
+    --hairline: rgba(22, 48, 44, 0.12);
+  }
+
+  :root[data-theme="dark"] {
+    --hc-bg: 15 21 18; /* #0F1512 */
+    --hc-text: 237 239 234; /* #EDEFEA */
+    --hc-text-muted: 174 182 174; /* #AEB6AE */
+
+    --glass-bg: linear-gradient(
+      135deg,
+      rgba(255, 255, 255, 0.1),
+      rgba(255, 255, 255, 0.03)
+    );
+    --glass-border: rgba(255, 255, 255, 0.16);
+    --glass-shadow: 0 10px 40px rgba(0, 0, 0, 0.5),
+      inset 0 1px 0 rgba(255, 255, 255, 0.14);
+    --glass-solid: rgba(24, 33, 29, 0.95);
+
+    --blob-a: rgba(60, 107, 97, 0.34);
+    --blob-b: rgba(181, 98, 62, 0.26);
+    --blob-c: rgba(35, 75, 68, 0.5);
+
+    --hairline: rgba(255, 255, 255, 0.14);
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --hc-bg: 15 21 18;
+      --hc-text: 237 239 234;
+      --hc-text-muted: 174 182 174;
+
+      --glass-bg: linear-gradient(
+        135deg,
+        rgba(255, 255, 255, 0.1),
+        rgba(255, 255, 255, 0.03)
+      );
+      --glass-border: rgba(255, 255, 255, 0.16);
+      --glass-shadow: 0 10px 40px rgba(0, 0, 0, 0.5),
+        inset 0 1px 0 rgba(255, 255, 255, 0.14);
+      --glass-solid: rgba(24, 33, 29, 0.95);
+
+      --blob-a: rgba(60, 107, 97, 0.34);
+      --blob-b: rgba(181, 98, 62, 0.26);
+      --blob-c: rgba(35, 75, 68, 0.5);
+
+      --hairline: rgba(255, 255, 255, 0.14);
+    }
+  }
+
+  * {
+    border-color: var(--hairline);
+  }
+
+  html {
+    scroll-behavior: smooth;
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    background-color: rgb(var(--hc-bg));
+    color: rgb(var(--hc-text));
+    font-size: 16px;
+    line-height: 1.65;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+  }
+
+  :focus-visible {
+    outline: 3px solid #c77850;
+    outline-offset: 3px;
+    border-radius: 4px;
+  }
+
+  ::selection {
+    background: #e3b79e;
+    color: #16302c;
+  }
+}
+
+/* ==========================================================================
+   Utilitaires
+   ========================================================================== */
+@layer components {
+  /* --- Traitement liquid glass, 3 niveaux de flou --- */
+  .glass {
+    background-image: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    box-shadow: var(--glass-shadow);
+    backdrop-filter: blur(22px) saturate(var(--glass-saturate));
+    -webkit-backdrop-filter: blur(22px) saturate(var(--glass-saturate));
+  }
+
+  .glass-sm {
+    backdrop-filter: blur(10px) saturate(var(--glass-saturate));
+    -webkit-backdrop-filter: blur(10px) saturate(var(--glass-saturate));
+  }
+
+  .glass-lg {
+    backdrop-filter: blur(32px) saturate(var(--glass-saturate));
+    -webkit-backdrop-filter: blur(32px) saturate(var(--glass-saturate));
+  }
+
+  /* Sous-couche opaque obligatoire derrière tout bloc de texte long */
+  .glass-readable {
+    background-image: none;
+    background-color: var(--glass-solid);
+  }
+
+  .hairline {
+    border-color: var(--hairline);
+  }
+
+  .conteneur {
+    width: 100%;
+    max-width: 1200px;
+    margin-inline: auto;
+    padding-inline: 20px;
+  }
+
+  @media (min-width: 768px) {
+    .conteneur {
+      padding-inline: 32px;
+    }
+  }
+
+  .lien-souligne {
+    text-decoration: underline;
+    text-underline-offset: 4px;
+    text-decoration-thickness: 1px;
+  }
+
+  /* Cible tactile minimale 44px */
+  .cible-tactile {
+    min-height: 44px;
+    min-width: 44px;
+  }
+
+  .skip-link {
+    position: absolute;
+    left: 12px;
+    top: -200px;
+    z-index: 200;
+    background: #16302c;
+    color: #fff;
+    padding: 12px 18px;
+    border-radius: 10px;
+    transition: top 0.2s ease;
+  }
+
+  .skip-link:focus {
+    top: 12px;
+  }
+}
+
+/* ==========================================================================
+   Accessibilité : repli opaque du glass
+   ========================================================================== */
+@media (prefers-reduced-transparency: reduce) {
+  .glass,
+  .glass-sm,
+  .glass-lg {
+    background-image: none !important;
+    background-color: var(--glass-solid) !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+  }
+  .blobs {
+    display: none !important;
+  }
+}
+
+@media (prefers-contrast: more) {
+  .glass,
+  .glass-sm,
+  .glass-lg {
+    background-image: none !important;
+    background-color: var(--glass-solid) !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    border-color: currentColor !important;
+  }
+  .blobs {
+    display: none !important;
+  }
+}
+
+/* Navigateurs sans backdrop-filter : surface opaque */
+@supports not (backdrop-filter: blur(1px)) {
+  .glass,
+  .glass-sm,
+  .glass-lg {
+    background-image: none;
+    background-color: var(--glass-solid);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}

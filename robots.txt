@@ -1,0 +1,5 @@
+User-Agent: *
+Allow: /
+
+Host: https://homeconsilium.fr
+Sitemap: https://homeconsilium.fr/sitemap.xml

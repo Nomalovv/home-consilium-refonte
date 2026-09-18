@@ -290,6 +290,61 @@
     }
   }
 
+  /**
+   * Carrousel de réalisations : contrairement à `.carrousel-mobile`, il reste
+   * un défilement horizontal avec accrochage à toutes les tailles d'écran
+   * (1 carte visible sur téléphone, 2 sur tablette, 3 sur grand écran).
+   * Les marges négatives compensent la gouttière du conteneur pour que les
+   * cartes puissent « sortir » du cadre sans créer de défilement de page.
+   */
+  .carrousel-photos {
+    display: flex;
+    gap: 14px;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior-x: contain;
+    scroll-padding-inline: 16px;
+    margin-inline: -16px;
+    padding-inline: 16px;
+    padding-block-end: 6px;
+    scrollbar-width: none;
+  }
+
+  .carrousel-photos::-webkit-scrollbar {
+    height: 0;
+  }
+
+  .carrousel-photos > * {
+    scroll-snap-align: start;
+    flex: 0 0 min(82%, 320px);
+  }
+
+  @media (min-width: 640px) {
+    .carrousel-photos {
+      gap: 20px;
+      scroll-padding-inline: 24px;
+      margin-inline: -24px;
+      padding-inline: 24px;
+    }
+
+    .carrousel-photos > * {
+      flex: 0 0 calc((100% - 20px) / 2);
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .carrousel-photos {
+      scroll-padding-inline: 0;
+      margin-inline: 0;
+      padding-inline: 0;
+    }
+
+    .carrousel-photos > * {
+      flex: 0 0 calc((100% - 40px) / 3);
+    }
+  }
+
   /** Réserve la place de la barre d'action mobile en bas de page. */
   .marge-barre-mobile {
     padding-bottom: calc(76px + env(safe-area-inset-bottom));

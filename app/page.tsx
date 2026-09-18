@@ -4,6 +4,7 @@ import Link from "next/link";
 import { Hero } from "@/components/sections/Hero";
 import { Section, TitreSection } from "@/components/sections/Section";
 import { ServiceGrid } from "@/components/sections/ServiceGrid";
+import { CarrouselRealisations } from "@/components/sections/CarrouselRealisations";
 import { CitationValeurs } from "@/components/sections/CitationValeurs";
 import { MethodeCondensee } from "@/components/sections/MethodeCondensee";
 import { ZoneIntervention } from "@/components/sections/ZoneIntervention";
@@ -18,12 +19,14 @@ import {
   contact,
   devis,
   entreprise,
+  photos,
   zoneIntervention,
 } from "@/content/entreprise";
 import { accueil } from "@/content/interface";
 import { services } from "@/content/services";
 import { faqCles } from "@/content/faq";
 import { jsonLdFaq } from "@/lib/seo";
+import { asset } from "@/lib/utils";
 
 // Composant interactif chargé à la demande : il n'est pas nécessaire au rendu initial.
 const GuidedQuiz = dynamic(() => import("@/components/interactive/GuidedQuiz"), {
@@ -113,6 +116,8 @@ export default function Accueil() {
         </div>
       </Section>
 
+      <CarrouselRealisations />
+
       <CitationValeurs />
 
       <MethodeCondensee />
@@ -147,15 +152,42 @@ export default function Accueil() {
 }
 
 /**
- * Panneau du hero : l'illustration « maison » puis, uniquement, des chiffres
- * structurels et vrais. Aucun chiffre business inventé.
+ * Panneau du hero : la photo du bâtiment dès qu'elle est fournie (sinon
+ * l'illustration « maison »), puis uniquement des chiffres structurels et
+ * vrais. Aucun chiffre business inventé.
  */
 function PanneauAccueil() {
   return (
     <div className="glass glass-lg glass-readable overflow-hidden rounded-xl">
-      <div className="bg-gradient-to-b from-miel-100 to-terre-100 px-5 pt-5 dark:from-miel-700/15 dark:to-terre-700/15 sm:px-7 sm:pt-7">
-        <IllustrationMaison className="mx-auto max-w-[300px]" />
-      </div>
+      {photos.batiment.src ? (
+        /*
+          Photo réelle du bâtiment. Format volontairement plus bas sur
+          téléphone : en 4/3 pleine largeur, elle mangeait le premier écran.
+          Pas de `next/image` (export statique sans optimiseur) : dimensions
+          intrinsèques + `object-cover` pour éviter tout saut de mise en page.
+        */
+        <div className="relative aspect-[16/10] w-full sm:aspect-[4/3]">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src={asset(photos.batiment.src)}
+            alt={photos.batiment.alt}
+            width={1200}
+            height={900}
+            fetchPriority="high"
+            decoding="async"
+            className="absolute inset-0 h-full w-full bg-lin object-cover dark:bg-white/[0.06]"
+          />
+          {/* Voile chaleureux discret, dans la palette terre cuite / miel. */}
+          <span
+            aria-hidden="true"
+            className="pointer-events-none absolute inset-0 bg-gradient-to-t from-terre-800/25 via-terre-700/5 to-miel-100/10"
+          />
+        </div>
+      ) : (
+        <div className="bg-gradient-to-b from-miel-100 to-terre-100 px-5 pt-5 dark:from-miel-700/15 dark:to-terre-700/15 sm:px-7 sm:pt-7">
+          <IllustrationMaison className="mx-auto max-w-[300px]" />
+        </div>
+      )}
 
       <div className="p-5 sm:p-6 md:p-7">
         <p className="text-[12.5px] font-semibold uppercase tracking-[0.16em] text-terre-700 dark:text-terre-300 sm:text-[13px]">

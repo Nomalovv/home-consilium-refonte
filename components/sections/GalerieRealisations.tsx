@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { ButtonLink } from "@/components/ui/Button";
+import { CarteRealisation } from "@/components/sections/CarteRealisation";
 import { realisations } from "@/content/entreprise";
 import { cn } from "@/lib/utils";
 
@@ -83,15 +84,12 @@ export function GalerieRealisations() {
           </div>
         </div>
       ) : (
+        /* Même carte que le carrousel de l'accueil : photo en haut (si elle
+           existe), puis le titre et « catégorie · ville ». */
         <ul className="carrousel-mobile mt-8 sm:mt-10 sm:grid-cols-2 lg:grid-cols-3">
           {projets.map((p) => (
-            <li key={p.titre} className="glass glass-readable rounded-lg p-6">
-              <h3 className="font-display text-h3 font-semibold text-ardoise-900 dark:text-ardoise-100">
-                {p.titre}
-              </h3>
-              <p className="mt-2 text-[14.5px] text-ink-muted">
-                {p.categorie} · {p.ville}
-              </p>
+            <li key={p.titre} className="flex">
+              <CarteRealisation projet={p} className="w-full" />
             </li>
           ))}
         </ul>

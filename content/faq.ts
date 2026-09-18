@@ -32,7 +32,7 @@ export const faq: QuestionFaq[] = [
     categorie: "engagement",
     question: "Suis-je engagé si je vous contacte ?",
     reponse:
-      "Non. Le premier échange est sans engagement et vous n'avez aucune obligation de donner suite.",
+      "Non, jamais. Le premier échange est sans engagement, et vous n'avez aucune obligation de donner suite.",
     cle: true,
   },
   {
@@ -62,15 +62,15 @@ export const faq: QuestionFaq[] = [
     categorie: "zone",
     question: "Dans quelle zone intervenez-vous ?",
     reponse:
-      "Tout le Calvados et ses alentours : Caen et son agglomération, Bayeux, Lisieux, Falaise, Vire, la Côte de Nacre et le Pays d'Auge.",
+      "Partout en Normandie. Nos repères les plus fréquents : Caen et son agglomération, Bayeux, Lisieux, Falaise, Vire, la Côte de Nacre, le Pays d'Auge, Deauville, Saint-Lô, Cherbourg, Rouen, Le Havre, Dieppe, Évreux et Alençon. Votre commune n'apparaît pas ? Appelez-nous quand même.",
     cle: true,
   },
   {
-    id: "limite-departement",
+    id: "limite-region",
     categorie: "zone",
-    question: "Et si mon projet se situe en limite de département ?",
+    question: "Et si mon projet se situe aux portes de la Normandie ?",
     reponse:
-      "En limite de département, contactez-nous : nous vous dirons franchement si nous pouvons assurer le suivi dans de bonnes conditions.",
+      "Appelez-nous quand même : on vous dira franchement si on peut suivre votre chantier dans de bonnes conditions. Un « non » clair vaut mieux qu'un « oui » qui vous laisse seul en cours de route.",
   },
   {
     id: "verification-artisans",
@@ -91,14 +91,14 @@ export const faq: QuestionFaq[] = [
     categorie: "petits-chantiers",
     question: "Acceptez-vous les projets de petite envergure ?",
     reponse:
-      "Parlez-nous de votre projet, quelle que soit sa taille : nous vous dirons franchement si nous pouvons vous accompagner.",
+      "Parlez-nous de votre projet, quelle que soit sa taille : on vous dira franchement si on peut vous accompagner.",
   },
   {
     id: "projet-hors-liste",
     categorie: "petits-chantiers",
     question: "Mon projet n'entre dans aucune de vos catégories, que faire ?",
     reponse:
-      "Parlez-nous-en. Si nous ne sommes pas les mieux placés, nous vous le dirons franchement.",
+      "Parlez-nous-en quand même. Si nous ne sommes pas les mieux placés, nous vous le dirons franchement — et nous essaierons de vous orienter.",
   },
 ];
 

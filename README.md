@@ -1,8 +1,8 @@
 # Home Consilium — site web
 
-Refonte du site de **Home Consilium**, courtier en travaux dans le Calvados
-(Normandie) : l'intermédiaire entre les particuliers et les artisans et
-entreprises du bâtiment.
+Refonte du site de **Home Consilium**, courtier en travaux en **Normandie** :
+l'intermédiaire entre les particuliers et les artisans et entreprises du
+bâtiment.
 
 > « Le trait d'union entre votre projet et les bons artisans »
 
@@ -184,7 +184,7 @@ Autres points laissés volontairement vides, en attente de contenu réel :
   `content/entreprise.ts` les fera apparaître dans le footer.
 - **Chiffres business** — aucun (années d'expérience, nombre de clients,
   certifications). Seuls des chiffres structurels et vérifiables sont affichés :
-  4 étapes de méthode, 5 domaines de service, 100 % Calvados.
+  4 étapes de méthode, 5 domaines de service, 100 % Normandie.
 - **Tarifs** — aucun tarif public, donc pas de simulateur de prix : uniquement
   « devis gratuit » et « premier échange sans engagement ».
 

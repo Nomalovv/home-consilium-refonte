@@ -2,6 +2,9 @@
  * Identité, coordonnées et positionnement de Home Consilium.
  * Source unique de vérité : contenu réel du site homeconsilium.fr.
  * Toute information non publiée reste un placeholder "[À COMPLÉTER : ...]".
+ *
+ * Règle de ton : chaleureux, humain, « comme si on en parlait à table » —
+ * sans jamais ajouter un fait, un chiffre ou une référence qui n'existe pas.
  */
 
 export const A_COMPLETER = (quoi: string) => `[À COMPLÉTER : ${quoi}]`;
@@ -11,12 +14,17 @@ export const entreprise = {
   activite: "Courtier en travaux",
   baseline: "Votre projet, notre expertise, votre sérénité",
   accroche: "Un seul interlocuteur pour tous vos travaux",
+  /** Version courte de l'accroche, pour les petits écrans. */
+  accrocheCourte: "Vos travaux, un seul interlocuteur",
   sousTitre: "Courtier en travaux · Normandie",
   definition:
     "Intermédiaire entre les particuliers et les artisans et entreprises du bâtiment.",
-  /** Intro courte et chaleureuse du hero d'accueil : remplace baseline + definition, trop denses sur mobile. */
+  /** Intro du hero d'accueil : chaleureuse, concrète, sans jargon. */
   introAccueil:
-    "Vous décrivez votre projet, on trouve les bons artisans, on compare les devis et on suit le chantier avec vous. Un seul interlocuteur, du premier appel à la réception.",
+    "Vous nous racontez votre projet, on trouve les bons artisans près de chez vous, on compare les devis et on suit le chantier à vos côtés. Du premier appel au dernier coup de pinceau, c'est la même personne qui vous répond.",
+  /** Version courte de l'intro, affichée en dessous de `sm`. */
+  introAccueilCourte:
+    "Vous racontez votre projet, on trouve les bons artisans et on suit le chantier avec vous. Une seule personne, du début à la fin.",
   citation: "Le trait d'union entre votre projet et les bons artisans",
   formeJuridique: A_COMPLETER("forme juridique non renseignée"),
   siret: A_COMPLETER("SIRET / SIREN"),
@@ -40,16 +48,31 @@ export const contact = {
     { jours: "Samedi", heures: "Sur rendez-vous" },
   ],
   horairesResume: "Lundi-vendredi 8h-19h · samedi sur rendez-vous",
+  /** Version très courte pour la barre d'action mobile. */
+  horairesCourt: "Lun-ven 8h-19h",
 } as const;
 
 /** Aucun lien de réseau social réel n'existe : on n'affiche rien plutôt que des liens morts. */
 export const reseauxSociaux: { nom: string; url: string }[] = [];
 
 export const zoneIntervention = {
-  titre: "Tout le Calvados et ses alentours",
+  titre: "Toute la Normandie, et surtout près de chez vous",
+  titreCourt: "Partout en Normandie",
   badge: "100% Normandie",
-  departement: "Calvados",
   region: "Normandie",
+  /** Les cinq départements qui composent la région Normandie. */
+  departements: [
+    "Calvados",
+    "Manche",
+    "Orne",
+    "Eure",
+    "Seine-Maritime",
+  ],
+  /**
+   * Villes et territoires normands cités comme repères géographiques.
+   * Aucune promesse de couverture commune par commune : c'est une carte
+   * de repères, et la mention « en limite de région » reste affichée.
+   */
   villes: [
     "Caen et son agglomération",
     "Bayeux",
@@ -58,8 +81,16 @@ export const zoneIntervention = {
     "Vire",
     "La Côte de Nacre",
     "Le Pays d'Auge",
+    "Deauville",
+    "Saint-Lô",
+    "Cherbourg",
+    "Rouen",
+    "Le Havre",
+    "Dieppe",
+    "Évreux",
+    "Alençon",
   ],
-  /** Valeurs courtes réutilisées par le quiz guidé. */
+  /** Valeurs courtes réutilisées par le quiz guidé et le formulaire. */
   zonesQuiz: [
     "Caen",
     "Bayeux",
@@ -68,47 +99,58 @@ export const zoneIntervention = {
     "Vire",
     "Côte de Nacre",
     "Pays d'Auge",
+    "Deauville",
+    "Saint-Lô",
+    "Cherbourg",
+    "Rouen",
+    "Le Havre",
+    "Dieppe",
+    "Évreux",
+    "Alençon",
     "Autre",
   ],
-  limiteDepartement:
-    "En limite de département, contactez-nous : nous vous dirons franchement si nous pouvons assurer le suivi dans de bonnes conditions.",
+  limiteRegion:
+    "Votre maison est aux portes de la Normandie ? Appelez-nous quand même : on vous dira franchement si on peut suivre votre chantier dans de bonnes conditions.",
+  /** Version courte de la même idée, pour les écrans étroits. */
+  limiteRegionCourte:
+    "Aux portes de la Normandie ? Appelez-nous : on vous répondra franchement.",
 } as const;
 
 export const valeurs = [
   {
-    titre: "Proximité locale",
+    titre: "On connaît le terrain",
     texte:
-      "Une connaissance concrète du tissu artisanal du Calvados : les bonnes entreprises, pas les plus visibles.",
+      "Le tissu artisanal normand, on le connaît de l'intérieur : les bonnes entreprises, pas les plus visibles.",
   },
   {
-    titre: "Réactivité",
+    titre: "On vous répond vite",
     texte:
-      "Disponibilité et réponses rapides tout au long du projet, du premier échange à la réception du chantier.",
+      "Disponibilité et réponses rapides du premier échange jusqu'à la réception du chantier. Pas de silence radio.",
   },
   {
-    titre: "Transparence totale",
-    texte: "Vous voyez les devis, vous décidez. Aucune zone d'ombre.",
+    titre: "Rien sous le tapis",
+    texte: "Vous voyez les devis, vous décidez. Aucune zone d'ombre, jamais.",
   },
   {
-    titre: "Un seul interlocuteur",
+    titre: "Une seule personne à appeler",
     texte:
-      "Un interlocuteur unique qui coordonne l'ensemble des corps de métier, du cahier des charges à la livraison.",
+      "Un interlocuteur unique qui coordonne tous les corps de métier, du cahier des charges à la livraison.",
   },
 ] as const;
 
 export const benefices = [
   {
-    titre: "Gagnez du temps",
+    titre: "Vous gagnez du temps",
     texte:
-      "La recherche des entreprises, les relances et la comparaison des devis sont prises en charge.",
+      "Chercher les entreprises, relancer, comparer les devis : on s'en occupe pendant que vous vivez votre vie.",
   },
   {
-    titre: "Maîtrise du budget",
+    titre: "Vous maîtrisez le budget",
     texte:
       "Des devis comparables poste par poste, négociés. Vous voyez les devis, vous décidez.",
   },
   {
-    titre: "Sérénité assurée",
+    titre: "Vous dormez tranquille",
     texte:
       "Des artisans vérifiés et un suivi de chantier jusqu'à la réception des travaux.",
   },
@@ -129,7 +171,7 @@ export const traitsMarque = [
   {
     mot: "Ancré",
     texte:
-      "Tout le Calvados et ses alentours, avec les entreprises habituées au climat et aux usages normands.",
+      "Toute la Normandie, avec des entreprises qui savent ce que le climat d'ici fait aux façades et aux toitures.",
   },
   {
     mot: "Direct",
@@ -151,7 +193,7 @@ export const chiffresStructurels = [
  * reste sur /a-propos.
  */
 export const reassurancesAccueil = [
-  "Un seul interlocuteur, du premier appel à la réception du chantier.",
+  "Une seule personne vous suit, du premier appel à la réception du chantier.",
   "Vous voyez les devis, vous décidez : aucune zone d'ombre.",
   "Des artisans que nous choisirions pour notre propre maison.",
 ] as const;
@@ -159,7 +201,7 @@ export const reassurancesAccueil = [
 export const temoignages = {
   titre: "Ils nous font confiance",
   etatVide:
-    "Les avis de nos premiers clients arriveront bientôt ici. Nous préférons une page honnête à des témoignages de complaisance.",
+    "Les mots de nos premiers clients arriveront bientôt ici. Nous préférons une page honnête à des témoignages de complaisance.",
   lienGoogle: entreprise.ficheGoogle,
 } as const;
 

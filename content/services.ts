@@ -62,7 +62,7 @@ export const services: Service[] = [
     ],
     connexes: ["amenagement-interieur", "extension-surelevation"],
     metaDescription:
-      "Rénovation complète de maison ou d'appartement dans le Calvados : gros œuvre, second œuvre, réseaux et finitions coordonnés dans un planning unique par votre courtier en travaux.",
+      "Rénovation complète de maison ou d'appartement en Normandie : gros œuvre, second œuvre, réseaux et finitions coordonnés dans un planning unique par votre courtier en travaux.",
   },
   {
     slug: "cuisine-salle-de-bain",
@@ -84,7 +84,7 @@ export const services: Service[] = [
       {
         question: "Une salle de bain, est-ce un chantier trop petit pour vous ?",
         reponse:
-          "Parlez-nous de votre projet, quelle que soit sa taille : nous vous dirons franchement si nous pouvons vous accompagner.",
+          "Parlez-nous de votre projet, quelle que soit sa taille : on vous dira franchement si on peut vous accompagner.",
       },
       {
         question: "Comment sont choisis les artisans qui interviennent ?",
@@ -94,7 +94,7 @@ export const services: Service[] = [
     ],
     connexes: ["amenagement-interieur", "renovation-complete"],
     metaDescription:
-      "Rénovation de cuisine et de salle de bain dans le Calvados : plomberie, électricité, carrelage et agencement pilotés dans le bon ordre par votre courtier en travaux.",
+      "Rénovation de cuisine et de salle de bain en Normandie : plomberie, électricité, carrelage et agencement pilotés dans le bon ordre par votre courtier en travaux.",
   },
   {
     slug: "extension-surelevation",
@@ -119,14 +119,14 @@ export const services: Service[] = [
           "Nous vous orientons vers les bons interlocuteurs pour la conception, les démarches et la réalisation, et nous coordonnons leur intervention dans le planning du projet.",
       },
       {
-        question: "Intervenez-vous en limite du Calvados ?",
+        question: "Intervenez-vous en limite de la Normandie ?",
         reponse:
-          "En limite de département, contactez-nous : nous vous dirons franchement si nous pouvons assurer le suivi dans de bonnes conditions.",
+          "Votre maison est aux portes de la Normandie ? Appelez-nous quand même : on vous dira franchement si on peut suivre votre chantier dans de bonnes conditions.",
       },
     ],
     connexes: ["renovation-complete", "amenagement-interieur"],
     metaDescription:
-      "Extension, surélévation et aménagement de combles dans le Calvados : conception, démarches et réalisation coordonnées par votre courtier en travaux.",
+      "Extension, surélévation et aménagement de combles en Normandie : conception, démarches et réalisation coordonnées par votre courtier en travaux.",
   },
   {
     slug: "amenagement-interieur",
@@ -158,7 +158,7 @@ export const services: Service[] = [
     ],
     connexes: ["cuisine-salle-de-bain", "renovation-complete"],
     metaDescription:
-      "Aménagement intérieur dans le Calvados : cloisons, sols, peintures, menuiseries et lumière coordonnés par votre courtier en travaux.",
+      "Aménagement intérieur en Normandie : cloisons, sols, peintures, menuiseries et lumière coordonnés par votre courtier en travaux.",
   },
   {
     slug: "amenagement-exterieur",
@@ -180,17 +180,17 @@ export const services: Service[] = [
       {
         question: "Les entreprises tiennent-elles compte du climat normand ?",
         reponse:
-          "Nous travaillons avec des entreprises locales habituées au climat normand et aux contraintes qu'il impose aux ouvrages extérieurs.",
+          "Oui. Nous travaillons avec des entreprises d'ici, qui savent ce que la pluie, le vent et l'air marin font aux ouvrages extérieurs, et qui les dimensionnent en conséquence.",
       },
       {
         question: "Dans quelles communes intervenez-vous ?",
         reponse:
-          "Tout le Calvados et ses alentours : Caen et son agglomération, Bayeux, Lisieux, Falaise, Vire, la Côte de Nacre et le Pays d'Auge.",
+          "Partout en Normandie. Nos repères habituels : Caen et son agglomération, Bayeux, Lisieux, Falaise, Vire, la Côte de Nacre, le Pays d'Auge, Deauville, Saint-Lô, Cherbourg, Rouen, Le Havre, Dieppe, Évreux et Alençon. Votre commune n'est pas citée ? Appelez-nous, on vous répondra franchement.",
       },
     ],
     connexes: ["renovation-complete", "extension-surelevation"],
     metaDescription:
-      "Aménagement extérieur dans le Calvados : terrasse, pergola, clôture, portail et ravalement de façade avec des entreprises habituées au climat normand.",
+      "Aménagement extérieur en Normandie : terrasse, pergola, clôture, portail et ravalement de façade avec des entreprises habituées au climat normand.",
   },
 ];
 

@@ -13,13 +13,13 @@ export type EtapeMethode = {
 export const methode = {
   titre: "Quatre étapes, zéro zone d'ombre",
   intro:
-    "De la première visite à la réception du chantier, la même personne suit votre projet.",
+    "De la première visite au dernier coup de pinceau, c'est la même personne qui suit votre projet et qui décroche quand vous appelez.",
   etapes: [
     {
       numero: "01",
       titre: "Un interlocuteur unique",
       resume:
-        "Écoute de votre projet, visite des lieux et rédaction d'un cahier des charges précis.",
+        "On vous écoute, on vient voir les lieux, et on met votre projet noir sur blanc dans un cahier des charges précis.",
       details: [
         "Écoute de votre projet et de vos contraintes",
         "Visite des lieux",
@@ -30,7 +30,7 @@ export const methode = {
       numero: "02",
       titre: "Sélection rigoureuse",
       resume:
-        "Des artisans qualifiés, assurés et vérifiés, choisis pour votre chantier et pas pour leur visibilité.",
+        "Des artisans qualifiés, assurés et vérifiés, choisis pour votre chantier — pas pour leur budget publicitaire.",
       details: [
         "Assurance décennale et responsabilité civile à jour",
         "Situation administrative régulière",
@@ -42,7 +42,7 @@ export const methode = {
       numero: "03",
       titre: "Comparaison et négociation",
       resume:
-        "Des devis comparables poste par poste, négociés. Vous voyez les devis, vous décidez.",
+        "Des devis comparables poste par poste, négociés pour vous. Vous voyez tout, et c'est vous qui décidez.",
       details: [
         "Devis présentés poste par poste pour être réellement comparables",
         "Négociation des conditions",
@@ -53,7 +53,7 @@ export const methode = {
       numero: "04",
       titre: "Suivi de chantier",
       resume:
-        "Coordination des entreprises, points d'avancement et arbitrages jusqu'à la réception.",
+        "On coordonne les entreprises, on fait le point régulièrement et on tranche avec vous jusqu'à la réception.",
       details: [
         "Coordination des corps de métier",
         "Points d'avancement réguliers",
@@ -64,7 +64,7 @@ export const methode = {
   verification: {
     titre: "Comment nous vérifions les artisans",
     intro:
-      "Avant de vous présenter une entreprise, nous contrôlons systématiquement :",
+      "Avant de vous présenter une entreprise, on vérifie systématiquement :",
     points: [
       "Assurance décennale et responsabilité civile à jour",
       "Situation administrative régulière",
@@ -76,7 +76,7 @@ export const methode = {
   delais: {
     titre: "Les délais, clairement",
     points: [
-      "Premier échange sans engagement, à votre initiative.",
+      "Un premier échange sans engagement, quand vous le souhaitez.",
       "Visite technique sur place pour cadrer le projet.",
       "Devis transmis 1 à 2 semaines après la visite technique.",
       "Aucune obligation de donner suite après réception des devis.",

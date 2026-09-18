@@ -205,14 +205,44 @@ export const temoignages = {
   lienGoogle: entreprise.ficheGoogle,
 } as const;
 
+/**
+ * Une photo fournie par l'entreprise.
+ * `src` est un chemin depuis /public (ex. "/images/batiment.jpg").
+ * Chaîne vide = aucune photo fournie : le site garde son illustration dessinée
+ * plutôt que d'afficher une image d'illustration qui ne serait pas la sienne.
+ */
+export type Photo = {
+  src: string;
+  alt: string;
+};
+
+/**
+ * Photos réelles de l'entreprise. Voir « Ajouter vos photos » dans le README.
+ * Tant que `src` est vide, rien de faux n'est affiché à la place.
+ */
+export const photos: { batiment: Photo } = {
+  batiment: {
+    src: "",
+    alt: "Le bâtiment de Home Consilium, vu depuis la rue",
+  },
+};
+
+/** Une réalisation documentée, avec l'accord du client concerné. */
+export type Projet = {
+  titre: string;
+  categorie: string;
+  ville: string;
+  /** Photo principale : chemin depuis /public, ex. "/images/realisations/cuisine-caen.jpg". */
+  image: string;
+  /** Description de la photo pour les lecteurs d'écran (sinon, texte par défaut). */
+  alt?: string;
+  /** Autres photos du même chantier, pour une future visionneuse. */
+  images?: string[];
+};
+
 export const realisations = {
   /** Aucun projet réel documenté : la galerie reste volontairement vide. */
-  projets: [] as {
-    titre: string;
-    categorie: string;
-    ville: string;
-    image: string;
-  }[],
+  projets: [] as Projet[],
   filtres: [
     "Tous",
     "Rénovation complète",
@@ -223,6 +253,33 @@ export const realisations = {
   ],
   etatVide:
     "Nos premières réalisations seront publiées ici, avec l'accord des clients concernés. Plutôt que d'afficher des projets qui ne sont pas les nôtres, nous préférons attendre d'avoir de vraies photos de chantier à vous montrer.",
+  /** Texte alternatif de repli quand une photo de projet n'a pas son propre `alt`. */
+  altParDefaut: (titre: string, ville: string) =>
+    `Photo du chantier « ${titre} », à ${ville}`,
+} as const;
+
+/**
+ * Carrousel de réalisations affiché sur l'accueil.
+ * Il ne montre que les projets qui ont une photo réelle : tant qu'il n'y en a
+ * pas, la section affiche un état vide court et honnête.
+ */
+export const carrouselRealisations = {
+  surtitre: "En images",
+  titre: "Des chantiers, pas des images de catalogue",
+  intro:
+    "Les projets que nous avons suivis, photographiés sur place et publiés avec l'accord des clients concernés. Faites défiler pour les parcourir.",
+  introCourte: "Nos chantiers, photographiés sur place. Faites défiler.",
+  /** Libellés accessibles des commandes du carrousel. */
+  aria: "Carrousel des réalisations",
+  precedent: "Voir les réalisations précédentes",
+  suivant: "Voir les réalisations suivantes",
+  lien: "Voir toutes les réalisations",
+  href: "/realisations",
+  /** État vide : court, sans faux projets ni faux visuels. */
+  etatVide:
+    "Nos premières photos de chantier arriveront ici, avec l'accord des clients concernés.",
+  etatVideLien: "Parler de votre projet",
+  etatVideHref: "/contact",
 } as const;
 
 export const devis = {

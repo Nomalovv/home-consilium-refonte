@@ -41,8 +41,8 @@ export default function MethodePage() {
       </Section>
 
       <Section>
-        <div className="grid gap-6 lg:grid-cols-2">
-          <div className="glass glass-readable rounded-lg p-6 md:p-8">
+        <div className="grid gap-5 sm:gap-6 lg:grid-cols-2">
+          <div className="glass glass-readable rounded-lg p-5 sm:p-6 md:p-8">
             <Badge ton="terre" className="mb-4">
               Vérification
             </Badge>
@@ -77,7 +77,7 @@ export default function MethodePage() {
             </ul>
           </div>
 
-          <div className="glass glass-readable rounded-lg p-6 md:p-8">
+          <div className="glass glass-readable rounded-lg p-5 sm:p-6 md:p-8">
             <Badge ton="terre" className="mb-4">
               Délais
             </Badge>
@@ -89,7 +89,7 @@ export default function MethodePage() {
                 <li key={p} className="flex items-start gap-3.5 text-[15px] text-ink">
                   <span
                     aria-hidden="true"
-                    className="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full border border-terre-500 text-[12px] font-semibold text-terre-700 dark:text-terre-300"
+                    className="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-terre-200 text-[12px] font-semibold text-terre-800 dark:bg-terre-700/30 dark:text-terre-300"
                   >
                     {i + 1}
                   </span>

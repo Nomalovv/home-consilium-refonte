@@ -17,7 +17,7 @@ export function maillesDepuisChemin(chemin: string): MailleFilAriane[] {
 
 export function Breadcrumb({ mailles }: { mailles: MailleFilAriane[] }) {
   return (
-    <nav aria-label="Fil d'Ariane" className="mb-6">
+    <nav aria-label="Fil d'Ariane" className="mb-5 sm:mb-6">
       <ol className="flex flex-wrap items-center gap-x-2 gap-y-1 text-[13.5px] text-ink-muted">
         {mailles.map((m, i) => {
           const dernier = i === mailles.length - 1;

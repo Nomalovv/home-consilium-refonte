@@ -26,12 +26,12 @@ const RACCOURCIS = [
 
 export default function NotFound() {
   return (
-    <div className="relative overflow-hidden pb-24 pt-32 md:pt-44">
+    <div className="marge-barre-mobile relative overflow-hidden pb-16 pt-24 sm:pt-32 md:pb-24 md:pt-44">
       <Blobs variante="hero" />
       <div className="conteneur">
         <div className="mx-auto max-w-3xl text-center">
           <LogoSymbole
-            className="mx-auto h-28 w-28 md:h-36 md:w-36"
+            className="mx-auto h-24 w-24 sm:h-28 sm:w-28 md:h-36 md:w-36"
             titre="Home Consilium"
           />
           <p className="mt-8 text-[13px] font-semibold uppercase tracking-[0.16em] text-terre-700 dark:text-terre-300">
@@ -50,12 +50,12 @@ export default function NotFound() {
           </div>
         </div>
 
-        <ul className="mx-auto mt-14 grid max-w-4xl gap-5 sm:grid-cols-3">
+        <ul className="mx-auto mt-10 grid max-w-4xl gap-4 sm:mt-14 sm:grid-cols-3 sm:gap-5">
           {RACCOURCIS.map((r) => (
             <li key={r.href}>
               <Link
                 href={r.href}
-                className="group glass glass-readable flex h-full flex-col rounded-lg p-6 transition-all duration-300 ease-doux hover:-translate-y-1 hover:shadow-lift"
+                className="group glass glass-readable flex h-full flex-col rounded-lg p-5 transition-all duration-300 ease-doux hover:-translate-y-1.5 hover:shadow-lift motion-reduce:hover:translate-y-0 sm:p-6"
               >
                 <h2 className="font-display text-[18px] font-semibold text-ardoise-900 dark:text-ardoise-100">
                   {r.titre}
@@ -74,7 +74,7 @@ export default function NotFound() {
           ))}
         </ul>
 
-        <div className="mx-auto mt-14 flex max-w-4xl justify-center">
+        <div className="mx-auto mt-10 flex max-w-4xl justify-center sm:mt-14">
           <FaqSearch compact />
         </div>
       </div>

@@ -12,7 +12,7 @@ const FaqSearch = dynamic(() => import("@/components/interactive/FaqSearch"));
 export const metadata = construireMetadata({
   titre: "Questions fréquentes",
   description:
-    "Engagement, délais, zone d'intervention, sélection des artisans, petits chantiers : les réponses de Home Consilium, courtier en travaux dans le Calvados.",
+    "Engagement, délais, zone d'intervention, sélection des artisans, petits chantiers : les réponses de Home Consilium, courtier en travaux en Normandie.",
   chemin: "/faq",
 });
 

@@ -16,8 +16,8 @@ export function PageEditoriale({
   children: ReactNode;
 }) {
   return (
-    <div className="pt-28 md:pt-36">
-      <div className="conteneur pb-20">
+    <div className="pt-24 sm:pt-28 md:pt-36">
+      <div className="conteneur marge-barre-mobile pb-14 sm:pb-20">
         <Breadcrumb mailles={maillesDepuisChemin(chemin)} />
         <header className="max-w-lisible">
           <h1 className="font-display text-h1 font-semibold text-ardoise-900 dark:text-ardoise-100">
@@ -27,7 +27,7 @@ export function PageEditoriale({
             <p className="mt-4 text-corps-lg text-ink-muted">{chapeau}</p>
           )}
         </header>
-        <div className="mt-12 max-w-lisible">{children}</div>
+        <div className="mt-8 max-w-lisible sm:mt-12">{children}</div>
       </div>
     </div>
   );
@@ -41,7 +41,7 @@ export function BlocLegal({
   children: ReactNode;
 }) {
   return (
-    <section className="mb-10 border-t pt-8 first:border-0 first:pt-0">
+    <section className="mb-8 border-t pt-6 first:border-0 first:pt-0 sm:mb-10 sm:pt-8">
       <h2 className="font-display text-h2 font-semibold text-ardoise-900 dark:text-ardoise-100">
         {titre}
       </h2>

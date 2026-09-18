@@ -9,7 +9,7 @@ import { zoneIntervention } from "@/content/entreprise";
 export const metadata = construireMetadata({
   titre: "Nos services",
   description:
-    "Rénovation complète, cuisine et salle de bain, extension et surélévation, aménagement intérieur et extérieur : les cinq domaines de Home Consilium, courtier en travaux dans le Calvados.",
+    "Rénovation complète, cuisine et salle de bain, extension et surélévation, aménagement intérieur et extérieur : les cinq domaines de Home Consilium, courtier en travaux en Normandie.",
   chemin: "/services",
 });
 

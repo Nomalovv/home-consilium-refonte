@@ -26,11 +26,11 @@ export default function EstCePourMoi({ affirmations, titreService, slug }: Props
       : `Au moins un point de votre situation relève du domaine ${titreService}. Parlez-nous du reste : si nous ne sommes pas les mieux placés, nous vous le dirons franchement.`;
 
   return (
-    <div className="glass glass-readable rounded-lg p-6 md:p-8">
+    <div className="glass glass-readable rounded-lg p-5 sm:p-6 md:p-8">
       <h2 className="font-display text-h2 font-semibold text-ardoise-900 dark:text-ardoise-100">
         Est-ce pour moi ?
       </h2>
-      <ul className="mt-6 space-y-2.5">
+      <ul className="mt-5 space-y-2 sm:mt-6 sm:space-y-2.5">
         {affirmations.map((a, i) => (
           <li key={a}>
             <button
@@ -41,19 +41,19 @@ export default function EstCePourMoi({ affirmations, titreService, slug }: Props
                 setCoches((c) => c.map((v, j) => (i === j ? !v : v)))
               }
               className={cn(
-                "flex w-full cible-tactile items-start gap-3 rounded-sm border px-4 py-3.5 text-left text-[15px] leading-relaxed transition-all duration-200",
+                "flex w-full cible-tactile items-start gap-3 rounded-md border-2 px-4 py-3 text-left text-[14.5px] leading-relaxed transition-all duration-200 sm:py-3.5 sm:text-[15px]",
                 coches[i]
-                  ? "border-terre-600 bg-terre-300/25 text-ink dark:bg-terre-700/20"
-                  : "border-ardoise-300/60 text-ink hover:border-terre-500 dark:border-white/20",
+                  ? "border-terre-600 bg-terre-100 text-ink dark:bg-terre-700/20"
+                  : "border-terre-200 text-ink hover:border-terre-500 hover:bg-terre-100/60 dark:border-white/20 dark:hover:bg-white/[0.06]",
               )}
             >
               <span
                 aria-hidden="true"
                 className={cn(
-                  "mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-[5px] border transition-colors",
+                  "mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-md border-2 transition-colors",
                   coches[i]
-                    ? "border-terre-600 bg-terre-600 text-white"
-                    : "border-ardoise-300 dark:border-white/30",
+                    ? "border-terre-700 bg-terre-700 text-white"
+                    : "border-terre-300 dark:border-white/30",
                 )}
               >
                 {coches[i] && (
@@ -76,7 +76,7 @@ export default function EstCePourMoi({ affirmations, titreService, slug }: Props
 
       <div
         aria-live="polite"
-        className="mt-6 border-t pt-6"
+        className="mt-5 border-t pt-5 sm:mt-6 sm:pt-6"
       >
         <p className="max-w-lisible text-[15.5px] leading-relaxed text-ink-muted">
           {verdict}

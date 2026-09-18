@@ -21,14 +21,14 @@ export default function ProcessTimeline() {
   });
 
   return (
-    <ol ref={conteneur} className="relative space-y-10 md:space-y-16">
+    <ol ref={conteneur} className="relative space-y-7 sm:space-y-10 md:space-y-16">
       {/* Rail de progression */}
       <div
         aria-hidden="true"
-        className="absolute left-[19px] top-2 bottom-2 w-[2px] bg-ardoise-100 dark:bg-white/10 md:left-[23px]"
+        className="absolute bottom-2 left-[19px] top-2 w-[3px] rounded-full bg-terre-200 dark:bg-white/10 md:left-[23px]"
       >
         <motion.div
-          className="h-full w-full origin-top bg-terre-600"
+          className="h-full w-full origin-top rounded-full bg-terre-700"
           style={reduit ? { scaleY: 1 } : { scaleY: progression }}
         />
       </div>
@@ -44,16 +44,16 @@ export default function ProcessTimeline() {
             delay: reduit ? 0 : i * 0.05,
             ease: [0.22, 1, 0.36, 1],
           }}
-          className="relative pl-14 md:pl-20"
+          className="relative pl-12 sm:pl-14 md:pl-20"
         >
           <span
             aria-hidden="true"
-            className="absolute left-0 top-0 flex h-10 w-10 items-center justify-center rounded-full bg-terre-600 font-display text-[15px] font-semibold text-white shadow-soft md:h-12 md:w-12 md:text-[17px]"
+            className="absolute left-0 top-0 flex h-10 w-10 items-center justify-center rounded-full bg-terre-700 font-display text-[15px] font-semibold text-white shadow-chaud md:h-12 md:w-12 md:text-[17px]"
           >
             {etape.numero}
           </span>
 
-          <div className="glass glass-readable rounded-lg p-6 md:p-8">
+          <div className="glass glass-readable rounded-lg p-5 sm:p-6 md:p-8">
             <h3 className="font-display text-h3 font-semibold text-ardoise-900 dark:text-ardoise-100">
               {etape.titre}
             </h3>
@@ -69,7 +69,7 @@ export default function ProcessTimeline() {
                     viewBox="0 0 20 20"
                     fill="none"
                     aria-hidden="true"
-                    className="mt-1 shrink-0 text-terre-600"
+                    className="mt-1 shrink-0 text-terre-700 dark:text-terre-300"
                   >
                     <path
                       d="m4 10.5 4 4 8-9"

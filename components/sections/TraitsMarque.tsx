@@ -12,18 +12,18 @@ export function TraitsMarque() {
       initial="cachee"
       whileInView="visible"
       viewport={{ once: true, amount: 0.2 }}
-      className="grid gap-5 sm:grid-cols-2"
+      className="grid gap-4 sm:grid-cols-2 sm:gap-5"
     >
       {traitsMarque.map((t, i) => (
         <motion.li
           key={t.mot}
           variants={enfantSequence}
-          className="glass glass-readable rounded-lg p-6 md:p-8"
+          className="glass glass-readable rounded-lg p-5 transition-transform duration-300 ease-doux hover:-translate-y-1 motion-reduce:hover:translate-y-0 sm:p-6 md:p-8"
         >
           <div className="flex items-baseline gap-3">
             <span
               aria-hidden="true"
-              className="font-display text-[14px] font-semibold text-terre-600"
+              className="font-display text-[14px] font-semibold text-terre-700 dark:text-terre-300"
             >
               0{i + 1}
             </span>

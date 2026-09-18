@@ -21,7 +21,7 @@ export function GalerieRealisations() {
   return (
     <div>
       <div role="group" aria-label="Filtrer les réalisations">
-        <ul className="flex flex-wrap gap-2.5">
+        <ul className="flex flex-wrap gap-2">
           {realisations.filtres.map((f) => (
             <li key={f}>
               <button
@@ -31,9 +31,9 @@ export function GalerieRealisations() {
                 // Les filtres restent inertes tant qu'aucune réalisation n'est publiée.
                 disabled={realisations.projets.length === 0}
                 className={cn(
-                  "cible-tactile inline-flex items-center rounded-sm px-4 py-2.5 text-[14.5px] font-medium transition-all duration-200",
+                  "cible-tactile inline-flex items-center rounded-full px-3.5 py-2.5 text-[14px] font-semibold transition-all duration-200 sm:px-4 sm:text-[14.5px]",
                   filtre === f
-                    ? "bg-ardoise-900 text-white dark:bg-ardoise-100 dark:text-ardoise-900"
+                    ? "bg-terre-700 text-white shadow-chaud"
                     : "glass glass-sm text-ardoise-900 dark:text-ardoise-100",
                   realisations.projets.length === 0 && "cursor-not-allowed opacity-45",
                 )}
@@ -46,10 +46,10 @@ export function GalerieRealisations() {
       </div>
 
       {projets.length === 0 ? (
-        <div className="glass glass-readable mt-10 rounded-xl px-6 py-14 text-center md:px-12">
+        <div className="glass glass-readable mt-8 rounded-xl px-5 py-10 text-center sm:mt-10 sm:px-6 sm:py-14 md:px-12">
           <span
             aria-hidden="true"
-            className="mx-auto mb-6 flex h-14 w-14 items-center justify-center rounded-full bg-ardoise-100 text-ardoise-700 dark:bg-white/10 dark:text-ardoise-100"
+            className="mx-auto mb-5 flex h-14 w-14 items-center justify-center rounded-full bg-miel-200 text-miel-800 dark:bg-miel-700/25 dark:text-miel-300 sm:mb-6"
           >
             <svg width="26" height="26" viewBox="0 0 24 24" fill="none">
               <rect
@@ -83,7 +83,7 @@ export function GalerieRealisations() {
           </div>
         </div>
       ) : (
-        <ul className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+        <ul className="carrousel-mobile mt-8 sm:mt-10 sm:grid-cols-2 lg:grid-cols-3">
           {projets.map((p) => (
             <li key={p.titre} className="glass glass-readable rounded-lg p-6">
               <h3 className="font-display text-h3 font-semibold text-ardoise-900 dark:text-ardoise-100">

@@ -9,7 +9,7 @@ import { zoneIntervention } from "@/content/entreprise";
 export const metadata = construireMetadata({
   titre: "Réalisations",
   description:
-    "Les réalisations suivies par Home Consilium, courtier en travaux dans le Calvados. Galerie en préparation : nos premiers chantiers seront publiés avec l'accord des clients concernés.",
+    "Les réalisations suivies par Home Consilium, courtier en travaux en Normandie. Galerie en préparation : nos premiers chantiers seront publiés avec l'accord des clients concernés.",
   chemin: "/realisations",
 });
 

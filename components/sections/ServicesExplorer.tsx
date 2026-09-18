@@ -17,7 +17,7 @@ export function ServicesExplorer() {
   return (
     <div>
       <div role="group" aria-label="Filtrer les services par besoin">
-        <ul className="flex flex-wrap gap-2.5">
+        <ul className="flex flex-wrap gap-2">
           {filtresBesoin.map((f) => (
             <li key={f.id}>
               <button
@@ -25,9 +25,9 @@ export function ServicesExplorer() {
                 onClick={() => setActif(f.id)}
                 aria-pressed={actif === f.id}
                 className={cn(
-                  "cible-tactile inline-flex items-center rounded-sm px-4 py-2.5 text-[14.5px] font-medium transition-all duration-200",
+                  "cible-tactile inline-flex items-center rounded-full px-3.5 py-2.5 text-[14px] font-semibold transition-all duration-200 sm:px-4 sm:text-[14.5px]",
                   actif === f.id
-                    ? "bg-ardoise-900 text-white dark:bg-ardoise-100 dark:text-ardoise-900"
+                    ? "bg-terre-700 text-white shadow-chaud"
                     : "glass glass-sm text-ardoise-900 hover:shadow-lift dark:text-ardoise-100",
                 )}
               >
@@ -38,7 +38,7 @@ export function ServicesExplorer() {
         </ul>
       </div>
 
-      <p aria-live="polite" className="mt-4 text-[13.5px] text-ink-muted">
+      <p aria-live="polite" className="mt-3 text-[13.5px] text-ink-muted sm:mt-4">
         {visibles.length} domaine{visibles.length > 1 ? "s" : ""} affiché
         {visibles.length > 1 ? "s" : ""}.
       </p>
@@ -48,7 +48,7 @@ export function ServicesExplorer() {
         services={visibles}
         avecAutre={actif === "tous"}
         explorables
-        className="mt-8"
+        className="mt-6 sm:mt-8"
       />
     </div>
   );

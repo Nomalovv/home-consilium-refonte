@@ -41,9 +41,10 @@ export function CookieNotice() {
           animate={{ opacity: 1, y: 0 }}
           exit={reduit ? undefined : { opacity: 0, y: 24 }}
           transition={{ duration: reduit ? 0 : 0.3, ease: [0.22, 1, 0.36, 1] }}
-          className="fixed inset-x-3 bottom-3 z-[70] md:inset-x-auto md:bottom-5 md:left-5 md:max-w-[440px]"
+          /* Au-dessus de la barre d'action mobile, jamais superposé à elle. */
+          className="fixed inset-x-3 bottom-[calc(76px+env(safe-area-inset-bottom))] z-[70] md:inset-x-auto md:bottom-5 md:left-5 md:max-w-[440px]"
         >
-          <div className="glass glass-lg glass-readable rounded-lg p-5">
+          <div className="glass glass-lg glass-readable rounded-lg p-4 sm:p-5">
             <p className="font-display text-[16px] font-semibold text-ardoise-900 dark:text-ardoise-100">
               {bandeauCookies.message}
             </p>
@@ -65,7 +66,9 @@ export function CookieNotice() {
             )}
 
             <div className="mt-4 flex flex-wrap items-center gap-3">
-              <Button onClick={() => accepter()}>{bandeauCookies.bouton}</Button>
+              <Button onClick={() => accepter()} taille="sm">
+                {bandeauCookies.bouton}
+              </Button>
               <Link
                 href={bandeauCookies.lien.href}
                 className="lien-souligne cible-tactile inline-flex items-center text-[14px] text-ardoise-700 dark:text-ardoise-100"

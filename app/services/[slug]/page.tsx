@@ -40,7 +40,7 @@ export async function generateMetadata({
   if (!service) return {};
 
   return construireMetadata({
-    titre: `${service.titre} dans le Calvados`,
+    titre: `${service.titre} en ${zoneIntervention.region}`,
     description: service.metaDescription,
     chemin: `/services/${service.slug}`,
   });
@@ -82,14 +82,14 @@ export default async function ServicePage({
         titre={service.titre}
         intro={service.description}
       >
-        <ul className="flex flex-wrap gap-2">
+        <ul className="flex flex-wrap gap-1.5 sm:gap-2">
           {service.sousServices.map((ss) => (
             <li key={ss.titre}>
               <Badge ton="glass">{ss.titre}</Badge>
             </li>
           ))}
         </ul>
-        <div className="mt-7 flex flex-col gap-3 sm:flex-row">
+        <div className="mt-6 flex flex-col items-start gap-3 sm:mt-7 sm:flex-row sm:items-center sm:gap-4">
           <ButtonLink
             href={`/contact?sujet=${service.slug}`}
             variante="secondaire"
@@ -97,7 +97,7 @@ export default async function ServicePage({
           >
             {CTA_SERVICE}
           </ButtonLink>
-          <ButtonLink href="/methode" variante="glass" taille="lg">
+          <ButtonLink href="/methode" variante="lien" taille="lg">
             Voir notre méthode
           </ButtonLink>
         </div>
@@ -118,12 +118,12 @@ export default async function ServicePage({
           titre={`Les étapes de votre projet « ${service.titre} »`}
           intro={methode.intro}
         />
-        <ol className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+        <ol className="carrousel-mobile mt-8 sm:mt-10 sm:grid-cols-2 lg:grid-cols-4">
           {methode.etapes.map((etape) => (
-            <li key={etape.numero} className="glass glass-readable rounded-lg p-6">
+            <li key={etape.numero} className="glass glass-readable rounded-lg p-5 sm:p-6">
               <span
                 aria-hidden="true"
-                className="inline-flex h-9 w-9 items-center justify-center rounded-full bg-terre-600 font-display text-[14px] font-semibold text-white"
+                className="inline-flex h-9 w-9 items-center justify-center rounded-full bg-terre-700 font-display text-[14px] font-semibold text-white shadow-chaud"
               >
                 {etape.numero}
               </span>
@@ -143,12 +143,12 @@ export default async function ServicePage({
 
       <Section>
         <TitreSection surtitre="À voir aussi" titre="Services connexes" />
-        <ul className="mt-8 grid gap-5 sm:grid-cols-2">
+        <ul className="mt-6 grid gap-4 sm:mt-8 sm:grid-cols-2 sm:gap-5">
           {connexes.map((c) => (
             <li key={c.slug}>
               <Link
                 href={`/services/${c.slug}`}
-                className="group glass glass-readable flex h-full flex-col rounded-lg p-6 transition-all duration-300 ease-doux hover:-translate-y-1 hover:shadow-lift"
+                className="group glass glass-readable flex h-full flex-col rounded-lg p-5 transition-all duration-300 ease-doux hover:-translate-y-1.5 hover:shadow-lift motion-reduce:hover:translate-y-0 sm:p-6"
               >
                 <h3 className="font-display text-h3 font-semibold text-ardoise-900 dark:text-ardoise-100">
                   {c.titre}
@@ -173,7 +173,7 @@ export default async function ServicePage({
 
       <Section>
         <TitreSection surtitre="FAQ" titre={`Questions fréquentes — ${service.titre}`} />
-        <div className="mt-8 max-w-3xl">
+        <div className="mt-6 max-w-3xl sm:mt-8">
           <Accordion
             defaut={0}
             elements={service.faq.map((q, i) => ({

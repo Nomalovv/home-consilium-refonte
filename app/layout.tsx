@@ -6,6 +6,7 @@ import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { PageTransition } from "@/components/layout/PageTransition";
 import { CookieNotice } from "@/components/layout/CookieNotice";
+import { BarreActionMobile } from "@/components/layout/BarreActionMobile";
 import { entreprise, SITE_URL } from "@/content/entreprise";
 import { jsonLdLocalBusiness } from "@/lib/seo";
 
@@ -31,7 +32,7 @@ export const metadata: Metadata = {
     template: `%s | ${entreprise.nom}`,
   },
   description:
-    "Home Consilium, courtier en travaux en Normandie (Calvados et alentours) : un seul interlocuteur pour tous vos travaux. Sélection d'artisans vérifiés, devis comparés et négociés, suivi de chantier.",
+    "Home Consilium, courtier en travaux en Normandie : un seul interlocuteur pour tous vos travaux. Sélection d'artisans vérifiés, devis comparés et négociés, suivi de chantier jusqu'à la réception.",
   applicationName: entreprise.nom,
   authors: [{ name: entreprise.nom }],
   icons: {
@@ -49,8 +50,8 @@ export const metadata: Metadata = {
 
 export const viewport: Viewport = {
   themeColor: [
-    { media: "(prefers-color-scheme: light)", color: "#F6F3EE" },
-    { media: "(prefers-color-scheme: dark)", color: "#0F1512" },
+    { media: "(prefers-color-scheme: light)", color: "#FBF6EE" },
+    { media: "(prefers-color-scheme: dark)", color: "#1A1613" },
   ],
 };
 
@@ -74,6 +75,7 @@ export default function RootLayout({
           <PageTransition>{children}</PageTransition>
         </main>
         <Footer />
+        <BarreActionMobile />
         <CookieNotice />
         <script
           type="application/ld+json"

@@ -156,7 +156,7 @@ export default function MultiStepForm() {
 
   if (envoi === "ok") {
     return (
-      <div className="glass glass-lg glass-readable rounded-xl p-8 text-center md:p-12">
+      <div className="glass glass-lg glass-readable rounded-xl p-6 text-center sm:p-8 md:p-12">
         <span
           aria-hidden="true"
           className="mx-auto mb-5 flex h-14 w-14 items-center justify-center rounded-full bg-etat-succes/15 text-etat-succes"
@@ -179,7 +179,7 @@ export default function MultiStepForm() {
             ? "Nous revenons vers vous rapidement. Un premier échange sans engagement permettra de cadrer votre projet."
             : "Votre logiciel de messagerie vient de s'ouvrir avec votre demande pré-remplie : il ne vous reste qu'à l'envoyer. Vous pouvez aussi nous appeler directement."}
         </p>
-        <div className="mt-7 flex flex-col items-center justify-center gap-3 sm:flex-row">
+        <div className="mt-6 flex flex-col items-center justify-center gap-3 sm:mt-7 sm:flex-row sm:gap-4">
           <ButtonLink href={contact.telephoneLien} variante="secondaire" taille="lg">
             {contact.telephone}
           </ButtonLink>
@@ -195,26 +195,26 @@ export default function MultiStepForm() {
     <form
       onSubmit={envoyer}
       noValidate
-      className="glass glass-lg glass-readable rounded-xl p-6 md:p-10"
+      className="glass glass-lg glass-readable rounded-xl p-5 sm:p-6 md:p-10"
     >
       {/* Barre de progression */}
-      <div className="mb-8">
+      <div className="mb-6 sm:mb-8">
         <div className="flex items-center justify-between gap-3">
-          <p className="text-[13px] font-semibold uppercase tracking-[0.16em] text-terre-700 dark:text-terre-300">
+          <p className="text-[12.5px] font-semibold uppercase tracking-[0.16em] text-terre-700 dark:text-terre-300 sm:text-[13px]">
             Étape {etape + 1} / 3 — {ETAPES[etape]}
           </p>
           {etape > 0 && (
             <button
               type="button"
               onClick={() => setEtape((s) => s - 1)}
-              className="cible-tactile inline-flex items-center gap-1.5 rounded-sm px-2 text-[14px] text-ink-muted transition-colors hover:text-terre-700 dark:hover:text-terre-300"
+              className="cible-tactile inline-flex items-center gap-1.5 rounded-full px-2 text-[14px] text-ink-muted transition-colors hover:text-terre-700 dark:hover:text-terre-300"
             >
               <span aria-hidden="true">←</span> Retour
             </button>
           )}
         </div>
         <div
-          className="mt-3 h-1.5 w-full overflow-hidden rounded-full bg-ardoise-100 dark:bg-white/10"
+          className="mt-3 h-1.5 w-full overflow-hidden rounded-full bg-terre-100 dark:bg-white/10"
           role="progressbar"
           aria-valuenow={etape + 1}
           aria-valuemin={1}
@@ -222,7 +222,7 @@ export default function MultiStepForm() {
           aria-label="Progression du formulaire"
         >
           <div
-            className="h-full rounded-full bg-terre-600 transition-[width] duration-500 ease-doux"
+            className="h-full rounded-full bg-terre-700 transition-[width] duration-500 ease-doux"
             style={{ width: `${((etape + 1) / 3) * 100}%` }}
           />
         </div>
@@ -237,7 +237,7 @@ export default function MultiStepForm() {
           transition={{ duration: reduit ? 0 : 0.26, ease: [0.22, 1, 0.36, 1] }}
         >
           {etape === 0 && (
-            <div className="grid gap-5 sm:grid-cols-2">
+            <div className="grid gap-4 sm:grid-cols-2 sm:gap-5">
               <div>
                 <Label htmlFor="prenom" obligatoire>
                   Prénom
@@ -305,8 +305,8 @@ export default function MultiStepForm() {
           )}
 
           {etape === 1 && (
-            <div className="grid gap-5">
-              <div className="grid gap-5 sm:grid-cols-2">
+            <div className="grid gap-4 sm:gap-5">
+              <div className="grid gap-4 sm:grid-cols-2 sm:gap-5">
                 <div>
                   <Label htmlFor="sujet" obligatoire>
                     Sujet
@@ -335,14 +335,14 @@ export default function MultiStepForm() {
                   <Input
                     id="ville"
                     name="ville"
-                    list="communes-calvados"
+                    list="communes-normandie"
                     autoComplete="address-level2"
                     value={donnees.ville}
                     onChange={(e) => maj("ville", e.target.value)}
                     aria-invalid={Boolean(erreurs.ville)}
                     aria-describedby={erreurs.ville ? "err-ville" : "aide-ville"}
                   />
-                  <datalist id="communes-calvados">
+                  <datalist id="communes-normandie">
                     {zoneIntervention.zonesQuiz
                       .filter((z) => z !== "Autre")
                       .map((z) => (
@@ -352,7 +352,7 @@ export default function MultiStepForm() {
                   <Erreur id="err-ville" message={erreurs.ville} />
                   {!erreurs.ville && (
                     <p id="aide-ville" className="mt-1.5 text-[13px] text-ink-muted">
-                      {zoneIntervention.titre}.
+                      {zoneIntervention.titreCourt}.
                     </p>
                   )}
                 </div>
@@ -377,7 +377,7 @@ export default function MultiStepForm() {
 
           {etape === 2 && (
             <div>
-              <dl className="divide-y divide-[color:var(--hairline)] rounded-md border">
+              <dl className="divide-y divide-[color:var(--hairline)] overflow-hidden rounded-md border">
                 {[
                   { t: "Prénom", v: donnees.prenom },
                   { t: "Nom", v: donnees.nom },
@@ -389,7 +389,7 @@ export default function MultiStepForm() {
                 ].map((l) => (
                   <div
                     key={l.t}
-                    className="grid gap-1 px-4 py-3 sm:grid-cols-[150px_1fr] sm:gap-4"
+                    className="grid gap-0.5 px-4 py-3 sm:grid-cols-[150px_1fr] sm:gap-4"
                   >
                     <dt className="text-[14px] font-medium text-ink-muted">{l.t}</dt>
                     <dd className="whitespace-pre-wrap text-[15px] text-ink">
@@ -409,7 +409,7 @@ export default function MultiStepForm() {
                     onChange={(e) => maj("rgpd", e.target.checked)}
                     aria-invalid={Boolean(erreurs.rgpd)}
                     aria-describedby={erreurs.rgpd ? "err-rgpd" : undefined}
-                    className="mt-1 h-5 w-5 shrink-0 accent-[#B5623E]"
+                    className="mt-1 h-5 w-5 shrink-0 accent-[#9C4F30]"
                   />
                   <label htmlFor="rgpd" className="text-[14.5px] leading-relaxed text-ink-muted">
                     J&apos;accepte que mes données soient utilisées pour répondre à
@@ -426,7 +426,7 @@ export default function MultiStepForm() {
               </div>
 
               {envoi === "erreur" && (
-                <p role="alert" className="mt-5 rounded-sm border-l-2 border-etat-erreur bg-etat-erreur/10 px-4 py-3 text-[14.5px] text-ink">
+                <p role="alert" className="mt-5 rounded-md border-l-4 border-etat-erreur bg-etat-erreur/10 px-4 py-3 text-[14.5px] text-ink">
                   L&apos;envoi a échoué. Vous pouvez nous joindre directement au{" "}
                   <a href={contact.telephoneLien} className="lien-souligne font-medium">
                     {contact.telephone}
@@ -443,24 +443,24 @@ export default function MultiStepForm() {
         </motion.div>
       </AnimatePresence>
 
-      <div className={cn("mt-8 flex flex-col gap-3 sm:flex-row", etape > 0 && "sm:justify-between")}>
+      <div className={cn("mt-7 flex flex-wrap items-center gap-3 sm:mt-8", etape > 0 && "sm:justify-between")}>
         {etape > 0 && (
-          <Button type="button" variante="glass" taille="lg" onClick={() => setEtape((s) => s - 1)}>
+          <Button type="button" variante="glass" onClick={() => setEtape((s) => s - 1)} className="order-2 sm:order-none">
             Étape précédente
           </Button>
         )}
         {etape < 2 ? (
-          <Button type="button" variante="secondaire" taille="lg" onClick={suivant}>
+          <Button type="button" variante="secondaire" taille="lg" onClick={suivant} className="order-1 sm:order-none">
             Continuer
           </Button>
         ) : (
-          <Button type="submit" variante="secondaire" taille="lg" disabled={envoi === "en-cours"}>
+          <Button type="submit" variante="secondaire" taille="lg" disabled={envoi === "en-cours"} className="order-1 sm:order-none">
             {envoi === "en-cours" ? "Envoi en cours…" : "Envoyer ma demande"}
           </Button>
         )}
       </div>
 
-      <p className="mt-5 text-[13.5px] text-ink-muted">
+      <p className="mt-5 text-[13px] text-ink-muted sm:text-[13.5px]">
         Champs marqués d&apos;un astérisque obligatoires. Premier échange sans
         engagement — vous n&apos;avez aucune obligation de donner suite.
       </p>

@@ -21,7 +21,7 @@ const MultiStepForm = dynamic(
 export const metadata = construireMetadata({
   titre: "Contact & devis gratuit",
   description:
-    "Contactez Home Consilium, courtier en travaux dans le Calvados : devis gratuit, premier échange sans engagement. Téléphone 07 61 66 09 80, contact@homeconsilium.fr.",
+    "Contactez Home Consilium, courtier en travaux en Normandie : devis gratuit, premier échange sans engagement. Téléphone 07 61 66 09 80, contact@homeconsilium.fr.",
   chemin: "/contact",
 });
 
@@ -39,7 +39,7 @@ export default function ContactPage() {
       <Section className="pt-0">
         <Breadcrumb mailles={maillesDepuisChemin("/contact")} />
 
-        <div className="grid gap-8 lg:grid-cols-[1.35fr_0.65fr] lg:items-start">
+        <div className="grid gap-6 lg:grid-cols-[1.35fr_0.65fr] lg:items-start lg:gap-8">
           <Suspense
             fallback={
               <div className="glass glass-lg rounded-xl p-10 text-center text-ink-muted">
@@ -50,8 +50,8 @@ export default function ContactPage() {
             <MultiStepForm />
           </Suspense>
 
-          <aside className="space-y-5">
-            <div className="glass glass-readable rounded-lg p-6">
+          <aside className="space-y-4 sm:space-y-5">
+            <div className="glass glass-readable rounded-lg p-5 sm:p-6">
               <h2 className="font-display text-h3 font-semibold text-ardoise-900 dark:text-ardoise-100">
                 Nous joindre directement
               </h2>
@@ -89,7 +89,7 @@ export default function ContactPage() {
               </ul>
             </div>
 
-            <div className="glass glass-readable rounded-lg p-6">
+            <div className="glass glass-readable rounded-lg p-5 sm:p-6">
               <h2 className="font-display text-h3 font-semibold text-ardoise-900 dark:text-ardoise-100">
                 Horaires
               </h2>
@@ -108,19 +108,19 @@ export default function ContactPage() {
               </dl>
             </div>
 
-            <div className="rounded-lg border p-6">
+            <div className="surface-chaude rounded-lg p-5 sm:p-6">
               <Badge ton="terre" className="mb-4">
                 {zoneIntervention.badge}
               </Badge>
               <h2 className="font-display text-[17px] font-semibold text-ardoise-900 dark:text-ardoise-100">
-                {zoneIntervention.titre}
+                {zoneIntervention.titreCourt}
               </h2>
               <p className="mt-2 text-[14.5px] leading-relaxed text-ink-muted">
-                {zoneIntervention.limiteDepartement}
+                {zoneIntervention.limiteRegion}
               </p>
             </div>
 
-            <div className="rounded-lg border p-6">
+            <div className="surface-chaude rounded-lg p-5 sm:p-6">
               <h2 className="font-display text-[17px] font-semibold text-ardoise-900 dark:text-ardoise-100">
                 Ce qui se passe ensuite
               </h2>
@@ -132,7 +132,7 @@ export default function ContactPage() {
                   >
                     <span
                       aria-hidden="true"
-                      className="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full border border-terre-500 text-[11px] font-semibold text-terre-700 dark:text-terre-300"
+                      className="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-terre-200 text-[11px] font-semibold text-terre-800 dark:bg-terre-700/30 dark:text-terre-300"
                     >
                       {i + 1}
                     </span>

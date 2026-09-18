@@ -10,7 +10,7 @@ import { construireMetadata } from "@/lib/seo";
 export const metadata = construireMetadata({
   titre: "Mentions légales",
   description:
-    "Mentions légales du site de Home Consilium, courtier en travaux dans le Calvados.",
+    "Mentions légales du site de Home Consilium, courtier en travaux en Normandie.",
   chemin: "/mentions-legales",
 });
 

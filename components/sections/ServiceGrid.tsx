@@ -15,6 +15,67 @@ type Props = {
   className?: string;
 };
 
+/**
+ * Pictogrammes purement décoratifs, un par domaine : ils donnent un repère
+ * visuel chaleureux sans rien affirmer sur le contenu.
+ */
+const PICTOS: Record<string, React.ReactNode> = {
+  "renovation-complete": (
+    <>
+      <path d="M4 12 12 5l8 7" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+      <path d="M6.5 11v8h11v-8" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+      <path d="M10.5 19v-4.5h3V19" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+    </>
+  ),
+  "cuisine-salle-de-bain": (
+    <>
+      <path d="M5 4v6a2.5 2.5 0 0 0 5 0V4M7.5 10v10" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+      <path d="M17.5 20V4c-2 .8-3 2.8-3 5.5s1 4 3 4.2" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+    </>
+  ),
+  "extension-surelevation": (
+    <>
+      <path d="M3 20V10l6-4 6 4" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+      <path d="M15 20V13h6v7z" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+      <path d="M3 20h18" strokeWidth="2" strokeLinecap="round" />
+    </>
+  ),
+  "amenagement-interieur": (
+    <>
+      <rect x="3.5" y="5" width="17" height="14" rx="2.5" strokeWidth="2" />
+      <path d="M3.5 12h17M12 12v7" strokeWidth="2" strokeLinecap="round" />
+    </>
+  ),
+  "amenagement-exterieur": (
+    <>
+      <path d="M4 19V9l8-5 8 5v10" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+      <path d="M2 19h20" strokeWidth="2" strokeLinecap="round" />
+      <path d="M8 19v-5h8v5" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+    </>
+  ),
+};
+
+function Picto({ slug }: { slug: string }) {
+  return (
+    <svg
+      width="22"
+      height="22"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      aria-hidden="true"
+    >
+      {PICTOS[slug] ?? (
+        <path
+          d="M12 5v14M5 12h14"
+          strokeWidth="2"
+          strokeLinecap="round"
+        />
+      )}
+    </svg>
+  );
+}
+
 export function ServiceGrid({
   services,
   avecAutre = false,
@@ -27,49 +88,38 @@ export function ServiceGrid({
       initial="cachee"
       whileInView="visible"
       viewport={vueUneFois}
-      className={cn(
-        "grid gap-5 sm:grid-cols-2 lg:grid-cols-3",
-        className,
-      )}
+      /**
+       * Sur mobile : carrousel horizontal avec accrochage — six cartes
+       * empilées faisaient une page interminable au pouce.
+       * À partir de `sm` : grille classique.
+       */
+      className={cn("carrousel-mobile sm:grid-cols-2 lg:grid-cols-3", className)}
     >
       {services.map((s) => (
         <motion.li key={s.slug} variants={enfantSequence} className="flex">
           <Link
             href={`/services/${s.slug}`}
-            className="group glass glass-readable flex w-full flex-col rounded-lg p-6 transition-all duration-300 ease-doux hover:-translate-y-1 hover:shadow-lift md:p-7"
+            className="group glass glass-readable flex w-full flex-col rounded-lg p-5 transition-all duration-300 ease-doux hover:-translate-y-1.5 hover:shadow-lift motion-reduce:hover:translate-y-0 sm:p-6 md:p-7"
           >
             <span
               aria-hidden="true"
-              className="mb-5 inline-flex h-10 w-10 items-center justify-center rounded-sm bg-ardoise-100 text-ardoise-700 transition-colors group-hover:bg-terre-300/60 group-hover:text-terre-700 dark:bg-white/10 dark:text-ardoise-100"
+              className="mb-4 inline-flex h-11 w-11 items-center justify-center rounded-full bg-terre-100 text-terre-700 transition-all duration-300 ease-rebond group-hover:scale-110 group-hover:bg-terre-200 motion-reduce:group-hover:scale-100 dark:bg-terre-700/25 dark:text-terre-300 sm:mb-5"
             >
-              <svg width="20" height="20" viewBox="0 0 64 64" fill="none">
-                <rect x="12" y="8" width="14" height="30" rx="7" fill="currentColor" />
-                <rect x="38" y="26" width="14" height="30" rx="7" fill="currentColor" />
-                <line
-                  x1="19"
-                  y1="34"
-                  x2="45"
-                  y2="30"
-                  stroke="currentColor"
-                  strokeWidth="10"
-                  strokeLinecap="round"
-                  opacity="0.55"
-                />
-              </svg>
+              <Picto slug={s.slug} />
             </span>
 
             <h3 className="font-display text-h3 font-semibold text-ardoise-900 dark:text-ardoise-100">
               {s.titre}
             </h3>
-            <p className="mt-3 flex-1 text-[15px] leading-relaxed text-ink-muted">
+            <p className="mt-2.5 flex-1 text-[14.5px] leading-relaxed text-ink-muted sm:text-[15px]">
               {s.description}
             </p>
 
             <ul
               className={cn(
-                "mt-5 space-y-1.5 text-[14px] text-ink-muted",
+                "mt-4 space-y-1.5 text-[13.5px] text-ink-muted sm:mt-5 sm:text-[14px]",
                 explorables &&
-                  "max-h-0 overflow-hidden opacity-0 transition-all duration-300 ease-doux group-hover:max-h-40 group-hover:opacity-100 group-focus-visible:max-h-40 group-focus-visible:opacity-100 motion-reduce:max-h-40 motion-reduce:opacity-100",
+                  "max-h-0 overflow-hidden opacity-0 transition-all duration-300 ease-doux group-hover:max-h-40 group-hover:opacity-100 group-focus-visible:max-h-40 group-focus-visible:opacity-100 motion-reduce:max-h-40 motion-reduce:opacity-100 max-sm:max-h-40 max-sm:opacity-100",
               )}
             >
               {s.sousServices.map((ss) => (
@@ -83,11 +133,11 @@ export function ServiceGrid({
               ))}
             </ul>
 
-            <span className="mt-6 inline-flex items-center gap-2 text-[15px] font-semibold text-terre-700 dark:text-terre-300">
+            <span className="mt-5 inline-flex items-center gap-2 text-[14.5px] font-semibold text-terre-700 dark:text-terre-300 sm:mt-6 sm:text-[15px]">
               {CTA_SERVICE}
               <span
                 aria-hidden="true"
-                className="transition-transform duration-300 group-hover:translate-x-1"
+                className="transition-transform duration-300 group-hover:translate-x-1.5"
               >
                 →
               </span>
@@ -100,11 +150,11 @@ export function ServiceGrid({
         <motion.li variants={enfantSequence} className="flex">
           <Link
             href={serviceAutre.href}
-            className="group flex w-full flex-col rounded-lg border-2 border-dashed border-ardoise-300/70 p-6 transition-all duration-300 ease-doux hover:border-terre-500 hover:bg-white/40 dark:border-white/20 dark:hover:bg-white/[0.06] md:p-7"
+            className="group flex w-full flex-col rounded-lg border-2 border-dashed border-terre-300 p-5 transition-all duration-300 ease-doux hover:border-terre-500 hover:bg-terre-100/60 dark:border-terre-700/60 dark:hover:bg-white/[0.06] sm:p-6 md:p-7"
           >
             <span
               aria-hidden="true"
-              className="mb-5 inline-flex h-10 w-10 items-center justify-center rounded-sm border border-ardoise-300/70 text-ardoise-700 dark:border-white/20 dark:text-ardoise-100"
+              className="mb-4 inline-flex h-11 w-11 items-center justify-center rounded-full border-2 border-dashed border-terre-300 text-terre-700 transition-transform duration-300 ease-rebond group-hover:rotate-90 motion-reduce:group-hover:rotate-0 dark:border-terre-700/60 dark:text-terre-300 sm:mb-5"
             >
               <svg width="18" height="18" viewBox="0 0 20 20" fill="none">
                 <path
@@ -118,14 +168,14 @@ export function ServiceGrid({
             <h3 className="font-display text-h3 font-semibold text-ardoise-900 dark:text-ardoise-100">
               {serviceAutre.titre}
             </h3>
-            <p className="mt-3 flex-1 text-[15px] leading-relaxed text-ink-muted">
+            <p className="mt-2.5 flex-1 text-[14.5px] leading-relaxed text-ink-muted sm:text-[15px]">
               {serviceAutre.description}
             </p>
-            <span className="mt-6 inline-flex items-center gap-2 text-[15px] font-semibold text-terre-700 dark:text-terre-300">
+            <span className="mt-5 inline-flex items-center gap-2 text-[14.5px] font-semibold text-terre-700 dark:text-terre-300 sm:mt-6 sm:text-[15px]">
               {serviceAutre.cta}
               <span
                 aria-hidden="true"
-                className="transition-transform duration-300 group-hover:translate-x-1"
+                className="transition-transform duration-300 group-hover:translate-x-1.5"
               >
                 →
               </span>

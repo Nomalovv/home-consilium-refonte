@@ -1,4 +1,5 @@
 import { temoignages } from "@/content/entreprise";
+import { sectionAvis } from "@/content/interface";
 import { Section, TitreSection } from "@/components/sections/Section";
 import { ButtonLink } from "@/components/ui/Button";
 
@@ -10,22 +11,22 @@ export function Testimonials() {
   return (
     <Section>
       <TitreSection
-        surtitre="Avis clients"
+        surtitre={sectionAvis.surtitre}
         titre={temoignages.titre}
         centre
         className="mx-auto"
       />
-      <div className="mx-auto mt-10 max-w-2xl">
-        <div className="glass glass-readable rounded-lg px-6 py-10 text-center md:px-10">
+      <div className="mx-auto mt-7 max-w-2xl sm:mt-10">
+        <div className="glass glass-readable rounded-lg px-5 py-8 text-center sm:px-6 sm:py-10 md:px-10">
           <span
             aria-hidden="true"
-            className="mx-auto mb-5 flex h-12 w-12 items-center justify-center rounded-full bg-ardoise-100 text-ardoise-700 dark:bg-white/10 dark:text-ardoise-100"
+            className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-miel-200 text-miel-800 dark:bg-miel-700/25 dark:text-miel-300 sm:mb-5"
           >
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
               <path
                 d="M4.5 5.5h15v10h-9l-4.5 3.5v-3.5h-1.5z"
                 stroke="currentColor"
-                strokeWidth="1.6"
+                strokeWidth="1.7"
                 strokeLinejoin="round"
               />
             </svg>
@@ -33,12 +34,12 @@ export function Testimonials() {
           <p className="mx-auto max-w-lisible text-corps-lg text-ink-muted">
             {temoignages.etatVide}
           </p>
-          <p className="mt-6 text-[14px] text-ink-muted">
-            Fiche Google Business : {temoignages.lienGoogle}
+          <p className="mt-5 text-[13.5px] text-ink-muted sm:text-[14px]">
+            {sectionAvis.mentionFicheGoogle} : {temoignages.lienGoogle}
           </p>
-          <div className="mt-6">
+          <div className="mt-5 sm:mt-6">
             <ButtonLink href="/contact" variante="glass">
-              Devenir notre prochain client
+              {sectionAvis.cta}
             </ButtonLink>
           </div>
         </div>

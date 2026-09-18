@@ -4,27 +4,22 @@ import { useMemo, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { services } from "@/content/services";
 import { zoneIntervention } from "@/content/entreprise";
+import { quiz } from "@/content/interface";
 import { Button, ButtonLink } from "@/components/ui/Button";
 import { useReducedMotion } from "@/lib/hooks";
 import { cn } from "@/lib/utils";
 
 const OPTIONS_PROJET = [
   ...services.map((s) => ({ valeur: s.slug, label: s.titre })),
-  { valeur: "inconnu", label: "Je ne sais pas encore" },
+  { valeur: "inconnu", label: quiz.optionInconnu },
 ];
 
-const OPTIONS_STADE = [
-  { valeur: "idee", label: "Juste une idée" },
-  { valeur: "devis", label: "J'ai des devis en cours ailleurs" },
-  { valeur: "pret", label: "Je suis prêt à démarrer" },
-];
+const OPTIONS_STADE = quiz.stades.map((s) => ({
+  valeur: s.valeur,
+  label: s.label,
+}));
 
-const ETAPES = [
-  "Quel type de projet avez-vous en tête ?",
-  "Où se situe le bien ?",
-  "À quel stade êtes-vous ?",
-  "Votre orientation",
-];
+const ETAPES = quiz.etapes;
 
 type Reponses = {
   projet?: string;
@@ -44,7 +39,10 @@ export default function GuidedQuiz() {
 
   const lienResultat = useMemo(() => {
     const params = new URLSearchParams();
-    params.set("sujet", reponses.projet && reponses.projet !== "inconnu" ? reponses.projet : "autre");
+    params.set(
+      "sujet",
+      reponses.projet && reponses.projet !== "inconnu" ? reponses.projet : "autre",
+    );
     if (reponses.zone) params.set("ville", reponses.zone);
     if (reponses.stade) params.set("stade", reponses.stade);
     return `/contact?${params.toString()}`;
@@ -63,41 +61,41 @@ export default function GuidedQuiz() {
   const progression = ((etape + 1) / ETAPES.length) * 100;
 
   return (
-    <div className="glass glass-lg glass-readable rounded-xl p-6 md:p-10">
-      <div className="flex flex-wrap items-center justify-between gap-3">
+    <div className="glass glass-lg glass-readable rounded-xl p-5 sm:p-6 md:p-10">
+      <div className="flex flex-wrap items-center justify-between gap-2">
         <p
-          className="text-[13px] font-semibold uppercase tracking-[0.16em] text-terre-700 dark:text-terre-300"
+          className="text-[12.5px] font-semibold uppercase tracking-[0.16em] text-terre-700 dark:text-terre-300 sm:text-[13px]"
           aria-hidden="true"
         >
-          Étape {etape + 1} / {ETAPES.length}
+          {quiz.etapeCourante(etape + 1, ETAPES.length)}
         </p>
         {etape > 0 && (
           <button
             type="button"
             onClick={() => (etape === 3 ? recommencer() : setEtape((e) => e - 1))}
-            className="cible-tactile inline-flex items-center gap-1.5 rounded-sm px-2 text-[14px] text-ink-muted transition-colors hover:text-terre-700 dark:hover:text-terre-300"
+            className="cible-tactile inline-flex items-center gap-1.5 rounded-full px-2 text-[14px] text-ink-muted transition-colors hover:text-terre-700 dark:hover:text-terre-300"
           >
             <span aria-hidden="true">←</span>
-            {etape === 3 ? "Recommencer" : "Étape précédente"}
+            {etape === 3 ? quiz.recommencer : quiz.precedent}
           </button>
         )}
       </div>
 
       <div
-        className="mt-4 h-1.5 w-full overflow-hidden rounded-full bg-ardoise-100 dark:bg-white/10"
+        className="mt-4 h-1.5 w-full overflow-hidden rounded-full bg-terre-100 dark:bg-white/10"
         role="progressbar"
         aria-valuenow={etape + 1}
         aria-valuemin={1}
         aria-valuemax={ETAPES.length}
-        aria-label="Progression du questionnaire"
+        aria-label={quiz.progression}
       >
         <div
-          className="h-full rounded-full bg-terre-600 transition-[width] duration-500 ease-doux"
+          className="h-full rounded-full bg-terre-700 transition-[width] duration-500 ease-doux"
           style={{ width: `${progression}%` }}
         />
       </div>
 
-      <div aria-live="polite" className="mt-7">
+      <div aria-live="polite" className="mt-6 sm:mt-7">
         <AnimatePresence mode="wait">
           <motion.div
             key={etape}
@@ -106,7 +104,7 @@ export default function GuidedQuiz() {
             exit={reduit ? undefined : { opacity: 0, x: -16 }}
             transition={{ duration: reduit ? 0 : 0.28, ease: [0.22, 1, 0.36, 1] }}
           >
-            <h3 className="font-display text-h3 font-semibold text-ardoise-900 dark:text-ardoise-100">
+            <h3 className="text-balance font-display text-h3 font-semibold text-ardoise-900 dark:text-ardoise-100">
               {ETAPES[etape]}
             </h3>
 
@@ -121,6 +119,7 @@ export default function GuidedQuiz() {
             {etape === 1 && (
               <>
                 <ListeOptions
+                  compact
                   options={zoneIntervention.zonesQuiz.map((z) => ({
                     valeur: z,
                     label: z,
@@ -128,8 +127,13 @@ export default function GuidedQuiz() {
                   actif={reponses.zone}
                   onChoisir={(v) => choisir("zone", v)}
                 />
-                <p className="mt-4 text-[14px] text-ink-muted">
-                  {zoneIntervention.limiteDepartement}
+                <p className="mt-4 text-[13.5px] text-ink-muted sm:text-[14px]">
+                  <span className="sm:hidden">
+                    {zoneIntervention.limiteRegionCourte}
+                  </span>
+                  <span className="hidden sm:inline">
+                    {zoneIntervention.limiteRegion}
+                  </span>
                 </p>
               </>
             )}
@@ -143,11 +147,11 @@ export default function GuidedQuiz() {
             )}
 
             {etape === 3 && (
-              <div className="mt-6">
+              <div className="mt-5 sm:mt-6">
                 {service ? (
                   <>
                     <p className="text-corps-lg text-ink">
-                      Votre projet relève de notre domaine{" "}
+                      {quiz.resultatConnu}{" "}
                       <strong className="font-semibold text-ardoise-900 dark:text-ardoise-100">
                         {service.titre}
                       </strong>
@@ -159,33 +163,37 @@ export default function GuidedQuiz() {
                   </>
                 ) : (
                   <p className="max-w-lisible text-corps-lg text-ink">
-                    Vous n&apos;avez pas encore identifié le domaine de votre
-                    projet : parlez-nous-en directement. Si nous ne sommes pas
-                    les mieux placés, nous vous le dirons franchement.
+                    {quiz.resultatInconnu}
                   </p>
                 )}
 
                 {reponses.zone === "Autre" && (
-                  <p className="mt-4 rounded-sm border-l-2 border-terre-600 bg-ardoise-50 px-4 py-3 text-[14.5px] text-ink-muted dark:bg-white/[0.06]">
-                    {zoneIntervention.limiteDepartement}
+                  <p className="mt-4 rounded-md border-l-4 border-terre-600 bg-terre-100 px-4 py-3 text-[14.5px] text-ink dark:bg-white/[0.06]">
+                    {zoneIntervention.limiteRegion}
                   </p>
                 )}
 
-                <div className="mt-7 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
+                {/* Mobile : un seul bouton plein, le reste en liens texte. */}
+                <div className="mt-6 flex flex-col items-start gap-3 sm:mt-7 sm:flex-row sm:flex-wrap sm:items-center">
                   <ButtonLink href={lienResultat} variante="secondaire" taille="lg">
-                    Continuer vers le formulaire
+                    {quiz.ctaFormulaire}
                   </ButtonLink>
-                  {service && (
-                    <ButtonLink href={`/services/${service.slug}`} variante="glass" taille="lg">
-                      Découvrir ce service
-                    </ButtonLink>
-                  )}
-                  <Button variante="discret" taille="lg" onClick={recommencer}>
-                    Recommencer
-                  </Button>
+                  <div className="flex flex-wrap items-center gap-x-5 gap-y-2">
+                    {service && (
+                      <ButtonLink
+                        href={`/services/${service.slug}`}
+                        variante="lien"
+                      >
+                        {quiz.ctaService}
+                      </ButtonLink>
+                    )}
+                    <Button variante="lien" onClick={recommencer}>
+                      {quiz.recommencer}
+                    </Button>
+                  </div>
                 </div>
-                <p className="mt-4 text-[13.5px] text-ink-muted">
-                  Le formulaire de contact sera pré-rempli avec vos réponses.
+                <p className="mt-4 text-[13px] text-ink-muted sm:text-[13.5px]">
+                  {quiz.note}
                 </p>
               </div>
             )}
@@ -200,13 +208,21 @@ function ListeOptions({
   options,
   actif,
   onChoisir,
+  compact = false,
 }: {
   options: { valeur: string; label: string }[];
   actif?: string;
   onChoisir: (valeur: string) => void;
+  /** Listes longues (les communes) : boutons plus serrés, 2 à 4 colonnes. */
+  compact?: boolean;
 }) {
   return (
-    <ul className="mt-6 grid gap-2.5 sm:grid-cols-2">
+    <ul
+      className={cn(
+        "mt-5 grid gap-2 sm:mt-6 sm:gap-2.5",
+        compact ? "grid-cols-2 sm:grid-cols-3 lg:grid-cols-4" : "sm:grid-cols-2",
+      )}
+    >
       {options.map((o) => (
         <li key={o.valeur}>
           <button
@@ -214,16 +230,19 @@ function ListeOptions({
             onClick={() => onChoisir(o.valeur)}
             aria-pressed={actif === o.valeur}
             className={cn(
-              "group flex w-full cible-tactile items-center justify-between gap-3 rounded-sm border px-4 py-3.5 text-left text-[15px] font-medium transition-all duration-200",
+              "group flex w-full cible-tactile items-center justify-between gap-2 rounded-full border-2 text-left font-medium transition-all duration-200",
+              compact
+                ? "px-3.5 py-2.5 text-[14px]"
+                : "px-4 py-3 text-[14.5px] sm:text-[15px]",
               actif === o.valeur
-                ? "border-terre-600 bg-terre-300/30 text-ardoise-900 dark:bg-terre-700/25 dark:text-ardoise-100"
-                : "border-ardoise-300/60 text-ardoise-900 hover:border-terre-500 hover:bg-white/60 dark:border-white/20 dark:text-ardoise-100 dark:hover:bg-white/[0.08]",
+                ? "border-terre-600 bg-terre-200 text-terre-800 dark:bg-terre-700/30 dark:text-terre-300"
+                : "border-terre-200 text-ardoise-900 hover:border-terre-500 hover:bg-terre-100 dark:border-white/15 dark:text-ardoise-100 dark:hover:bg-white/[0.08]",
             )}
           >
-            {o.label}
+            <span className="min-w-0">{o.label}</span>
             <span
               aria-hidden="true"
-              className="text-terre-600 opacity-0 transition-opacity group-hover:opacity-100"
+              className="shrink-0 text-terre-700 opacity-0 transition-all duration-200 group-hover:translate-x-0.5 group-hover:opacity-100 dark:text-terre-300"
             >
               →
             </span>

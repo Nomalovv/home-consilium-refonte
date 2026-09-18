@@ -40,7 +40,7 @@ export default function FaqSearch({ compact = false }: Props) {
           />
           <button
             type="submit"
-            className="cible-tactile shrink-0 rounded-sm bg-ardoise-900 px-5 text-[15px] font-medium text-white transition-colors hover:bg-ardoise-800 dark:bg-ardoise-100 dark:text-ardoise-900"
+            className="cible-tactile shrink-0 rounded-full bg-terre-700 px-5 text-[15px] font-semibold text-white shadow-chaud transition-colors hover:bg-terre-800"
           >
             Chercher
           </button>
@@ -85,7 +85,7 @@ export default function FaqSearch({ compact = false }: Props) {
       </div>
 
       {parCategorie.length === 0 ? (
-        <div className="glass glass-readable mx-auto mt-10 max-w-xl rounded-lg p-8 text-center">
+        <div className="glass glass-readable mx-auto mt-8 max-w-xl rounded-lg p-6 text-center sm:mt-10 sm:p-8">
           <p className="text-corps-lg text-ink">
             Aucune réponse ne correspond à « {requete} ».
           </p>
@@ -102,12 +102,12 @@ export default function FaqSearch({ compact = false }: Props) {
           </Link>
         </div>
       ) : (
-        <div className="mt-12 space-y-12">
+        <div className="mt-8 space-y-9 sm:mt-12 sm:space-y-12">
           {parCategorie.map((cat) => (
             <section key={cat.id} aria-labelledby={`cat-${cat.id}`}>
               <h2
                 id={`cat-${cat.id}`}
-                className="font-display text-[20px] font-semibold text-terre-700 dark:text-terre-300 md:text-[22px]"
+                className="font-display text-[19px] font-semibold text-terre-700 dark:text-terre-300 sm:text-[20px] md:text-[22px]"
               >
                 {cat.label}
               </h2>

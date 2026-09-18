@@ -39,15 +39,15 @@ export function Accordion({ elements, className, defaut = -1 }: Props) {
                 aria-expanded={estOuvert}
                 aria-controls={idPanneau}
                 onClick={() => setOuvert(estOuvert ? -1 : i)}
-                className="flex w-full cible-tactile items-start justify-between gap-4 py-5 text-left transition-colors hover:text-terre-700 dark:hover:text-terre-300"
+                className="flex w-full cible-tactile items-start justify-between gap-3 py-4 text-left transition-colors hover:text-terre-700 dark:hover:text-terre-300 sm:gap-4 sm:py-5"
               >
-                <span className="font-display text-[17px] font-semibold leading-snug md:text-[19px]">
+                <span className="font-display text-[16px] font-semibold leading-snug sm:text-[17px] md:text-[19px]">
                   {el.question}
                 </span>
                 <span
                   aria-hidden="true"
                   className={cn(
-                    "mt-1 shrink-0 text-terre-600 transition-transform duration-300 ease-doux",
+                    "mt-1 shrink-0 text-terre-700 transition-transform duration-300 ease-doux dark:text-terre-300",
                     estOuvert && "rotate-45",
                   )}
                 >
@@ -74,7 +74,7 @@ export function Accordion({ elements, className, defaut = -1 }: Props) {
                   transition={{ duration: reduit ? 0 : 0.3, ease: [0.22, 1, 0.36, 1] }}
                   className="overflow-hidden"
                 >
-                  <p className="max-w-lisible pb-6 pr-8 text-ink-muted">
+                  <p className="max-w-lisible pb-5 pr-4 text-ink-muted sm:pb-6 sm:pr-8">
                     {el.reponse}
                   </p>
                 </motion.div>

@@ -1,10 +1,10 @@
 import { cn } from "@/lib/utils";
 
 /**
- * Univers graphique : blobs doux ardoise / terre cuite en arrière-plan.
- * `animate-blob-drift` est neutralisé par la règle globale
- * `prefers-reduced-motion`, et l'ensemble est masqué en
- * `prefers-reduced-transparency` / `prefers-contrast: more`.
+ * Univers graphique : nappes de couleur chaudes (terre cuite, miel) avec
+ * l'ardoise en appui, plutôt que l'inverse. `animate-blob-drift` est
+ * neutralisé par la règle globale `prefers-reduced-motion`, et l'ensemble
+ * est masqué en `prefers-reduced-transparency` / `prefers-contrast: more`.
  */
 export function Blobs({
   className,
@@ -17,8 +17,8 @@ export function Blobs({
     variante === "hero"
       ? "opacity-100"
       : variante === "section"
-        ? "opacity-70"
-        : "opacity-40";
+        ? "opacity-75"
+        : "opacity-45";
 
   return (
     <div
@@ -29,16 +29,19 @@ export function Blobs({
         className,
       )}
     >
+      {/* Terre cuite, en haut à gauche : la couleur qui accueille */}
       <div
-        className="absolute -left-[12%] -top-[18%] h-[52vw] max-h-[620px] w-[52vw] max-w-[620px] rounded-full blur-[90px] animate-blob-drift"
+        className="animate-blob-drift absolute -left-[14%] -top-[16%] h-[58vw] max-h-[640px] w-[58vw] max-w-[640px] rounded-full blur-[90px]"
         style={{ background: "var(--blob-a)" }}
       />
+      {/* Miel, en haut à droite : la lumière */}
       <div
-        className="absolute -right-[10%] top-[8%] h-[40vw] max-h-[480px] w-[40vw] max-w-[480px] rounded-full blur-[100px] animate-blob-drift [animation-delay:-9s]"
+        className="animate-blob-drift absolute -right-[12%] top-[4%] h-[44vw] max-h-[500px] w-[44vw] max-w-[500px] rounded-full blur-[100px] [animation-delay:-9s]"
         style={{ background: "var(--blob-b)" }}
       />
+      {/* Ardoise, en bas : l'ancrage */}
       <div
-        className="absolute bottom-[-20%] left-[28%] h-[44vw] max-h-[520px] w-[44vw] max-w-[520px] rounded-full blur-[110px] animate-blob-drift [animation-delay:-18s]"
+        className="animate-blob-drift absolute bottom-[-22%] left-[26%] h-[46vw] max-h-[540px] w-[46vw] max-w-[540px] rounded-full blur-[110px] [animation-delay:-18s]"
         style={{ background: "var(--blob-c)" }}
       />
     </div>

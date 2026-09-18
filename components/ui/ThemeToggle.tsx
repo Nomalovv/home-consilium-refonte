@@ -51,7 +51,7 @@ export function ThemeToggle({ className }: { className?: string }) {
       onClick={basculer}
       aria-label={label}
       title={label}
-      className={`cible-tactile inline-flex items-center justify-center rounded-sm p-2.5 text-ardoise-900 transition-colors hover:bg-ardoise-100/70 dark:text-ardoise-100 dark:hover:bg-white/10 ${className ?? ""}`}
+      className={`cible-tactile inline-flex items-center justify-center rounded-full p-2.5 text-ardoise-900 transition-colors hover:bg-terre-100 dark:text-ardoise-100 dark:hover:bg-white/10 ${className ?? ""}`}
     >
       {monte && theme === "dark" ? (
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">

@@ -22,33 +22,68 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        /* Ardoise — couleur signature */
+        /**
+         * Ardoise — couleur signature, réchauffée d'un cran (moins bleutée,
+         * plus « pierre de Caen mouillée ») pour adoucir les grands aplats.
+         * Contrastes sur crème #FBF6EE : 900 = 12,7:1 · 800 = 10,5:1 ·
+         * 700 = 8,3:1 · 500 = 5,2:1.
+         */
         ardoise: {
-          900: "#16302C",
-          800: "#1C3B35",
-          700: "#234B44",
-          500: "#3C6B61",
-          300: "#8FB3AA",
-          100: "#DCEAE7",
-          50: "#F1F7F5",
+          900: "#1A322B",
+          800: "#22403A",
+          700: "#2B5049",
+          500: "#457066",
+          300: "#96B7AE",
+          200: "#C4DAD3",
+          100: "#DFEAE5",
+          50: "#F4F8F5",
         },
-        /* Terre cuite — accent */
+        /**
+         * Terre cuite — accent, désormais beaucoup plus présent.
+         * Texte : 700 (5,5:1 sur crème) ou 800 (7,4:1). 600 est réservé aux
+         * aplats pleins avec texte blanc et aux éléments décoratifs.
+         */
         terre: {
+          800: "#7E3F26",
           700: "#9C4F30",
           600: "#B5623E",
           500: "#C77850",
           300: "#E3B79E",
+          200: "#F0D6C5",
+          100: "#F8EAE0",
+        },
+        /**
+         * Miel / ocre — la touche lumineuse.
+         * Texte : 800 (7,1:1 sur crème, 5,9:1 sur Miel 200) ou 700 sur crème
+         * uniquement (5,0:1). Jamais 600 ou plus clair pour du texte.
+         */
+        miel: {
+          800: "#6E4E17",
+          700: "#8A6320",
+          600: "#A97B2C",
+          500: "#C9993F",
+          300: "#E8C98A",
+          200: "#F3E0B8",
+          100: "#FAF0DA",
+        },
+        /** Neutres chauds : crème, lin, sable. */
+        creme: "#FBF6EE",
+        lin: "#F5EDE1",
+        sable: {
+          DEFAULT: "#EADFCE",
+          fonce: "#D9C8B0",
         },
         /* Neutres pilotés par tokens CSS (clair / sombre) */
         surface: "rgb(var(--hc-bg) / <alpha-value>)",
+        "surface-douce": "rgb(var(--hc-bg-douce) / <alpha-value>)",
         ink: "rgb(var(--hc-text) / <alpha-value>)",
         "ink-muted": "rgb(var(--hc-text-muted) / <alpha-value>)",
         /* États */
         etat: {
           succes: "#3F7D5C",
-          attention: "#C99A3B",
+          attention: "#9A7526",
           erreur: "#B23B32",
-          info: "#3C6B61",
+          info: "#2B5049",
         },
       },
       fontFamily: {
@@ -56,26 +91,30 @@ const config: Config = {
         sans: ["var(--font-archivo)", "system-ui", "sans-serif"],
       },
       fontSize: {
-        /* Échelle fluide */
-        h1: ["clamp(30px, 4.4vw, 50px)", { lineHeight: "1.08", letterSpacing: "-0.02em" }],
-        h2: ["clamp(22px, 3vw, 32px)", { lineHeight: "1.18", letterSpacing: "-0.01em" }],
-        h3: ["clamp(19px, 2vw, 23px)", { lineHeight: "1.25" }],
-        corps: ["16px", { lineHeight: "1.65" }],
-        "corps-lg": ["clamp(17px, 1.4vw, 19px)", { lineHeight: "1.6" }],
+        /* Échelle fluide — bornes basses calées sur un écran de 320 px */
+        h1: ["clamp(29px, 6.2vw, 52px)", { lineHeight: "1.08", letterSpacing: "-0.02em" }],
+        h2: ["clamp(22px, 4.2vw, 34px)", { lineHeight: "1.16", letterSpacing: "-0.01em" }],
+        h3: ["clamp(18px, 2.6vw, 23px)", { lineHeight: "1.25" }],
+        corps: ["clamp(15.5px, 1.1vw, 16px)", { lineHeight: "1.65" }],
+        "corps-lg": ["clamp(16px, 1.4vw, 19px)", { lineHeight: "1.62" }],
+        "corps-sm": ["clamp(14px, 1vw, 15px)", { lineHeight: "1.6" }],
       },
       borderRadius: {
-        sm: "10px",
-        md: "16px",
-        lg: "24px",
-        xl: "32px",
+        sm: "12px",
+        md: "20px",
+        lg: "28px",
+        xl: "36px",
+        "2xl": "48px",
       },
       boxShadow: {
+        /* Ombres teintées terre cuite plutôt que grises : plus chaleureuses. */
         "glass-light":
-          "0 10px 40px rgba(22,48,44,.16), inset 0 1px 0 rgba(255,255,255,.7)",
+          "0 12px 44px rgba(124, 74, 48, .16), inset 0 1px 0 rgba(255,255,255,.75)",
         "glass-dark":
-          "0 10px 40px rgba(0,0,0,.5), inset 0 1px 0 rgba(255,255,255,.14)",
-        soft: "0 2px 10px rgba(22,48,44,.08)",
-        lift: "0 18px 50px rgba(22,48,44,.18)",
+          "0 12px 44px rgba(0,0,0,.5), inset 0 1px 0 rgba(255,255,255,.12)",
+        soft: "0 2px 12px rgba(124, 74, 48, .10)",
+        lift: "0 20px 52px rgba(124, 74, 48, .20)",
+        chaud: "0 10px 30px rgba(181, 98, 62, .22)",
       },
       backdropBlur: {
         sm: "10px",
@@ -83,8 +122,9 @@ const config: Config = {
         lg: "32px",
       },
       maxWidth: {
-        lisible: "68ch",
+        lisible: "66ch",
         contenu: "1200px",
+        large: "1360px",
       },
       keyframes: {
         "blob-drift": {
@@ -96,6 +136,17 @@ const config: Config = {
           from: { opacity: "0", transform: "translateY(12px)" },
           to: { opacity: "1", transform: "translateY(0)" },
         },
+        /** Flottement très lent des illustrations : donne de la vie sans distraire. */
+        flottement: {
+          "0%,100%": { transform: "translateY(0)" },
+          "50%": { transform: "translateY(-8px)" },
+        },
+        /** Fumée de cheminée de l'illustration « maison ». */
+        fumee: {
+          "0%": { opacity: "0", transform: "translateY(2px) scale(.85)" },
+          "35%": { opacity: ".7" },
+          "100%": { opacity: "0", transform: "translateY(-14px) scale(1.25)" },
+        },
         "accordion-down": {
           from: { height: "0" },
           to: { height: "var(--radix-accordion-content-height)" },
@@ -104,9 +155,12 @@ const config: Config = {
       animation: {
         "blob-drift": "blob-drift 28s ease-in-out infinite",
         "fade-up": "fade-up .5s ease-out both",
+        flottement: "flottement 7s ease-in-out infinite",
+        fumee: "fumee 4.5s ease-out infinite",
       },
       transitionTimingFunction: {
         doux: "cubic-bezier(.22,1,.36,1)",
+        rebond: "cubic-bezier(.34,1.56,.64,1)",
       },
     },
   },

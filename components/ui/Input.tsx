@@ -8,9 +8,9 @@ import type {
 import { cn } from "@/lib/utils";
 
 const champBase =
-  "w-full cible-tactile rounded-sm border bg-white/80 dark:bg-white/[0.06] " +
+  "w-full cible-tactile rounded-md border-2 bg-white/85 dark:bg-white/[0.06] " +
   "px-4 py-3 text-[16px] text-ink placeholder:text-ink-muted/70 " +
-  "border-ardoise-300/60 dark:border-white/20 " +
+  "border-terre-200 dark:border-white/20 " +
   "transition-colors duration-200 focus:border-terre-600 focus:bg-white dark:focus:bg-white/[0.1]";
 
 type LabelProps = {
@@ -23,7 +23,7 @@ export function Label({ htmlFor, children, obligatoire }: LabelProps) {
   return (
     <label
       htmlFor={htmlFor}
-      className="mb-1.5 block text-[14px] font-medium text-ardoise-900 dark:text-ardoise-100"
+      className="mb-1.5 block text-[14px] font-semibold text-ardoise-900 dark:text-ardoise-100"
     >
       {children}
       {obligatoire && (

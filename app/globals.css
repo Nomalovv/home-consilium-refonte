@@ -4,78 +4,127 @@
 
 /* ==========================================================================
    Tokens de la direction artistique « Le Trait d'Union »
+   Version chaleureuse : crème, lin, sable, terre cuite et miel.
    ========================================================================== */
 @layer base {
   :root {
-    /* Neutres — mode clair (valeurs RGB brutes pour <alpha-value>) */
-    --hc-bg: 246 243 238; /* #F6F3EE */
-    --hc-text: 29 35 32; /* #1D2320 */
-    --hc-text-muted: 76 85 79; /* #4C554F */
+    /* Neutres chauds — mode clair (valeurs RGB brutes pour <alpha-value>) */
+    --hc-bg: 251 246 238; /* crème #FBF6EE */
+    --hc-bg-douce: 245 237 225; /* lin #F5EDE1 */
+    --hc-text: 36 31 25; /* #241F19 — 15,2:1 sur crème */
+    --hc-text-muted: 81 74 64; /* #514A40 — 8,1:1 sur crème */
 
-    /* Surfaces glass — mode clair */
+    /* Fond de page : dégradé crème → lin, très doux, jamais plat */
+    --hc-page-gradient: radial-gradient(
+        120% 80% at 12% -10%,
+        rgba(248, 234, 224, 0.9),
+        transparent 60%
+      ),
+      radial-gradient(
+        100% 70% at 95% 0%,
+        rgba(250, 240, 218, 0.75),
+        transparent 58%
+      ),
+      linear-gradient(180deg, #fbf6ee 0%, #f7efe4 100%);
+
+    /* Surfaces glass — mode clair, teintées crème plutôt que blanc pur */
     --glass-bg: linear-gradient(
       135deg,
-      rgba(255, 255, 255, 0.62),
-      rgba(255, 255, 255, 0.28)
+      rgba(255, 253, 249, 0.72),
+      rgba(250, 240, 228, 0.4)
     );
-    --glass-border: rgba(255, 255, 255, 0.55);
-    --glass-shadow: 0 10px 40px rgba(22, 48, 44, 0.16),
-      inset 0 1px 0 rgba(255, 255, 255, 0.7);
+    --glass-border: rgba(255, 252, 246, 0.72);
+    --glass-shadow: 0 12px 44px rgba(124, 74, 48, 0.16),
+      inset 0 1px 0 rgba(255, 255, 255, 0.75);
     /* Sous-couche opaque pour les blocs de texte long posés sur du glass */
-    --glass-solid: rgba(255, 255, 255, 0.94);
-    --glass-saturate: 170%;
+    --glass-solid: rgba(255, 252, 246, 0.95);
+    --glass-saturate: 165%;
 
-    /* Blobs d'arrière-plan */
-    --blob-a: rgba(60, 107, 97, 0.38);
-    --blob-b: rgba(199, 120, 80, 0.3);
-    --blob-c: rgba(143, 179, 170, 0.35);
+    /* Blobs d'arrière-plan — terre cuite et miel en tête, ardoise en appui */
+    --blob-a: rgba(199, 120, 80, 0.34);
+    --blob-b: rgba(201, 153, 63, 0.3);
+    --blob-c: rgba(69, 112, 102, 0.24);
 
-    --hairline: rgba(22, 48, 44, 0.12);
+    --hairline: rgba(124, 74, 48, 0.16);
+
+    /* Anneau de focus : terre cuite foncée, visible sur clair comme sur sombre */
+    --hc-focus: #9c4f30;
   }
 
   :root[data-theme="dark"] {
-    --hc-bg: 15 21 18; /* #0F1512 */
-    --hc-text: 237 239 234; /* #EDEFEA */
-    --hc-text-muted: 174 182 174; /* #AEB6AE */
+    /* Brun chaud profond plutôt qu'un noir froid */
+    --hc-bg: 26 22 19; /* #1A1613 */
+    --hc-bg-douce: 36 30 24; /* #241E18 */
+    --hc-text: 243 235 224; /* #F3EBE0 — 15,2:1 */
+    --hc-text-muted: 188 175 158; /* #BCAF9E — 8,4:1 */
+
+    --hc-page-gradient: radial-gradient(
+        120% 80% at 10% -10%,
+        rgba(124, 74, 48, 0.28),
+        transparent 62%
+      ),
+      radial-gradient(
+        100% 70% at 96% 2%,
+        rgba(138, 99, 32, 0.22),
+        transparent 60%
+      ),
+      linear-gradient(180deg, #1a1613 0%, #16130f 100%);
 
     --glass-bg: linear-gradient(
       135deg,
-      rgba(255, 255, 255, 0.1),
-      rgba(255, 255, 255, 0.03)
+      rgba(255, 238, 220, 0.11),
+      rgba(255, 238, 220, 0.04)
     );
-    --glass-border: rgba(255, 255, 255, 0.16);
-    --glass-shadow: 0 10px 40px rgba(0, 0, 0, 0.5),
-      inset 0 1px 0 rgba(255, 255, 255, 0.14);
-    --glass-solid: rgba(24, 33, 29, 0.95);
+    --glass-border: rgba(255, 233, 210, 0.18);
+    --glass-shadow: 0 12px 44px rgba(0, 0, 0, 0.5),
+      inset 0 1px 0 rgba(255, 246, 235, 0.13);
+    --glass-solid: rgba(40, 33, 27, 0.95);
 
-    --blob-a: rgba(60, 107, 97, 0.34);
-    --blob-b: rgba(181, 98, 62, 0.26);
-    --blob-c: rgba(35, 75, 68, 0.5);
+    --blob-a: rgba(181, 98, 62, 0.3);
+    --blob-b: rgba(169, 123, 44, 0.24);
+    --blob-c: rgba(43, 80, 73, 0.4);
 
-    --hairline: rgba(255, 255, 255, 0.14);
+    --hairline: rgba(255, 233, 210, 0.16);
+
+    --hc-focus: #e3b79e;
   }
 
   @media (prefers-color-scheme: dark) {
     :root:not([data-theme="light"]) {
-      --hc-bg: 15 21 18;
-      --hc-text: 237 239 234;
-      --hc-text-muted: 174 182 174;
+      --hc-bg: 26 22 19;
+      --hc-bg-douce: 36 30 24;
+      --hc-text: 243 235 224;
+      --hc-text-muted: 188 175 158;
+
+      --hc-page-gradient: radial-gradient(
+          120% 80% at 10% -10%,
+          rgba(124, 74, 48, 0.28),
+          transparent 62%
+        ),
+        radial-gradient(
+          100% 70% at 96% 2%,
+          rgba(138, 99, 32, 0.22),
+          transparent 60%
+        ),
+        linear-gradient(180deg, #1a1613 0%, #16130f 100%);
 
       --glass-bg: linear-gradient(
         135deg,
-        rgba(255, 255, 255, 0.1),
-        rgba(255, 255, 255, 0.03)
+        rgba(255, 238, 220, 0.11),
+        rgba(255, 238, 220, 0.04)
       );
-      --glass-border: rgba(255, 255, 255, 0.16);
-      --glass-shadow: 0 10px 40px rgba(0, 0, 0, 0.5),
-        inset 0 1px 0 rgba(255, 255, 255, 0.14);
-      --glass-solid: rgba(24, 33, 29, 0.95);
+      --glass-border: rgba(255, 233, 210, 0.18);
+      --glass-shadow: 0 12px 44px rgba(0, 0, 0, 0.5),
+        inset 0 1px 0 rgba(255, 246, 235, 0.13);
+      --glass-solid: rgba(40, 33, 27, 0.95);
 
-      --blob-a: rgba(60, 107, 97, 0.34);
-      --blob-b: rgba(181, 98, 62, 0.26);
-      --blob-c: rgba(35, 75, 68, 0.5);
+      --blob-a: rgba(181, 98, 62, 0.3);
+      --blob-b: rgba(169, 123, 44, 0.24);
+      --blob-c: rgba(43, 80, 73, 0.4);
 
-      --hairline: rgba(255, 255, 255, 0.14);
+      --hairline: rgba(255, 233, 210, 0.16);
+
+      --hc-focus: #e3b79e;
     }
   }
 
@@ -86,10 +135,14 @@
   html {
     scroll-behavior: smooth;
     -webkit-text-size-adjust: 100%;
+    /* Le header flottant ne doit jamais masquer une ancre */
+    scroll-padding-top: 88px;
   }
 
   body {
     background-color: rgb(var(--hc-bg));
+    background-image: var(--hc-page-gradient);
+    background-attachment: fixed;
     color: rgb(var(--hc-text));
     font-size: 16px;
     line-height: 1.65;
@@ -99,14 +152,14 @@
   }
 
   :focus-visible {
-    outline: 3px solid #c77850;
+    outline: 3px solid var(--hc-focus);
     outline-offset: 3px;
-    border-radius: 4px;
+    border-radius: 6px;
   }
 
   ::selection {
-    background: #e3b79e;
-    color: #16302c;
+    background: #f0d6c5;
+    color: #1a322b;
   }
 }
 
@@ -139,6 +192,21 @@
     background-color: var(--glass-solid);
   }
 
+  /** Aplat chaud : la carte « maison », sans flou, pour les sections denses. */
+  .surface-chaude {
+    background-color: rgb(var(--hc-bg-douce));
+    border: 1px solid var(--hairline);
+  }
+
+  /** Motif discret de petites tuiles — rappel des toits normands. */
+  .motif-tuiles {
+    background-image: radial-gradient(
+      rgba(181, 98, 62, 0.16) 1px,
+      transparent 1px
+    );
+    background-size: 14px 14px;
+  }
+
   .hairline {
     border-color: var(--hairline);
   }
@@ -147,10 +215,19 @@
     width: 100%;
     max-width: 1200px;
     margin-inline: auto;
-    padding-inline: 20px;
+    /* Gouttière de 16 px minimum + encoches iOS en paysage */
+    padding-inline: max(16px, env(safe-area-inset-left));
+    padding-right: max(16px, env(safe-area-inset-right));
   }
 
-  @media (min-width: 768px) {
+  @media (min-width: 640px) {
+    .conteneur {
+      padding-inline: max(24px, env(safe-area-inset-left));
+      padding-right: max(24px, env(safe-area-inset-right));
+    }
+  }
+
+  @media (min-width: 1024px) {
     .conteneur {
       padding-inline: 32px;
     }
@@ -168,15 +245,71 @@
     min-width: 44px;
   }
 
+  /**
+   * Carrousel mobile : les grilles de cartes deviennent un défilement
+   * horizontal avec accrochage, plutôt qu'une colonne interminable.
+   * Repasse en grille normale dès `sm`.
+   */
+  .carrousel-mobile {
+    display: flex;
+    gap: 14px;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    scroll-padding-inline: 16px;
+    /* Le carrousel déborde volontairement de la gouttière du conteneur */
+    margin-inline: -16px;
+    padding-inline: 16px;
+    padding-bottom: 6px;
+  }
+
+  .carrousel-mobile > * {
+    scroll-snap-align: start;
+    flex: 0 0 min(82%, 320px);
+  }
+
+  .carrousel-mobile::-webkit-scrollbar {
+    height: 0;
+  }
+
+  .carrousel-mobile {
+    scrollbar-width: none;
+  }
+
+  @media (min-width: 640px) {
+    .carrousel-mobile {
+      display: grid;
+      overflow: visible;
+      margin-inline: 0;
+      padding-inline: 0;
+      gap: 20px;
+    }
+
+    .carrousel-mobile > * {
+      flex: initial;
+    }
+  }
+
+  /** Réserve la place de la barre d'action mobile en bas de page. */
+  .marge-barre-mobile {
+    padding-bottom: calc(76px + env(safe-area-inset-bottom));
+  }
+
+  @media (min-width: 768px) {
+    .marge-barre-mobile {
+      padding-bottom: 0;
+    }
+  }
+
   .skip-link {
     position: absolute;
     left: 12px;
     top: -200px;
     z-index: 200;
-    background: #16302c;
+    background: #1a322b;
     color: #fff;
     padding: 12px 18px;
-    border-radius: 10px;
+    border-radius: 999px;
     transition: top 0.2s ease;
   }
 
@@ -197,7 +330,8 @@
     backdrop-filter: none !important;
     -webkit-backdrop-filter: none !important;
   }
-  .blobs {
+  .blobs,
+  .motif-tuiles {
     display: none !important;
   }
 }
@@ -214,6 +348,9 @@
   }
   .blobs {
     display: none !important;
+  }
+  body {
+    background-image: none;
   }
 }
 

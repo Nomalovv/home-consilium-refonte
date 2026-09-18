@@ -20,9 +20,9 @@ export function Card({
   survol = true,
 }: Props) {
   const classes = cn(
-    "glass rounded-lg p-6 md:p-7 transition-all duration-300 ease-doux",
+    "glass rounded-lg p-5 sm:p-6 md:p-7 transition-all duration-300 ease-doux",
     lisible && "glass-readable",
-    survol && "hover:shadow-lift hover:-translate-y-0.5",
+    survol && "hover:shadow-lift hover:-translate-y-1 motion-reduce:hover:translate-y-0",
     href && "block focus-visible:outline-offset-4",
     className,
   );

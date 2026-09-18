@@ -22,15 +22,15 @@ export function Breadcrumb({ mailles }: { mailles: MailleFilAriane[] }) {
         {mailles.map((m, i) => {
           const dernier = i === mailles.length - 1;
           return (
-            <li key={m.chemin} className="flex items-center gap-2">
+            <li key={m.chemin} className="flex items-center gap-1.5">
               {dernier ? (
-                <span aria-current="page" className="font-medium text-ardoise-900 dark:text-ardoise-100">
+                <span aria-current="page" className="inline-flex min-h-[32px] items-center font-semibold text-ardoise-900 dark:text-ardoise-100">
                   {m.nom}
                 </span>
               ) : (
                 <Link
                   href={m.chemin}
-                  className="transition-colors hover:text-terre-700 dark:hover:text-terre-300"
+                  className="-mx-1 inline-flex min-h-[32px] items-center rounded-full px-1 transition-colors hover:text-terre-700 dark:hover:text-terre-300"
                 >
                   {m.nom}
                 </Link>

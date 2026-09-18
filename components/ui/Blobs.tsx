@@ -25,6 +25,10 @@ export function Blobs({
       aria-hidden="true"
       className={cn(
         "blobs pointer-events-none absolute inset-0 -z-10 overflow-hidden",
+        /* Fondu vers le bas : la nappe de couleur ne doit pas se couper net
+           à la fin de la section. */
+        "[mask-image:linear-gradient(to_bottom,black_58%,transparent_100%)]",
+        "[-webkit-mask-image:linear-gradient(to_bottom,black_58%,transparent_100%)]",
         opacite,
         className,
       )}

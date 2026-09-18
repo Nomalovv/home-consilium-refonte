@@ -22,10 +22,20 @@ bâtiment.
 ### Direction artistique
 
 Identité **« Le Trait d'Union »** : deux formes disjointes reliées par un trait
-diagonal franc. Palette **Ardoise** (couleur signature) + **Terre cuite**
-(accent), traitement **liquid glass** (3 niveaux de flou : `sm` 10px pour les
-badges, `md` 22px pour la nav et les cartes, `lg` 32px pour les panneaux et
-modales), blobs d'arrière-plan en ardoise / terre cuite.
+diagonal franc.
+
+Palette **chaleureuse** : fonds **crème / lin / sable**, **Terre cuite** en
+accent dominant, touches **Miel / ocre**, **Ardoise** adoucie réservée au texte
+et aux ancrages. Traitement **liquid glass** conservé (3 niveaux de flou : `sm`
+10px pour les badges, `md` 22px pour la nav et les cartes, `lg` 32px pour les
+panneaux et modales), nappes d'arrière-plan terre cuite / miel / ardoise avec
+fondu en bas de section, ombres teintées terre cuite, rayons généreux
+(12 / 20 / 28 / 36 px, boutons et pastilles en galet).
+
+**Illustrations** : uniquement des SVG dessinés pour le site
+(`components/ui/Illustrations.tsx`) — maison à colombages, outils, poignée de
+main, toits et côte. **Aucune photo**, aucune réalisation ni personne réelle
+représentée. Leurs titres accessibles vivent dans `content/visuels.ts`.
 
 Support **clair / sombre complet** : les tokens CSS suivent
 `prefers-color-scheme` par défaut et restent surchargeables par l'utilisateur
@@ -38,12 +48,30 @@ Support **clair / sombre complet** : les tokens CSS suivent
 - Tout bloc de texte long posé sur du glass utilise la sous-couche opaque
   (`.glass-readable`, ≥ 94 % d'opacité) — voir la prop `lisible` de
   `GlassSurface` / `Card`.
-- Terre cuite 600 (#B5623E, 4,4:1 sur blanc) est **réservé aux gros boutons et
-  aux titres ≥ 18px**. Le texte courant utilise Ardoise 700 (9,7:1) ou 900 (13,5:1).
-- `prefers-reduced-motion` respecté partout (blobs, transitions, timeline,
-  accordéons, transitions de page).
-- Navigation clavier, cibles tactiles ≥ 44px, ARIA, lien d'évitement, gestion du
+- Contrastes mesurés sur crème `#FBF6EE` (clair) et brun chaud `#1A1613`
+  (sombre). **Terre cuite 600 (#B5623E) = 4,1:1 → jamais de texte dessus** :
+  il ne sert qu'aux aplats et aux éléments décoratifs. Le texte d'accent
+  utilise Terre cuite 700 (5,5:1), les boutons pleins Terre cuite 700 + blanc
+  (5,9:1), les pastilles miel Miel 800 (5,9:1 sur Miel 200). Le texte courant
+  reste en `ink` (15,2:1) ou `ink-muted` (8,1:1).
+- `prefers-reduced-motion` respecté partout (blobs, flottements, fumée,
+  transitions, timeline, accordéons, transitions de page).
+- Navigation clavier, cibles tactiles ≥ 44px (hors liens en ligne dans une
+  phrase, couverts par l'exception 2.5.8), ARIA, lien d'évitement, gestion du
   focus au changement de route (`PageTransition`).
+
+**Responsive** — testé de 320 px à 1536 px, en clair et en sombre.
+
+- Échelle typographique fluide en `clamp()`, bornes basses calées sur 320 px.
+- Sur téléphone : **un seul CTA plein** par bloc, l'action secondaire passe en
+  lien texte (variante `lien` du `Button`) ; une **unique** barre d'action fixe
+  en bas (`BarreActionMobile`, masquée sur /contact, `env(safe-area-inset-*)`).
+- Grilles de cartes en **carrousel horizontal à accrochage** sous 640 px
+  (`.carrousel-mobile`), grille classique au-dessus.
+- Les paragraphes longs ont une variante courte dans `/content`, affichée sous
+  640 px (`introCourte`, `texteCourt`, `limiteRegionCourte`…).
+- Aucun défilement horizontal : vérifié par capture automatisée à 320, 360,
+  390, 430, 768, 1024, 1280 et 1536 px sur les 7 gabarits de page.
 
 ---
 
@@ -66,15 +94,17 @@ Support **clair / sombre complet** : les tokens CSS suivent
   sitemap.ts  robots.ts
 /components
   layout/                    Header, MegaMenu, Footer, Breadcrumb, PageTransition,
+                             BarreActionMobile (CTA fixe mobile),
                              ReadingProgress, CookieNotice
   ui/                        Button, Card, Input, Badge, Accordion, GlassSurface,
-                             Logo, Blobs, ThemeToggle
+                             Logo, Blobs, ThemeToggle, Illustrations
   sections/                  Hero, CTA, ServiceGrid, ServicesExplorer, Testimonials,
                              MethodeCondensee, CitationValeurs, ZoneIntervention,
                              TraitsMarque, GalerieRealisations, PageEditoriale, Section
   interactive/               GuidedQuiz, ProcessTimeline, MultiStepForm, FaqSearch,
                              EstCePourMoi
-/content                     services.ts, faq.ts, entreprise.ts, methode.ts, legal.ts
+/content                     services.ts, faq.ts, entreprise.ts, methode.ts, legal.ts,
+                             interface.ts (libellés d'UI), visuels.ts (titres des SVG)
 /lib                         utils, hooks, animations, navigation, seo, consentement
 /public                      logo.svg, favicon.svg
 ```
@@ -185,6 +215,11 @@ Autres points laissés volontairement vides, en attente de contenu réel :
 - **Chiffres business** — aucun (années d'expérience, nombre de clients,
   certifications). Seuls des chiffres structurels et vérifiables sont affichés :
   4 étapes de méthode, 5 domaines de service, 100 % Normandie.
+- **Zone d'intervention** — la liste de `zoneIntervention.villes` /
+  `zonesQuiz` (`content/entreprise.ts`) est une liste de **repères**, pas une
+  promesse de couverture commune par commune : elle doit être validée par
+  l'entreprise. La mention « aux portes de la Normandie, appelez-nous »
+  (`limiteRegion`) reste affichée partout où la zone est citée.
 - **Tarifs** — aucun tarif public, donc pas de simulateur de prix : uniquement
   « devis gratuit » et « premier échange sans engagement ».
 

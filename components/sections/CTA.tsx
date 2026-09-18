@@ -66,7 +66,7 @@ export function CTA({
                 {ctaGlobal.libelleAppel}{" "}
                 <a
                   href={contact.telephoneLien}
-                  className="lien-souligne font-semibold text-terre-700 dark:text-terre-300"
+                  className="lien-souligne inline-block py-1.5 font-semibold text-terre-700 dark:text-terre-300"
                 >
                   {contact.telephone}
                 </a>

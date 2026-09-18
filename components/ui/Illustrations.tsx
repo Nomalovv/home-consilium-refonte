@@ -194,56 +194,69 @@ export function IllustrationArtisans({ className, decoratif }: PropsIllustration
     >
       {!decoratif && <title>{titre}</title>}
 
-      {/* Le plan posé sur la table */}
-      <rect x="18" y="86" width="164" height="46" rx="10" className="fill-lin" />
+      {/* Halo doux derrière la scène */}
+      <circle cx="100" cy="66" r="52" className="fill-miel-200/70" />
+
+      {/* Le plan de travaux posé sur la table */}
+      <rect x="26" y="96" width="148" height="40" rx="10" className="fill-lin" />
       <rect
-        x="18"
-        y="86"
-        width="164"
-        height="46"
+        x="26"
+        y="96"
+        width="148"
+        height="40"
         rx="10"
-        className="fill-none stroke-ardoise-700/30"
+        fill="none"
+        className="stroke-ardoise-700/30"
         strokeWidth="2.5"
       />
-      <g className="stroke-ardoise-500/60" strokeWidth="2.5" strokeLinecap="round">
-        <path d="M34 100h44M34 110h30M34 120h54" />
-        <path d="M120 98h46v26h-46z" />
+      <g
+        fill="none"
+        className="stroke-ardoise-500/55"
+        strokeWidth="2.5"
+        strokeLinecap="round"
+      >
+        <path d="M40 108h42M40 118h28M40 128h50" />
+        <rect x="112" y="106" width="46" height="24" rx="3" />
+        <path d="M112 118h46" />
       </g>
 
-      {/* Bras gauche */}
+      {/* Manche gauche, terre cuite */}
       <path
-        d="M4 52c22-6 40 0 54 14"
-        className="stroke-terre-600 fill-none"
-        strokeWidth="17"
-        strokeLinecap="round"
+        d="M10 44h34a10 10 0 0 1 10 10v16a10 10 0 0 1-10 10H10z"
+        className="fill-terre-600"
       />
-      {/* Bras droit */}
+      {/* Manche droite, ardoise */}
       <path
-        d="M196 46c-22-4-42 4-54 18"
-        className="stroke-ardoise-700 fill-none"
-        strokeWidth="17"
-        strokeLinecap="round"
+        d="M190 44h-34a10 10 0 0 0-10 10v16a10 10 0 0 0 10 10h34z"
+        className="fill-ardoise-700"
       />
 
-      {/* Les mains qui se serrent */}
-      <rect
-        x="68"
-        y="50"
-        width="64"
-        height="30"
-        rx="15"
-        className="fill-miel-500"
-      />
+      {/* Les deux mains qui se serrent */}
+      <rect x="46" y="50" width="56" height="24" rx="12" className="fill-miel-500" />
+      <rect x="98" y="50" width="56" height="24" rx="12" className="fill-miel-300" />
       <path
-        d="M84 65h32"
-        className="stroke-miel-700"
-        strokeWidth="4"
+        d="M100 50v24"
+        className="stroke-miel-700/50"
+        strokeWidth="2.5"
+        strokeLinecap="round"
+      />
+      {/* Pouces */}
+      <path
+        d="M76 46c8 0 12 3 12 8"
+        fill="none"
+        className="stroke-miel-700/45"
+        strokeWidth="3"
         strokeLinecap="round"
       />
 
       {/* Étincelle d'accord */}
-      <g className="stroke-terre-600" strokeWidth="3.4" strokeLinecap="round">
-        <path d="M100 30v-12M78 36l-8-9M122 36l8-9" />
+      <g
+        fill="none"
+        className="stroke-terre-600"
+        strokeWidth="3.4"
+        strokeLinecap="round"
+      >
+        <path d="M100 28V16M74 34l-7-8M126 34l7-8" />
       </g>
     </svg>
   );

@@ -1,6 +1,5 @@
 import Link from "next/link";
 import { Logo } from "@/components/ui/Logo";
-import { IllustrationCotesEtToits } from "@/components/ui/Illustrations";
 import {
   contact,
   entreprise,
@@ -16,13 +15,11 @@ export function Footer() {
 
   return (
     <footer className="relative mt-16 bg-ardoise-900 text-ardoise-100 sm:mt-20 md:mt-24">
-      {/* Liseré de toits : la transition douce entre la page et le pied */}
-      <div aria-hidden="true" className="absolute inset-x-0 -top-px">
-        <IllustrationCotesEtToits
-          decoratif
-          className="h-8 w-full rotate-180 opacity-25 sm:h-10"
-        />
-      </div>
+      {/* Liseré terre cuite : la couture chaude entre la page et le pied */}
+      <div
+        aria-hidden="true"
+        className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-terre-600 via-miel-500 to-terre-600"
+      />
 
       {/* Réserve la place de la barre d'action mobile */}
       <div className="conteneur marge-barre-mobile py-10 sm:py-12 md:py-16">

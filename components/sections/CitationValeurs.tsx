@@ -1,11 +1,16 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { benefices, entreprise, valeurs } from "@/content/entreprise";
+import { entreprise, reassurancesAccueil } from "@/content/entreprise";
 import { Section } from "@/components/sections/Section";
 import { apparitionSequencee, enfantSequence, vueUneFois } from "@/lib/animations";
 import { Blobs } from "@/components/ui/Blobs";
 
+/**
+ * Version accueil, volontairement courte : la citation de marque + trois
+ * phrases de réassurance. Le détail complet (valeurs + bénéfices) vit sur
+ * /a-propos, pour ne pas dupliquer un mur de texte sur mobile.
+ */
 export function CitationValeurs() {
   return (
     <Section className="overflow-hidden">
@@ -30,43 +35,19 @@ export function CitationValeurs() {
         initial="cachee"
         whileInView="visible"
         viewport={vueUneFois}
-        className="mt-14 grid gap-5 sm:grid-cols-2 lg:grid-cols-4"
+        className="mx-auto mt-10 grid max-w-3xl gap-3 sm:grid-cols-3"
       >
-        {valeurs.map((v) => (
+        {reassurancesAccueil.map((phrase) => (
           <motion.li
-            key={v.titre}
+            key={phrase}
             variants={enfantSequence}
-            className="glass glass-readable rounded-lg p-6"
+            className="glass glass-readable flex items-start gap-2.5 rounded-lg p-4 text-[14.5px] leading-snug text-ink"
           >
-            <h3 className="font-display text-[18px] font-semibold text-ardoise-900 dark:text-ardoise-100">
-              {v.titre}
-            </h3>
-            <p className="mt-2 text-[14.5px] leading-relaxed text-ink-muted">
-              {v.texte}
-            </p>
-          </motion.li>
-        ))}
-      </motion.ul>
-
-      <motion.ul
-        variants={apparitionSequencee}
-        initial="cachee"
-        whileInView="visible"
-        viewport={vueUneFois}
-        className="mt-5 grid gap-5 sm:grid-cols-3"
-      >
-        {benefices.map((b) => (
-          <motion.li
-            key={b.titre}
-            variants={enfantSequence}
-            className="rounded-lg border p-6"
-          >
-            <h3 className="font-display text-[17px] font-semibold text-terre-700 dark:text-terre-300">
-              {b.titre}
-            </h3>
-            <p className="mt-2 text-[14.5px] leading-relaxed text-ink-muted">
-              {b.texte}
-            </p>
+            <span
+              aria-hidden="true"
+              className="mt-[5px] h-1.5 w-1.5 shrink-0 rounded-full bg-terre-600"
+            />
+            {phrase}
           </motion.li>
         ))}
       </motion.ul>

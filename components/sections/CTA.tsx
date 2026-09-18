@@ -16,9 +16,9 @@ export function CTA({
   libelle = "Demander un devis gratuit",
 }: Props) {
   return (
-    <section className="relative py-16 md:py-24">
+    <section className="relative py-12 md:py-24">
       <div className="conteneur">
-        <div className="glass glass-lg glass-readable relative overflow-hidden rounded-xl px-6 py-12 text-center md:px-14 md:py-16">
+        <div className="glass glass-lg glass-readable relative overflow-hidden rounded-xl px-6 py-10 text-center md:px-14 md:py-16">
           <h2 className="mx-auto max-w-2xl font-display text-h2 font-semibold text-ardoise-900 dark:text-ardoise-100">
             {titre}
           </h2>

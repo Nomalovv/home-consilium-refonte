@@ -11,9 +11,12 @@ export const entreprise = {
   activite: "Courtier en travaux",
   baseline: "Votre projet, notre expertise, votre sérénité",
   accroche: "Un seul interlocuteur pour tous vos travaux",
-  sousTitre: "Courtier en travaux · Calvados",
+  sousTitre: "Courtier en travaux · Normandie",
   definition:
     "Intermédiaire entre les particuliers et les artisans et entreprises du bâtiment.",
+  /** Intro courte et chaleureuse du hero d'accueil : remplace baseline + definition, trop denses sur mobile. */
+  introAccueil:
+    "Vous décrivez votre projet, on trouve les bons artisans, on compare les devis et on suit le chantier avec vous. Un seul interlocuteur, du premier appel à la réception.",
   citation: "Le trait d'union entre votre projet et les bons artisans",
   formeJuridique: A_COMPLETER("forme juridique non renseignée"),
   siret: A_COMPLETER("SIRET / SIREN"),
@@ -44,7 +47,7 @@ export const reseauxSociaux: { nom: string; url: string }[] = [];
 
 export const zoneIntervention = {
   titre: "Tout le Calvados et ses alentours",
-  badge: "100% Calvados",
+  badge: "100% Normandie",
   departement: "Calvados",
   region: "Normandie",
   villes: [
@@ -139,7 +142,18 @@ export const traitsMarque = [
 export const chiffresStructurels = [
   { valeur: "4", libelle: "étapes de méthode" },
   { valeur: "5", libelle: "domaines de service" },
-  { valeur: "100%", libelle: "Calvados" },
+  { valeur: "100%", libelle: "Normandie" },
+] as const;
+
+/**
+ * Version courte des valeurs/bénéfices, réservée à l'accueil : trois phrases,
+ * pas de titre + paragraphe séparés. Le détail complet (valeurs + bénéfices)
+ * reste sur /a-propos.
+ */
+export const reassurancesAccueil = [
+  "Un seul interlocuteur, du premier appel à la réception du chantier.",
+  "Vous voyez les devis, vous décidez : aucune zone d'ombre.",
+  "Des artisans que nous choisirions pour notre propre maison.",
 ] as const;
 
 export const temoignages = {

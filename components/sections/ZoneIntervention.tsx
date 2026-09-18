@@ -17,11 +17,11 @@ export function ZoneIntervention() {
           <Badge ton="terre" className="mb-5">
             {zoneIntervention.badge}
           </Badge>
-          <ul className="grid gap-x-6 gap-y-3 sm:grid-cols-2">
+          <ul className="grid grid-cols-2 gap-x-4 gap-y-3">
             {zoneIntervention.villes.map((ville) => (
               <li
                 key={ville}
-                className="flex items-start gap-2.5 text-[15px] text-ink"
+                className="flex items-start gap-2 text-[14.5px] leading-snug text-ink"
               >
                 <span
                   aria-hidden="true"

@@ -16,7 +16,7 @@ export function Section({
     <section
       id={id}
       aria-label={aria}
-      className={cn("relative py-16 md:py-24", className)}
+      className={cn("relative py-12 md:py-24", className)}
     >
       <div className="conteneur">{children}</div>
     </section>

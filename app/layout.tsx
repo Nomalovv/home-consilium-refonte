@@ -27,11 +27,11 @@ const archivo = Archivo({
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   title: {
-    default: `${entreprise.nom} — ${entreprise.activite} dans le Calvados`,
+    default: `${entreprise.nom} — ${entreprise.activite} en Normandie`,
     template: `%s | ${entreprise.nom}`,
   },
   description:
-    "Home Consilium, courtier en travaux dans le Calvados : un seul interlocuteur pour tous vos travaux. Sélection d'artisans vérifiés, devis comparés et négociés, suivi de chantier.",
+    "Home Consilium, courtier en travaux en Normandie (Calvados et alentours) : un seul interlocuteur pour tous vos travaux. Sélection d'artisans vérifiés, devis comparés et négociés, suivi de chantier.",
   applicationName: entreprise.nom,
   authors: [{ name: entreprise.nom }],
   icons: {

@@ -50,7 +50,7 @@ export default function Accueil() {
         badge={zoneIntervention.badge}
         surtitre={entreprise.sousTitre}
         titre={entreprise.accroche}
-        intro={`${entreprise.baseline}. ${entreprise.definition}`}
+        intro={entreprise.introAccueil}
         aside={<PanneauStats />}
       >
         <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap">

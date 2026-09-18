@@ -32,10 +32,16 @@ panneaux et modales), nappes d'arrière-plan terre cuite / miel / ardoise avec
 fondu en bas de section, ombres teintées terre cuite, rayons généreux
 (12 / 20 / 28 / 36 px, boutons et pastilles en galet).
 
-**Illustrations** : uniquement des SVG dessinés pour le site
+**Illustrations** : des SVG dessinés pour le site
 (`components/ui/Illustrations.tsx`) — maison à colombages, outils, poignée de
-main, toits et côte. **Aucune photo**, aucune réalisation ni personne réelle
-représentée. Leurs titres accessibles vivent dans `content/visuels.ts`.
+main, toits et côte. Leurs titres accessibles vivent dans `content/visuels.ts`.
+
+**Photos** : les seules photos affichées sont celles **fournies par
+l'entreprise** (photo du bâtiment, photos de chantier) — aucune banque
+d'images, aucune réalisation ni personne réelle empruntée. Tant qu'aucune photo
+n'est déposée, les illustrations tiennent la place et le carrousel de
+réalisations affiche un état vide honnête. Voir
+[Ajouter vos photos](#ajouter-vos-photos).
 
 Support **clair / sombre complet** : les tokens CSS suivent
 `prefers-color-scheme` par défaut et restent surchargeables par l'utilisateur
@@ -100,13 +106,16 @@ Support **clair / sombre complet** : les tokens CSS suivent
                              Logo, Blobs, ThemeToggle, Illustrations
   sections/                  Hero, CTA, ServiceGrid, ServicesExplorer, Testimonials,
                              MethodeCondensee, CitationValeurs, ZoneIntervention,
-                             TraitsMarque, GalerieRealisations, PageEditoriale, Section
+                             TraitsMarque, GalerieRealisations, CarrouselRealisations,
+                             CarteRealisation, PageEditoriale, Section
   interactive/               GuidedQuiz, ProcessTimeline, MultiStepForm, FaqSearch,
                              EstCePourMoi
 /content                     services.ts, faq.ts, entreprise.ts, methode.ts, legal.ts,
                              interface.ts (libellés d'UI), visuels.ts (titres des SVG)
 /lib                         utils, hooks, animations, navigation, seo, consentement
 /public                      logo.svg, favicon.svg
+  images/                    photos fournies par l'entreprise (batiment.jpg…)
+  images/realisations/       photos de chantier
 ```
 
 ### Règle de contenu
@@ -120,10 +129,96 @@ Support **clair / sombre complet** : les tokens CSS suivent
 - **Ajouter une question de FAQ** = ajouter une entrée dans `content/faq.ts`
   (la recherche instantanée et le JSON-LD `FAQPage` la reprennent).
 - **Publier des réalisations** = remplir le tableau `realisations.projets` dans
-  `content/entreprise.ts` : la galerie sort alors de son état vide et les
-  filtres deviennent actifs.
+  `content/entreprise.ts` : la galerie sort alors de son état vide, les filtres
+  deviennent actifs et le carrousel de l'accueil apparaît. Voir
+  [Ajouter vos photos](#ajouter-vos-photos).
 - **Publier des avis clients** : la section « Ils nous font confiance » affiche
   volontairement un état vide honnête tant qu'aucun avis réel n'existe.
+
+---
+
+## Ajouter vos photos
+
+Deux emplacements attendent des photos réelles : le **hero de l'accueil**
+(photo du bâtiment) et le **carrousel de réalisations** (accueil +
+`/realisations`). Tant qu'ils sont vides, le site reste cohérent : illustration
+dessinée d'un côté, état vide honnête de l'autre. Aucune photo d'illustration
+n'est ajoutée à la place.
+
+### 1. Déposer les fichiers
+
+| Photo | Où la déposer |
+| --- | --- |
+| Bâtiment de l'entreprise | `public/images/batiment.jpg` |
+| Chantiers / réalisations | `public/images/realisations/<nom-du-chantier>.jpg` |
+
+Noms de fichiers en minuscules, sans accent ni espace (`cuisine-caen.jpg`,
+pas `Cuisine Caen (1).JPG`).
+
+**Format et poids conseillés**
+
+- **JPG** ou **WebP** (le WebP pèse ~30 % de moins à qualité égale).
+- **1600 px de large maximum** — au-delà, c'est du poids pour rien.
+- **moins de 300 Ko par photo** (qualité JPG 78-82 suffit largement).
+- **Cadrage horizontal**, ratio **4/3** idéalement : les cartes et le hero
+  recadrent en 4/3 (16/10 sur téléphone pour le hero), donc une photo
+  verticale sera rognée en haut et en bas.
+- Pas de visage identifiable ni de plaque d'immatriculation sans accord écrit
+  des personnes concernées, et accord du client avant de publier son chantier.
+
+### 2. Renseigner le contenu
+
+Tout se passe dans `content/entreprise.ts` — aucun composant à modifier.
+
+**Photo du bâtiment** : remplir `src` (chemin depuis `/public`). Laisser `src`
+vide (`""`) remet l'illustration dessinée.
+
+```ts
+export const photos: { batiment: Photo } = {
+  batiment: {
+    src: "/images/batiment.jpg",
+    // Décrire ce que l'on voit : c'est lu par les lecteurs d'écran.
+    alt: "Le bâtiment de Home Consilium, vu depuis la rue",
+  },
+};
+```
+
+**Réalisations** : ajouter une entrée par chantier dans `realisations.projets`.
+`categorie` doit reprendre **exactement** un libellé de `realisations.filtres`
+(sinon le filtre correspondant ne la trouvera pas).
+
+```ts
+projets: [
+  {
+    titre: "Rénovation d'une longère",
+    categorie: "Rénovation complète",   // un libellé de `realisations.filtres`
+    ville: "Bayeux",
+    image: "/images/realisations/longere-bayeux.jpg",
+    // `alt` est optionnel : sans lui, un texte par défaut est généré.
+    alt: "Longère normande rénovée, façade en pierre et menuiseries neuves",
+    // `images` (optionnel) : autres photos du même chantier, en réserve.
+    images: ["/images/realisations/longere-bayeux-2.jpg"],
+  },
+] as Projet[],
+```
+
+Un projet **sans `image`** reste visible dans la galerie `/realisations` (en
+carte texte) mais **n'apparaît pas dans le carrousel** de l'accueil, qui est une
+section d'images. Le carrousel apparaît dès qu'**une seule** photo est
+renseignée.
+
+### 3. Vérifier puis publier
+
+```bash
+npm run dev     # contrôler l'accueil et /realisations, en clair et en sombre
+npm run build   # doit passer sans erreur
+```
+
+Puis pousser les fichiers et le contenu modifié : le déploiement se fait
+automatiquement (voir *Mise en ligne sur Vercel* ci-dessous). Les chemins
+d'images passent par le helper `asset()` de `lib/utils.ts`, qui applique le
+préfixe `NEXT_PUBLIC_BASE_PATH` : les mêmes photos fonctionnent donc à la
+racine d'un domaine **et** dans un export statique publié dans un sous-dossier.
 
 ---
 
@@ -149,6 +244,7 @@ optionnelle :
 | Variable | Rôle |
 | --- | --- |
 | `NEXT_PUBLIC_FORM_ENDPOINT` | URL recevant en `POST` JSON les demandes du formulaire de contact. |
+| `NEXT_PUBLIC_BASE_PATH` | Préfixe des chemins d'images (`asset()`), uniquement si le site est publié dans un sous-dossier — par exemple `/home-consilium-refonte` pour un export statique sur GitHub Pages. Vide par défaut. |
 
 Aucun backend n'est fourni avec ce site. Si `NEXT_PUBLIC_FORM_ENDPOINT` n'est
 **pas** défini, le formulaire bascule sur un envoi par email (`mailto:` vers
@@ -206,8 +302,13 @@ apparaissent littéralement dans les pages sous la forme
 
 Autres points laissés volontairement vides, en attente de contenu réel :
 
-- **Réalisations** — aucune fiche projet inventée ; la galerie filtrable est
-  prête, les filtres restent inertes tant que `realisations.projets` est vide.
+- **Réalisations** — aucune fiche projet inventée, aucune photo empruntée ; la
+  galerie filtrable et le carrousel de l'accueil sont prêts et se remplissent
+  dès que `realisations.projets` est renseigné (voir
+  [Ajouter vos photos](#ajouter-vos-photos)). Les filtres restent inertes tant
+  que le tableau est vide.
+- **Photo du bâtiment** — `photos.batiment.src` est vide : le hero de l'accueil
+  affiche l'illustration dessinée en attendant.
 - **Avis clients** — aucun témoignage fictif ; état vide honnête.
 - **Réseaux sociaux** — aucun lien réel connu, donc aucune icône affichée
   (plutôt que des liens morts). Remplir `reseauxSociaux` dans

@@ -160,7 +160,6 @@ const config: Config = {
       },
       transitionTimingFunction: {
         doux: "cubic-bezier(.22,1,.36,1)",
-        rebond: "cubic-bezier(.34,1.56,.64,1)",
       },
     },
   },

@@ -103,7 +103,7 @@ export function ServiceGrid({
           >
             <span
               aria-hidden="true"
-              className="mb-4 inline-flex h-11 w-11 items-center justify-center rounded-full bg-terre-100 text-terre-700 transition-all duration-300 ease-rebond group-hover:scale-110 group-hover:bg-terre-200 motion-reduce:group-hover:scale-100 dark:bg-terre-700/25 dark:text-terre-300 sm:mb-5"
+              className="mb-4 inline-flex h-11 w-11 items-center justify-center rounded-full bg-terre-100 text-terre-700 transition-all duration-300 ease-doux group-hover:scale-110 group-hover:bg-terre-200 motion-reduce:group-hover:scale-100 dark:bg-terre-700/25 dark:text-terre-300 sm:mb-5"
             >
               <Picto slug={s.slug} />
             </span>
@@ -154,7 +154,7 @@ export function ServiceGrid({
           >
             <span
               aria-hidden="true"
-              className="mb-4 inline-flex h-11 w-11 items-center justify-center rounded-full border-2 border-dashed border-terre-300 text-terre-700 transition-transform duration-300 ease-rebond group-hover:rotate-90 motion-reduce:group-hover:rotate-0 dark:border-terre-700/60 dark:text-terre-300 sm:mb-5"
+              className="mb-4 inline-flex h-11 w-11 items-center justify-center rounded-full border-2 border-dashed border-terre-300 text-terre-700 transition-transform duration-300 ease-doux group-hover:rotate-90 motion-reduce:group-hover:rotate-0 dark:border-terre-700/60 dark:text-terre-300 sm:mb-5"
             >
               <svg width="18" height="18" viewBox="0 0 20 20" fill="none">
                 <path

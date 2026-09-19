@@ -5,8 +5,16 @@ import { ZoneIntervention } from "@/components/sections/ZoneIntervention";
 import { TraitsMarque } from "@/components/sections/TraitsMarque";
 import { Breadcrumb, maillesDepuisChemin } from "@/components/layout/Breadcrumb";
 import { LogoSymbole } from "@/components/ui/Logo";
-import { benefices, entreprise, valeurs, zoneIntervention } from "@/content/entreprise";
+import {
+  benefices,
+  entreprise,
+  photos,
+  sectionDirigeant,
+  valeurs,
+  zoneIntervention,
+} from "@/content/entreprise";
 import { construireMetadata } from "@/lib/seo";
+import { asset } from "@/lib/utils";
 
 export const metadata = construireMetadata({
   titre: "À propos",
@@ -66,6 +74,8 @@ export default function AProposPage() {
         </div>
       </Section>
 
+      {photos.dirigeant.src && <BlocDirigeant />}
+
       <Section>
         <TitreSection
           surtitre="Qui nous sommes"
@@ -108,5 +118,59 @@ export default function AProposPage() {
 
       <CTA />
     </>
+  );
+}
+
+/**
+ * Portrait du dirigeant et ce que l'entreprise a réellement communiqué à son
+ * sujet : un prénom, une durée d'expérience, et son rôle — rien d'autre.
+ * Portrait compact et centré sur téléphone, en vis-à-vis du texte à partir de
+ * la tablette. Le bloc disparaît si aucune photo n'est fournie.
+ */
+function BlocDirigeant() {
+  const portrait = photos.dirigeant;
+
+  return (
+    <Section aria={sectionDirigeant.titre}>
+      <div className="glass glass-readable grid gap-6 rounded-xl p-5 sm:p-7 md:grid-cols-[minmax(0,0.4fr)_minmax(0,0.6fr)] md:items-center md:gap-10 md:p-9">
+        <div className="mx-auto w-full max-w-[210px] sm:max-w-[240px] md:max-w-none">
+          <div className="relative aspect-[4/5] overflow-hidden rounded-lg bg-lin shadow-chaud ring-1 ring-white/70 dark:bg-white/[0.06] dark:ring-white/10">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src={asset(portrait.src)}
+              alt={portrait.alt}
+              width={900}
+              height={1125}
+              loading="lazy"
+              decoding="async"
+              className="absolute inset-0 h-full w-full object-cover object-[50%_12%]"
+            />
+          </div>
+        </div>
+
+        <div>
+          <p className="mb-2.5 flex items-center gap-2 text-[12.5px] font-semibold uppercase tracking-[0.16em] text-terre-700 dark:text-terre-300 sm:text-[13px]">
+            <span aria-hidden="true" className="h-px w-6 shrink-0 bg-terre-500" />
+            {sectionDirigeant.surtitre}
+          </p>
+          <h2 className="text-balance font-display text-h2 font-semibold text-ardoise-900 dark:text-ardoise-100">
+            {sectionDirigeant.titre}
+          </h2>
+          <p className="mt-3 text-[14.5px] font-semibold text-terre-700 dark:text-terre-300">
+            {portrait.experience}
+          </p>
+          <div className="mt-4 max-w-lisible space-y-3 text-ink-muted sm:mt-5 sm:space-y-4">
+            {sectionDirigeant.paragraphes.map((texte, i) => (
+              <p key={texte}>
+                <span className="sm:hidden">
+                  {sectionDirigeant.paragraphesCourts[i] ?? texte}
+                </span>
+                <span className="hidden sm:inline">{texte}</span>
+              </p>
+            ))}
+          </div>
+        </div>
+      </div>
+    </Section>
   );
 }

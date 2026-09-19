@@ -269,6 +269,30 @@ export const photos: {
   },
 };
 
+/**
+ * Bloc « qui est derrière Home Consilium », sur /a-propos.
+ *
+ * Deux faits seulement ont été communiqués sur le dirigeant : son prénom et
+ * ses onze ans d'expérience dans le bâtiment. Tout le reste du texte est la
+ * reformulation de ce que le site dit déjà de son métier (interlocuteur
+ * unique, sélection des entreprises, comparaison des devis, suivi de
+ * chantier). Aucun nom de famille, aucun titre précis, aucun parcours, aucune
+ * citation : rien qui n'ait été fourni.
+ */
+export const sectionDirigeant = {
+  surtitre: "Qui est derrière Home Consilium",
+  titre: "Eren, votre interlocuteur unique",
+  paragraphes: [
+    "Eren dirige Home Consilium et suit lui-même les projets : c'est la même personne qui vous répond, du premier appel au dernier coup de pinceau.",
+    "Son rôle tient en quatre temps : écouter votre projet, choisir les entreprises adaptées parmi les artisans normands vérifiés, comparer les devis poste par poste et suivre le chantier jusqu'à la réception.",
+  ],
+  /** Version courte affichée sous `sm`. */
+  paragraphesCourts: [
+    "Eren dirige Home Consilium et suit lui-même les projets : la même personne du premier appel à la réception du chantier.",
+    "Écouter, choisir les bonnes entreprises, comparer les devis, suivre le chantier.",
+  ],
+} as const;
+
 /** Une réalisation documentée, avec l'accord du client concerné. */
 export type Projet = {
   titre: string;
@@ -372,6 +396,30 @@ export const carrouselRealisations = {
   aria: "Carrousel des réalisations",
   precedent: "Voir les réalisations précédentes",
   suivant: "Voir les réalisations suivantes",
+
+  /* --- Défilement automatique ------------------------------------------ */
+  /** Temps d'affichage d'une vignette avant l'avance automatique. */
+  dureeSlideMs: 4500,
+  /** Durée du figeage déclenché par une interaction (tap, flèche, point…). */
+  dureePauseMs: 30000,
+  boutonPause: "Pause",
+  boutonLecture: "Lecture",
+  ariaPause: "Mettre en pause le défilement automatique",
+  ariaLecture: "Reprendre le défilement automatique",
+  etiquettePause: "En pause",
+  /** Compte à rebours affiché pendant un figeage temporaire. */
+  repriseDans: (secondes: number) => `reprise dans ${secondes} s`,
+  /** Compteur de position, façon « 01 / 07 ». */
+  compteur: (position: number, total: number) =>
+    `${String(position).padStart(2, "0")} / ${String(total).padStart(2, "0")}`,
+  /** Libellé accessible d'un point de progression. */
+  allerA: (position: number) => `Aller à la vignette ${position}`,
+  /** Annonce vocale, seulement quand le défilement est à l'arrêt. */
+  annonce: (position: number, total: number) =>
+    `Vignette ${position} sur ${total}`,
+  /** Affiché quand le système demande moins d'animations. */
+  mouvementReduit:
+    "Défilement automatique désactivé : votre appareil demande moins d'animations.",
   lien: "Voir toutes les réalisations",
   href: "/realisations",
   /** État vide : court, sans faux projets ni faux visuels. */

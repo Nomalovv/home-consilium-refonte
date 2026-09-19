@@ -58,6 +58,7 @@ export default function Accueil() {
         titreCourt={entreprise.accrocheCourte}
         intro={entreprise.introAccueil}
         introCourte={entreprise.introAccueilCourte}
+        fond={photos.fondHero}
         aside={<PanneauAccueil />}
       >
         {/*
@@ -152,14 +153,17 @@ export default function Accueil() {
 }
 
 /**
- * Panneau du hero : la photo du bâtiment dès qu'elle est fournie (sinon
- * l'illustration « maison »), puis uniquement des chiffres structurels et
- * vrais. Aucun chiffre business inventé.
+ * Panneau du hero : au premier plan de la photo d'ambiance, le portrait du
+ * dirigeant dès qu'il est fourni (sinon la photo du bâtiment, sinon
+ * l'illustration « maison »), puis uniquement des informations vraies.
+ * Aucun chiffre business inventé.
  */
 function PanneauAccueil() {
   return (
-    <div className="glass glass-lg glass-readable overflow-hidden rounded-xl">
-      {photos.batiment.src ? (
+    <div className="glass glass-lg glass-readable overflow-hidden rounded-xl shadow-lift">
+      {photos.dirigeant.src ? (
+        <PortraitDirigeant />
+      ) : photos.batiment.src ? (
         /*
           Photo réelle du bâtiment. Format volontairement plus bas sur
           téléphone : en 4/3 pleine largeur, elle mangeait le premier écran.
@@ -190,7 +194,7 @@ function PanneauAccueil() {
       )}
 
       <div className="p-5 sm:p-6 md:p-7">
-        <p className="text-[12.5px] font-semibold uppercase tracking-[0.16em] text-terre-700 dark:text-terre-300 sm:text-[13px]">
+        <p className="text-balance text-[12.5px] font-semibold uppercase tracking-[0.16em] text-terre-700 dark:text-terre-300 sm:text-[13px]">
           {entreprise.citation}
         </p>
         <dl className="mt-4 grid grid-cols-3 gap-3 sm:mt-5 sm:gap-4">
@@ -226,6 +230,66 @@ function PanneauAccueil() {
             </a>
           </p>
         </div>
+      </div>
+    </div>
+  );
+}
+
+/**
+ * Portrait du dirigeant, au premier plan de la photo d'ambiance.
+ *
+ * La photo n'est pas détourée : c'est le cadre arrondi, son liseré clair et son
+ * ombre chaude qui la détachent du décor. Sur téléphone, la place manque pour
+ * un grand portrait vertical : il devient une vignette compacte posée à côté
+ * de son étiquette, sous les boutons. À partir de `md`, il prend toute la
+ * largeur de la colonne, l'étiquette passant en pastille de verre sur la photo.
+ *
+ * Aucune information inventée : seuls le prénom et l'expérience communiqués
+ * par l'entreprise (`content/entreprise.ts`) sont affichés.
+ */
+function PortraitDirigeant() {
+  const portrait = photos.dirigeant;
+
+  return (
+    <div className="flex items-center gap-4 p-5 pb-0 sm:gap-5 sm:p-6 sm:pb-0 md:p-7 md:pb-0">
+      <div className="relative w-[88px] shrink-0 sm:w-[104px] md:w-full">
+        <div className="relative aspect-square overflow-hidden rounded-md bg-lin shadow-chaud ring-1 ring-white/70 dark:bg-white/[0.06] dark:ring-white/10 md:aspect-[4/5] md:max-h-[min(46svh,400px)] md:rounded-lg">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src={asset(portrait.src)}
+            alt={portrait.alt}
+            width={900}
+            height={1125}
+            fetchPriority="high"
+            decoding="async"
+            className="absolute inset-0 h-full w-full object-cover object-[50%_16%] md:object-[50%_12%]"
+          />
+          {/* Fondu chaud en bas : ancre l'étiquette sans voiler le visage. */}
+          <span
+            aria-hidden="true"
+            className="pointer-events-none absolute inset-x-0 bottom-0 hidden h-1/3 bg-gradient-to-t from-terre-800/35 to-transparent md:block"
+          />
+          <div className="absolute inset-x-3 bottom-3 hidden md:block">
+            <p className="glass glass-sm glass-readable rounded-sm px-3.5 py-2.5">
+              <span className="block text-[14.5px] font-semibold leading-tight text-ink">
+                {portrait.prenom}
+              </span>
+              <span className="mt-0.5 block text-[12.5px] leading-snug text-ink-muted">
+                {portrait.experience}
+              </span>
+            </p>
+          </div>
+        </div>
+      </div>
+
+      {/* Étiquette hors cadre sous `lg` : plus lisible qu'en surimpression. */}
+      <div className="min-w-0 md:hidden">
+        <p className="font-display text-[19px] font-semibold leading-tight text-ardoise-900 dark:text-ardoise-100">
+          {portrait.prenom}
+        </p>
+        <p className="mt-1 text-[13.5px] leading-snug text-ink-muted">
+          {portrait.experience}
+        </p>
       </div>
     </div>
   );

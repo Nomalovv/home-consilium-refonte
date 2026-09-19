@@ -37,11 +37,13 @@ fondu en bas de section, ombres teintées terre cuite, rayons généreux
 main, toits et côte. Leurs titres accessibles vivent dans `content/visuels.ts`.
 
 **Photos** : les seules photos affichées sont celles **fournies par
-l'entreprise** (photo du bâtiment, photos de chantier) — aucune banque
-d'images, aucune réalisation ni personne réelle empruntée. Tant qu'aucune photo
-n'est déposée, les illustrations tiennent la place et le carrousel de
-réalisations affiche un état vide honnête. Voir
-[Ajouter vos photos](#ajouter-vos-photos).
+l'entreprise** — aucune banque d'images, aucune réalisation ni personne réelle
+empruntée. Le premier écran de l'accueil est bâti sur deux d'entre elles : une
+villa normande face à la mer en **fond plein écran** (image d'ambiance, sous un
+voile chaleureux qui garde le texte lisible) et le **portrait du dirigeant** au
+premier plan, dans un cadre arrondi. Tant qu'une photo n'est pas déposée, les
+illustrations tiennent la place et le carrousel de réalisations affiche un état
+vide honnête. Voir [Ajouter vos photos](#ajouter-vos-photos).
 
 Support **clair / sombre complet** : les tokens CSS suivent
 `prefers-color-scheme` par défaut et restent surchargeables par l'utilisateur
@@ -60,8 +62,13 @@ Support **clair / sombre complet** : les tokens CSS suivent
   utilise Terre cuite 700 (5,5:1), les boutons pleins Terre cuite 700 + blanc
   (5,9:1), les pastilles miel Miel 800 (5,9:1 sur Miel 200). Le texte courant
   reste en `ink` (15,2:1) ou `ink-muted` (8,1:1).
+- Le texte posé sur la **photo d'ambiance du hero** est mesuré, pas estimé :
+  un script Playwright relève la boîte de chaque ligne, photographie le fond
+  réellement composé (voile + photo) et compare — 232 lignes contrôlées en
+  clair et en sombre, de 360 à 1536 px, toutes au-dessus du seuil AA.
 - `prefers-reduced-motion` respecté partout (blobs, flottements, fumée,
-  transitions, timeline, accordéons, transitions de page).
+  transitions, timeline, accordéons, transitions de page). La photo du hero est
+  fixe : aucun parallaxe, aucune animation d'entrée.
 - Navigation clavier, cibles tactiles ≥ 44px (hors liens en ligne dans une
   phrase, couverts par l'exception 2.5.8), ARIA, lien d'évitement, gestion du
   focus au changement de route (`PageTransition`).
@@ -114,7 +121,8 @@ Support **clair / sombre complet** : les tokens CSS suivent
                              interface.ts (libellés d'UI), visuels.ts (titres des SVG)
 /lib                         utils, hooks, animations, navigation, seo, consentement
 /public                      logo.svg, favicon.svg
-  images/                    photos fournies par l'entreprise (batiment.jpg…)
+  images/                    photos fournies par l'entreprise
+                             (villa-normande.jpg, dirigeant.jpg…)
   images/realisations/       photos de chantier
 ```
 
@@ -139,16 +147,30 @@ Support **clair / sombre complet** : les tokens CSS suivent
 
 ## Ajouter vos photos
 
-Deux emplacements attendent des photos réelles : le **hero de l'accueil**
-(photo du bâtiment) et le **carrousel de réalisations** (accueil +
-`/realisations`). Tant qu'ils sont vides, le site reste cohérent : illustration
-dessinée d'un côté, état vide honnête de l'autre. Aucune photo d'illustration
-n'est ajoutée à la place.
+Quatre emplacements accueillent des photos réelles :
+
+| Emplacement | État | Où c'est visible |
+| --- | --- | --- |
+| **Image d'ambiance du hero** (`fondHero`) | ✅ fournie | fond plein écran du premier écran de l'accueil |
+| **Portrait du dirigeant** (`dirigeant`) | ✅ fourni | premier plan du hero de l'accueil |
+| **Bâtiment de l'entreprise** (`batiment`) | ⏳ vide | panneau du hero, si aucun portrait n'est fourni |
+| **Chantiers / réalisations** (`realisations.projets`) | ⏳ vide | carrousel de l'accueil + galerie `/realisations` |
+
+Tant qu'un emplacement est vide, le site reste cohérent : illustration dessinée
+d'un côté, état vide honnête de l'autre. Aucune photo d'illustration n'est
+ajoutée à la place.
+
+> **L'image d'ambiance n'est pas une réalisation.** La villa normande du fond
+> du hero est un décor : elle n'est ni le bâtiment de l'entreprise, ni un
+> chantier qu'elle a suivi. Elle n'apparaît donc jamais dans
+> `realisations.projets` et n'est jamais présentée comme un chantier.
 
 ### 1. Déposer les fichiers
 
 | Photo | Où la déposer |
 | --- | --- |
+| Image d'ambiance du hero | `public/images/villa-normande.jpg` |
+| Portrait du dirigeant | `public/images/dirigeant.jpg` |
 | Bâtiment de l'entreprise | `public/images/batiment.jpg` |
 | Chantiers / réalisations | `public/images/realisations/<nom-du-chantier>.jpg` |
 
@@ -158,11 +180,12 @@ pas `Cuisine Caen (1).JPG`).
 **Format et poids conseillés**
 
 - **JPG** ou **WebP** (le WebP pèse ~30 % de moins à qualité égale).
-- **1600 px de large maximum** — au-delà, c'est du poids pour rien.
-- **moins de 300 Ko par photo** (qualité JPG 78-82 suffit largement).
-- **Cadrage horizontal**, ratio **4/3** idéalement : les cartes et le hero
-  recadrent en 4/3 (16/10 sur téléphone pour le hero), donc une photo
-  verticale sera rognée en haut et en bas.
+- **1600 px de large maximum** — au-delà, c'est du poids pour rien. Ne jamais
+  *agrandir* une photo plus petite : elle deviendrait floue.
+- **moins de 250 Ko par photo** (qualité JPG 78-84 suffit largement).
+- **Cadrage** : horizontal, ratio **3/2** ou **4/3**, pour l'image d'ambiance
+  et les chantiers (les cartes recadrent en 4/3) ; **vertical 4/5** pour le
+  portrait du dirigeant.
 - Pas de visage identifiable ni de plaque d'immatriculation sans accord écrit
   des personnes concernées, et accord du client avant de publier son chantier.
 
@@ -170,18 +193,48 @@ pas `Cuisine Caen (1).JPG`).
 
 Tout se passe dans `content/entreprise.ts` — aucun composant à modifier.
 
-**Photo du bâtiment** : remplir `src` (chemin depuis `/public`). Laisser `src`
-vide (`""`) remet l'illustration dessinée.
+**Image d'ambiance du hero** : c'est le fond plein écran du premier écran de
+l'accueil. Elle est **décorative**, donc son `alt` reste vide (elle est masquée
+aux lecteurs d'écran : le titre du hero dit déjà tout). Laisser `src` vide
+(`""`) rend au hero ses nappes de couleur dessinées.
+
+**Portrait du dirigeant** : il se pose au premier plan, dans un cadre arrondi.
+Vignette compacte sur téléphone, grand portrait à partir de la tablette. Seuls
+le prénom et l'expérience réellement communiqués sont affichés, sur une petite
+étiquette de verre — pas de nom de famille ni de titre inventés. Laisser `src`
+vide fait retomber le panneau sur la photo du bâtiment, puis sur l'illustration.
+
+**Photo du bâtiment** : utilisée dans le panneau du hero **si aucun portrait**
+n'est fourni.
 
 ```ts
-export const photos: { batiment: Photo } = {
+export const photos = {
   batiment: {
-    src: "/images/batiment.jpg",
-    // Décrire ce que l'on voit : c'est lu par les lecteurs d'écran.
+    src: "", // vide : aucune photo du bâtiment fournie
     alt: "Le bâtiment de Home Consilium, vu depuis la rue",
+  },
+  fondHero: {
+    src: "/images/villa-normande.jpg",
+    alt: "", // décorative : aria-hidden, pas de description
+  },
+  dirigeant: {
+    src: "/images/dirigeant.jpg",
+    // Décrire ce que l'on voit : c'est lu par les lecteurs d'écran.
+    alt: "Eren, dirigeant de Home Consilium, à son bureau",
+    prenom: "Eren",
+    experience: "11 ans d'expérience dans le bâtiment",
+    experienceCourte: "11 ans d'expérience",
+    etiquette: "Eren · 11 ans d'expérience dans le bâtiment",
   },
 };
 ```
+
+Le voile chaleureux posé sur l'image d'ambiance (`.voile-hero` dans
+`app/globals.css`) est calé sur des **mesures de contraste** : un script
+Playwright relève chaque ligne de texte du premier écran et la compare au pixel
+le plus défavorable de la photo, en clair et en sombre, de 360 à 1536 px. Si
+vous remplacez l'image de fond par une photo plus contrastée (ciel très sombre,
+grands aplats blancs), refaites ce contrôle avant de publier.
 
 **Réalisations** : ajouter une entrée par chantier dans `realisations.projets`.
 `categorie` doit reprendre **exactement** un libellé de `realisations.filtres`
@@ -307,15 +360,18 @@ Autres points laissés volontairement vides, en attente de contenu réel :
   dès que `realisations.projets` est renseigné (voir
   [Ajouter vos photos](#ajouter-vos-photos)). Les filtres restent inertes tant
   que le tableau est vide.
-- **Photo du bâtiment** — `photos.batiment.src` est vide : le hero de l'accueil
-  affiche l'illustration dessinée en attendant.
+- **Photo du bâtiment** — `photos.batiment.src` est vide. Ce n'est plus
+  bloquant : le panneau du hero affiche le portrait du dirigeant. La photo du
+  bâtiment reprendrait sa place si le portrait était retiré.
 - **Avis clients** — aucun témoignage fictif ; état vide honnête.
 - **Réseaux sociaux** — aucun lien réel connu, donc aucune icône affichée
   (plutôt que des liens morts). Remplir `reseauxSociaux` dans
   `content/entreprise.ts` les fera apparaître dans le footer.
-- **Chiffres business** — aucun (années d'expérience, nombre de clients,
-  certifications). Seuls des chiffres structurels et vérifiables sont affichés :
-  4 étapes de méthode, 5 domaines de service, 100 % Normandie.
+- **Chiffres business** — aucun chiffre inventé (nombre de clients, de
+  chantiers, certifications). Les seuls chiffres affichés sont structurels et
+  vérifiables — 4 étapes de méthode, 5 domaines de service, 100 % Normandie —
+  plus l'expérience du dirigeant (11 ans), communiquée par l'entreprise et
+  citée une seule fois, sur l'étiquette de son portrait.
 - **Zone d'intervention** — la liste de `zoneIntervention.villes` /
   `zonesQuiz` (`content/entreprise.ts`) est une liste de **repères**, pas une
   promesse de couverture commune par commune : elle doit être validée par

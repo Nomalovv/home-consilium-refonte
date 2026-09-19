@@ -1,7 +1,8 @@
 import type { ReactNode } from "react";
 import { Blobs } from "@/components/ui/Blobs";
 import { Badge } from "@/components/ui/Badge";
-import { cn } from "@/lib/utils";
+import type { Photo } from "@/content/entreprise";
+import { asset, cn } from "@/lib/utils";
 
 type Props = {
   surtitre?: string;
@@ -15,6 +16,11 @@ type Props = {
   children?: ReactNode;
   /** Contenu affiché à droite sur grand écran (panneau stats, illustration...). */
   aside?: ReactNode;
+  /**
+   * Photo d'ambiance posée en fond du premier écran. Tant que son `src` est
+   * vide, le hero garde ses nappes de couleur dessinées (`Blobs`).
+   */
+  fond?: Photo;
   className?: string;
   compact?: boolean;
 };
@@ -28,25 +34,45 @@ export function Hero({
   badge,
   children,
   aside,
+  fond,
   className,
   compact = false,
 }: Props) {
+  const photoFond = fond?.src ? fond : undefined;
+
   return (
     <section
       className={cn(
         "relative overflow-hidden",
-        compact
-          ? "pb-10 pt-24 sm:pt-28 md:pb-16 md:pt-36"
-          : "pb-12 pt-24 sm:pt-28 md:pb-24 md:pt-44",
+        photoFond
+          ? /*
+              Premier écran plein cadre : la photo d'ambiance occupe toute la
+              hauteur visible, header compris. `min-h` (et non `h`) pour que le
+              contenu puisse dépasser sur les écrans très courts.
+              `marge-barre-mobile` réserve la place de la barre d'action fixe.
+            */
+            "marge-barre-mobile flex min-h-[100svh] flex-col justify-center pt-20 sm:pt-24 md:pb-16 md:pt-28 lg:pb-20 lg:pt-32"
+          : compact
+            ? "pb-10 pt-24 sm:pt-28 md:pb-16 md:pt-36"
+            : "pb-12 pt-24 sm:pt-28 md:pb-24 md:pt-44",
         className,
       )}
     >
-      <Blobs variante={compact ? "section" : "hero"} />
+      {photoFond ? (
+        <FondPhoto photo={photoFond} />
+      ) : (
+        <Blobs variante={compact ? "section" : "hero"} />
+      )}
       <div className="conteneur">
         <div
           className={cn(
-            "grid items-center gap-8 md:gap-10",
-            aside && "lg:grid-cols-[1.12fr_0.88fr] lg:gap-14",
+            "grid items-center gap-7 sm:gap-8 md:gap-10",
+            /*
+              Deux colonnes dès la tablette quand il y a un panneau : empilé,
+              le premier écran devenait deux fois trop haut à 768 px.
+            */
+            aside &&
+              "md:grid-cols-[1.08fr_0.92fr] lg:grid-cols-[1.12fr_0.88fr] lg:gap-14",
           )}
         >
           <div>
@@ -92,5 +118,37 @@ export function Hero({
         </div>
       </div>
     </section>
+  );
+}
+
+/**
+ * Photo d'ambiance du premier écran.
+ *
+ * Image décorative : `alt` vide **et** `aria-hidden`, le sens est porté par le
+ * texte du hero. Pas de `next/image` (export statique sans optimiseur) :
+ * dimensions intrinsèques + `object-cover`, donc aucun saut de mise en page.
+ * Le cadrage est décalé vers la droite sur écran étroit pour garder la villa
+ * et la mer dans le champ malgré le recadrage.
+ *
+ * Le voile (`.voile-hero`, défini dans globals.css) est bâti sur le token de
+ * fond de page : il s'assombrit donc automatiquement en thème sombre et garde
+ * le texte au-dessus du seuil AA dans les deux thèmes.
+ */
+function FondPhoto({ photo }: { photo: Photo }) {
+  return (
+    <div aria-hidden="true" className="absolute inset-0 -z-10 overflow-hidden">
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img
+        src={asset(photo.src)}
+        alt=""
+        aria-hidden="true"
+        width={860}
+        height={573}
+        fetchPriority="high"
+        decoding="async"
+        className="absolute inset-0 h-full w-full object-cover object-[70%_42%] sm:object-[64%_44%] lg:object-[56%_46%]"
+      />
+      <span className="voile-hero absolute inset-0" />
+    </div>
   );
 }

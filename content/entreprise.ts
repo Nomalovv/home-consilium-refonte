@@ -210,6 +210,8 @@ export const temoignages = {
  * `src` est un chemin depuis /public (ex. "/images/batiment.jpg").
  * Chaîne vide = aucune photo fournie : le site garde son illustration dessinée
  * plutôt que d'afficher une image d'illustration qui ne serait pas la sienne.
+ * `alt` vide = image purement décorative : elle est alors masquée aux lecteurs
+ * d'écran (`aria-hidden`), ce qui est le cas de l'image d'ambiance du hero.
  */
 export type Photo = {
   src: string;
@@ -217,13 +219,53 @@ export type Photo = {
 };
 
 /**
- * Photos réelles de l'entreprise. Voir « Ajouter vos photos » dans le README.
- * Tant que `src` est vide, rien de faux n'est affiché à la place.
+ * Portrait du dirigeant, accompagné des seules informations réelles
+ * communiquées à son sujet : un prénom et une durée d'expérience. Aucun nom de
+ * famille ni titre n'a été fourni, donc aucun n'est affiché.
  */
-export const photos: { batiment: Photo } = {
+export type PhotoPortrait = Photo & {
+  prenom: string;
+  experience: string;
+  /** Version courte de l'expérience, pour les étiquettes serrées. */
+  experienceCourte: string;
+  /** Étiquette posée sur le portrait (prénom + expérience). */
+  etiquette: string;
+};
+
+const dirigeantPrenom = "Eren";
+const dirigeantExperience = "11 ans d'expérience dans le bâtiment";
+const dirigeantExperienceCourte = "11 ans d'expérience";
+
+/**
+ * Photos réelles fournies par l'entreprise. Voir « Ajouter vos photos » dans le
+ * README. Tant que `src` est vide, rien de faux n'est affiché à la place.
+ *
+ * `fondHero` est une **image d'ambiance** (une villa normande face à la mer) :
+ * ce n'est ni le bâtiment de l'entreprise, ni un chantier qu'elle a réalisé.
+ * Elle sert uniquement de décor au premier écran de l'accueil et n'est jamais
+ * présentée comme une réalisation.
+ */
+export const photos: {
+  batiment: Photo;
+  fondHero: Photo;
+  dirigeant: PhotoPortrait;
+} = {
   batiment: {
     src: "",
     alt: "Le bâtiment de Home Consilium, vu depuis la rue",
+  },
+  fondHero: {
+    src: "/images/villa-normande.jpg",
+    // Décorative : le texte du hero dit déjà tout. `alt` vide + aria-hidden.
+    alt: "",
+  },
+  dirigeant: {
+    src: "/images/dirigeant.jpg",
+    alt: `${dirigeantPrenom}, dirigeant de Home Consilium, à son bureau`,
+    prenom: dirigeantPrenom,
+    experience: dirigeantExperience,
+    experienceCourte: dirigeantExperienceCourte,
+    etiquette: `${dirigeantPrenom} · ${dirigeantExperience}`,
   },
 };
 
@@ -278,6 +320,8 @@ export const carrouselRealisations = {
   /** État vide : court, sans faux projets ni faux visuels. */
   etatVide:
     "Nos premières photos de chantier arriveront ici, avec l'accord des clients concernés.",
+  /** Mention posée sous les cadres vides : dit clairement ce qui manque. */
+  etatVideMention: "Les photos de nos chantiers arrivent bientôt",
   etatVideLien: "Parler de votre projet",
   etatVideHref: "/contact",
 } as const;

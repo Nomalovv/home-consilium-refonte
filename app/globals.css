@@ -198,6 +198,63 @@
     border: 1px solid var(--hairline);
   }
 
+  /**
+   * Voile du hero photo.
+   *
+   * Il est bâti sur le token de fond de page (`--hc-bg`) : crème en clair,
+   * brun chaud en sombre. Un seul jeu de dégradés couvre donc les deux thèmes,
+   * et le mode sombre n'a jamais de blanc éclatant. Une nappe terre cuite très
+   * discrète réchauffe l'ensemble.
+   *
+   * Opacités calées sur des mesures, pas à l'œil : un script Playwright relève
+   * la boîte de chaque ligne de texte du premier écran et compare la couleur du
+   * texte au pixel le plus défavorable de la photo composée, en clair et en
+   * sombre, de 360 à 1536 px. Partout où du texte est posé, le voile monte donc
+   * à 0,93 (téléphone) / 0,94 (tablette et plus) : même le plus petit texte
+   * terre cuite (5,5:1 sur crème) reste au-dessus de 4,5:1 sur les zones les
+   * plus sombres de la photo (toiture d'ardoise).
+   *
+   * Téléphone : voile vertical, léger derrière l'en-tête (la villa s'y voit),
+   * dense sur le bloc de titre, léger à nouveau autour du portrait. À partir de
+   * `md` : voile horizontal — le texte est à gauche, la villa et la mer restent
+   * franchement visibles à droite, autour du cadre du portrait.
+   */
+  .voile-hero {
+    background-image:
+      linear-gradient(
+        180deg,
+        rgb(var(--hc-bg) / 0.62) 0%,
+        rgb(var(--hc-bg) / 0.84) 9%,
+        rgb(var(--hc-bg) / 0.94) 17%,
+        rgb(var(--hc-bg) / 0.94) 74%,
+        rgb(var(--hc-bg) / 0.52) 87%,
+        rgb(var(--hc-bg) / 0.92) 100%
+      ),
+      linear-gradient(205deg, rgba(181, 98, 62, 0.16), transparent 58%);
+  }
+
+  @media (min-width: 768px) {
+    .voile-hero {
+      background-image:
+        linear-gradient(
+          90deg,
+          rgb(var(--hc-bg) / 0.94) 0%,
+          rgb(var(--hc-bg) / 0.94) 50%,
+          rgb(var(--hc-bg) / 0.8) 58%,
+          rgb(var(--hc-bg) / 0.42) 74%,
+          rgb(var(--hc-bg) / 0.3) 100%
+        ),
+        linear-gradient(
+          180deg,
+          rgb(var(--hc-bg) / 0.35) 0%,
+          transparent 20%,
+          transparent 64%,
+          rgb(var(--hc-bg) / 0.88) 100%
+        ),
+        linear-gradient(205deg, rgba(181, 98, 62, 0.18), transparent 62%);
+    }
+  }
+
   /** Motif discret de petites tuiles — rappel des toits normands. */
   .motif-tuiles {
     background-image: radial-gradient(
@@ -406,6 +463,11 @@
   }
   body {
     background-image: none;
+  }
+  /* La photo d'ambiance du hero passe presque entièrement sous le voile. */
+  .voile-hero {
+    background-image: none !important;
+    background-color: rgb(var(--hc-bg) / 0.97);
   }
 }
 

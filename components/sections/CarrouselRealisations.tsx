@@ -226,14 +226,17 @@ function BoutonPiste({
 
 /**
  * Aucun projet photographié : un bloc court et honnête, sans fausses cartes
- * ni images d'illustration empruntées.
+ * ni images d'illustration empruntées. Les trois cadres sont explicitement
+ * vides — ils montrent la place qui attend les photos, ils ne simulent aucun
+ * chantier.
  */
 function EtatVide() {
   return (
     <Section id="realisations" aria={carrouselRealisations.titre}>
-      <div className="glass glass-readable flex flex-col gap-5 rounded-xl p-5 sm:p-7 md:flex-row md:items-center md:justify-between md:gap-10 md:p-9">
+      <div className="glass glass-readable grid gap-6 rounded-xl p-5 sm:p-7 md:grid-cols-[1.05fr_0.95fr] md:items-center md:gap-10 md:p-9">
         <div>
-          <p className="mb-2 text-[12.5px] font-semibold uppercase tracking-[0.16em] text-terre-700 dark:text-terre-300 sm:text-[13px]">
+          <p className="mb-2 flex items-center gap-2 text-[12.5px] font-semibold uppercase tracking-[0.16em] text-terre-700 dark:text-terre-300 sm:text-[13px]">
+            <span aria-hidden="true" className="h-px w-6 shrink-0 bg-terre-500" />
             {carrouselRealisations.surtitre}
           </p>
           <h2 className="text-balance font-display text-h2 font-semibold text-ardoise-900 dark:text-ardoise-100">
@@ -242,14 +245,69 @@ function EtatVide() {
           <p className="mt-3 max-w-lisible text-ink-muted">
             {carrouselRealisations.etatVide}
           </p>
+          <div className="mt-5 flex flex-col items-start gap-3 sm:mt-6 sm:flex-row sm:items-center">
+            <ButtonLink
+              href={carrouselRealisations.etatVideHref}
+              variante="secondaire"
+            >
+              {carrouselRealisations.etatVideLien}
+            </ButtonLink>
+            <ButtonLink href={carrouselRealisations.href} variante="lien">
+              {carrouselRealisations.lien}
+            </ButtonLink>
+          </div>
         </div>
-        <div className="flex flex-col items-start gap-3 sm:flex-row sm:items-center md:shrink-0 md:flex-col md:items-start lg:flex-row lg:items-center">
-          <ButtonLink href={carrouselRealisations.etatVideHref} variante="secondaire">
-            {carrouselRealisations.etatVideLien}
-          </ButtonLink>
-          <ButtonLink href={carrouselRealisations.href} variante="lien">
-            {carrouselRealisations.lien}
-          </ButtonLink>
+
+        <div>
+          <ul
+            aria-hidden="true"
+            className="grid grid-cols-2 gap-2.5 sm:grid-cols-3 sm:gap-3.5"
+          >
+            {[0, 1, 2].map((i) => (
+              <li
+                key={i}
+                className={cn(
+                  "motif-tuiles flex aspect-[4/3] items-center justify-center rounded-md border border-dashed",
+                  "border-terre-300 bg-terre-100/40 dark:border-terre-700 dark:bg-terre-700/10",
+                  i === 2 && "hidden sm:flex",
+                )}
+              >
+                <svg
+                  width="26"
+                  height="26"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  className="text-terre-600/70 dark:text-terre-300/60"
+                >
+                  <rect
+                    x="3"
+                    y="6"
+                    width="18"
+                    height="13"
+                    rx="3"
+                    stroke="currentColor"
+                    strokeWidth="1.6"
+                  />
+                  <path
+                    d="M8.5 6 10 3.6h4L15.5 6"
+                    stroke="currentColor"
+                    strokeWidth="1.6"
+                    strokeLinejoin="round"
+                  />
+                  <circle
+                    cx="12"
+                    cy="12.5"
+                    r="3.4"
+                    stroke="currentColor"
+                    strokeWidth="1.6"
+                  />
+                </svg>
+              </li>
+            ))}
+          </ul>
+          <p className="mt-3 text-[13px] text-ink-muted sm:text-[13.5px]">
+            {carrouselRealisations.etatVideMention}
+          </p>
         </div>
       </div>
     </Section>

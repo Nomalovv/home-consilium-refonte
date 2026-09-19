@@ -151,12 +151,19 @@ const config: Config = {
           from: { height: "0" },
           to: { height: "var(--radix-accordion-content-height)" },
         },
+        /** Barre de progression du carrousel, façon « story ». */
+        progression: {
+          from: { transform: "scaleX(0)" },
+          to: { transform: "scaleX(1)" },
+        },
       },
       animation: {
         "blob-drift": "blob-drift 28s ease-in-out infinite",
         "fade-up": "fade-up .5s ease-out both",
         flottement: "flottement 7s ease-in-out infinite",
         fumee: "fumee 4.5s ease-out infinite",
+        /* La durée vient de `--duree-slide`, posée par le carrousel. */
+        progression: "progression var(--duree-slide, 4500ms) linear forwards",
       },
       transitionTimingFunction: {
         doux: "cubic-bezier(.22,1,.36,1)",

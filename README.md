@@ -283,8 +283,36 @@ miel / crème, `public/images/apercu/`), pas des photos : rien n'est emprunté,
 aucun chantier, aucun client, aucune ville n'est inventé. Les légendes restent
 génériques (« Exemple · Cuisine »).
 
-Il disparaît **tout seul** dès qu'un projet de `realisations.projets` a une
-image : le carrousel montre alors les vraies réalisations. Pour le retirer sans
+### Le carrousel défile tout seul
+
+Le carrousel de l'accueil avance d'une vignette toutes les 4,5 s, avec une barre
+de progression façon « story », un compteur « 01 / 05 » et un zoom très lent sur
+la vignette active. Il s'arrête dès qu'on s'y intéresse :
+
+| Geste | Effet |
+| --- | --- |
+| Survol à la souris, focus clavier | pause tant que le pointeur ou le focus reste sur le carrousel |
+| Tape sur une vignette, glissement tactile, flèches, points, précédent / suivant | figeage **30 s**, avec compte à rebours affiché, puis reprise |
+| Bouton **Pause / Lecture** | figeage aussi longtemps qu'on veut (`aria-pressed`) |
+| Onglet en arrière-plan, carrousel hors de l'écran | arrêt automatique |
+| `prefers-reduced-motion: reduce` | **aucun** défilement automatique, carrousel manuel, message explicite |
+
+Deux réglages, dans `content/entreprise.ts` :
+
+```ts
+export const carrouselRealisations = {
+  // …
+  dureeSlideMs: 4500,   // temps d'affichage d'une vignette
+  dureePauseMs: 30000,  // durée du figeage après une interaction
+};
+```
+
+Seules `transform` et `opacity` sont animées, et l'annonce `aria-live` n'est
+émise qu'à l'arrêt (jamais pendant le défilement). Le carrousel des vraies
+photos se comporte exactement comme celui de l'aperçu.
+
+L'aperçu disparaît **tout seul** dès qu'un projet de `realisations.projets` a
+une image : le carrousel montre alors les vraies réalisations. Pour le retirer sans
 attendre — et revenir à l'état vide honnête —, une seule ligne dans
 `content/entreprise.ts` :
 

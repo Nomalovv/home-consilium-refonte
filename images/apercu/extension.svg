@@ -1,0 +1,50 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600" width="800" height="600" role="img">
+  <title>Illustration d'aperçu : extension vitrée</title>
+  <defs>
+    <linearGradient id="cielExt" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#F8EAE0"/>
+      <stop offset="1" stop-color="#FAF0DA"/>
+    </linearGradient>
+    <linearGradient id="vitrage" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#DFEAE5"/>
+      <stop offset="1" stop-color="#C4DAD3"/>
+    </linearGradient>
+  </defs>
+  <rect width="800" height="600" fill="url(#cielExt)"/>
+  <circle cx="132" cy="120" r="46" fill="#E8C98A" opacity=".7"/>
+
+  <!-- maison existante -->
+  <path d="M292 168 150 268c-8 6-4 20 6 20h272c10 0 14-14 6-20L292 168z" fill="#B5623E"/>
+  <rect x="176" y="288" width="232" height="204" rx="12" fill="#F5EDE1"/>
+  <g stroke="#9C4F30" stroke-width="8" stroke-linecap="round" opacity=".7">
+    <path d="M176 380h232M292 288v204"/>
+  </g>
+  <rect x="206" y="316" width="52" height="44" rx="9" fill="#E8C98A"/>
+  <rect x="326" y="316" width="52" height="44" rx="9" fill="#E8C98A"/>
+  <rect x="206" y="410" width="52" height="44" rx="9" fill="#E8C98A" opacity=".6"/>
+  <rect x="326" y="410" width="52" height="44" rx="9" fill="#E8C98A" opacity=".6"/>
+
+  <!-- extension vitrée -->
+  <path d="M408 300h250c8 0 14 6 14 14v178H408z" fill="url(#vitrage)"/>
+  <path d="M400 286h278c9 0 16 7 16 16H400z" fill="#2B5049"/>
+  <g stroke="#2B5049" stroke-width="10" fill="none">
+    <path d="M472 302v190M544 302v190M616 302v190"/>
+    <path d="M408 388h264"/>
+    <path d="M672 302v190"/>
+  </g>
+  <path d="M420 316h40v56h-40z" fill="#FBF6EE" opacity=".55"/>
+  <path d="M556 402h48v72h-48z" fill="#FBF6EE" opacity=".4"/>
+
+  <!-- poutre en cours de pose -->
+  <rect x="452" y="212" width="250" height="20" rx="8" fill="#C9993F"/>
+  <path d="M577 212v-58" stroke="#457066" stroke-width="8" stroke-linecap="round"/>
+  <circle cx="577" cy="146" r="12" fill="#457066"/>
+
+  <!-- sol et végétation -->
+  <rect x="0" y="492" width="800" height="108" fill="#EADFCE"/>
+  <path d="M0 492c120-24 220-18 320 4s280 10 480-16v20H0z" fill="#96B7AE" opacity=".5"/>
+  <rect x="96" y="440" width="40" height="52" rx="8" fill="#E3B79E"/>
+  <circle cx="116" cy="424" r="30" fill="#457066" opacity=".75"/>
+  <rect x="716" y="436" width="44" height="56" rx="9" fill="#E3B79E"/>
+  <circle cx="738" cy="418" r="34" fill="#457066" opacity=".7"/>
+</svg>

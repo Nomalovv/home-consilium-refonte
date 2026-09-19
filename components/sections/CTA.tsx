@@ -43,10 +43,13 @@ export function CTA({
           />
 
           <div className="relative">
-            <IllustrationArtisans
-              decoratif
+            {/* Largeur portée par le conteneur : voir MethodeCondensee. */}
+            <div
+              aria-hidden="true"
               className="mx-auto mb-5 w-[132px] sm:mb-6 sm:w-[168px]"
-            />
+            >
+              <IllustrationArtisans decoratif />
+            </div>
             <h2 className="mx-auto max-w-2xl text-balance font-display text-h2 font-semibold text-ardoise-900 dark:text-ardoise-100">
               {titre}
             </h2>

@@ -9,6 +9,13 @@ import { visuels } from "@/content/visuels";
  * Toutes les couleurs passent par les tokens Tailwind (terre cuite, miel,
  * ardoise), donc le mode sombre est géré automatiquement. Les animations
  * douces sont neutralisées par la règle globale `prefers-reduced-motion`.
+ *
+ * **Dimensionnement** : chaque SVG occupe 100 % de la largeur de son parent
+ * (`w-full`). Il faut donc le placer dans un conteneur à la bonne taille — une
+ * classe `w-…` passée en `className` serait écrasée par `w-full` (Tailwind
+ * émet `.w-full` après les largeurs de l'échelle, donc elle gagne l'arbitrage)
+ * et l'illustration s'étalerait sur toute la largeur disponible. `max-w-…`
+ * reste en revanche sans conflit.
  */
 
 type PropsIllustration = {

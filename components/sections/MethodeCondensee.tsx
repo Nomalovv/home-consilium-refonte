@@ -11,16 +11,25 @@ import { apparitionSequencee, enfantSequence, vueUneFois } from "@/lib/animation
 export function MethodeCondensee() {
   return (
     <Section className="overflow-hidden">
-      <div className="flex flex-col gap-6 sm:flex-row sm:items-end sm:justify-between sm:gap-10">
+      <div className="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between lg:gap-12">
         <TitreSection
           surtitre={methodeCondensee.surtitre}
           titre={methode.titre}
           intro={methode.intro}
+          className="min-w-0 flex-1"
         />
-        <IllustrationOutils
-          decoratif
-          className="hidden w-28 shrink-0 animate-flottement lg:block"
-        />
+        {/*
+          L'illustration est dimensionnée par ce conteneur, jamais par une
+          classe posée sur le <svg> : la largeur du SVG est déjà fixée à 100 %
+          dans le composant, et une classe `w-…` concurrente perdrait l'arbitrage
+          CSS. Le texte garde ainsi toute la largeur restante.
+        */}
+        <div
+          aria-hidden="true"
+          className="hidden w-[116px] shrink-0 lg:block xl:w-[136px]"
+        >
+          <IllustrationOutils decoratif className="animate-flottement" />
+        </div>
       </div>
 
       <motion.ol

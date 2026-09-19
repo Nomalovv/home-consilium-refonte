@@ -66,7 +66,7 @@ export function Hero({
       <div className="conteneur">
         <div
           className={cn(
-            "grid items-center gap-7 sm:gap-8 md:gap-10",
+            "grid items-center gap-5 sm:gap-8 md:gap-10",
             /*
               Deux colonnes dès la tablette quand il y a un panneau : empilé,
               le premier écran devenait deux fois trop haut à 768 px.
@@ -75,7 +75,18 @@ export function Hero({
               "md:grid-cols-[1.08fr_0.92fr] lg:grid-cols-[1.12fr_0.88fr] lg:gap-14",
           )}
         >
-          <div>
+          {/*
+            Sur la photo, le texte est porté par un panneau de verre plutôt que
+            par un voile opaque : la villa reste visible partout ailleurs, et
+            le contraste vient de la somme voile + panneau (voir `.glass-photo`
+            dans globals.css).
+          */}
+          <div
+            className={cn(
+              photoFond &&
+                "glass glass-lg glass-photo rounded-xl p-5 shadow-lift sm:p-7 md:p-8",
+            )}
+          >
             {badge && (
               <Badge ton="terre" className="mb-4">
                 <span

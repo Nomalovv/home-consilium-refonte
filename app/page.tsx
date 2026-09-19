@@ -26,7 +26,7 @@ import { accueil } from "@/content/interface";
 import { services } from "@/content/services";
 import { faqCles } from "@/content/faq";
 import { jsonLdFaq } from "@/lib/seo";
-import { asset } from "@/lib/utils";
+import { asset, cn } from "@/lib/utils";
 
 // Composant interactif chargé à la demande : il n'est pas nécessaire au rendu initial.
 const GuidedQuiz = dynamic(() => import("@/components/interactive/GuidedQuiz"), {
@@ -160,7 +160,14 @@ export default function Accueil() {
  */
 function PanneauAccueil() {
   return (
-    <div className="glass glass-lg glass-readable overflow-hidden rounded-xl shadow-lift">
+    <div
+      className={cn(
+        "glass glass-lg overflow-hidden rounded-xl shadow-lift",
+        // Sur la photo d'ambiance, le panneau laisse deviner la villa ;
+        // sans photo, il garde la sous-couche opaque habituelle.
+        photos.fondHero.src ? "glass-photo" : "glass-readable",
+      )}
+    >
       {photos.dirigeant.src ? (
         <PortraitDirigeant />
       ) : photos.batiment.src ? (
@@ -193,7 +200,7 @@ function PanneauAccueil() {
         </div>
       )}
 
-      <div className="p-5 sm:p-6 md:p-7">
+      <div className="p-4 sm:p-6 md:p-7">
         <p className="text-balance text-[12.5px] font-semibold uppercase tracking-[0.16em] text-terre-700 dark:text-terre-300 sm:text-[13px]">
           {entreprise.citation}
         </p>
@@ -251,7 +258,7 @@ function PortraitDirigeant() {
   const portrait = photos.dirigeant;
 
   return (
-    <div className="flex items-center gap-4 p-5 pb-0 sm:gap-5 sm:p-6 sm:pb-0 md:p-7 md:pb-0">
+    <div className="flex items-center gap-4 p-4 pb-0 sm:gap-5 sm:p-6 sm:pb-0 md:p-7 md:pb-0">
       <div className="relative w-[88px] shrink-0 sm:w-[104px] md:w-full">
         <div className="relative aspect-square overflow-hidden rounded-md bg-lin shadow-chaud ring-1 ring-white/70 dark:bg-white/[0.06] dark:ring-white/10 md:aspect-[4/5] md:max-h-[min(46svh,400px)] md:rounded-lg">
           {/* eslint-disable-next-line @next/next/no-img-element */}

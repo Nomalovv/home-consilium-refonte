@@ -55,7 +55,10 @@ Support **clair / sombre complet** : les tokens CSS suivent
   `prefers-contrast: more`, ou si `backdrop-filter` n'est pas supporté.
 - Tout bloc de texte long posé sur du glass utilise la sous-couche opaque
   (`.glass-readable`, ≥ 94 % d'opacité) — voir la prop `lisible` de
-  `GlassSurface` / `Card`.
+  `GlassSurface` / `Card`. Seule exception, le hero photo de l'accueil : ses
+  deux panneaux utilisent `.glass-photo` (88 %) pour laisser deviner la villa,
+  et le voile posé sous eux complète la couverture (0,45 + 0,88 = 0,93). Le
+  contraste y est mesuré ligne par ligne (ci-dessous) plutôt que déduit.
 - Contrastes mesurés sur crème `#FBF6EE` (clair) et brun chaud `#1A1613`
   (sombre). **Terre cuite 600 (#B5623E) = 4,1:1 → jamais de texte dessus** :
   il ne sert qu'aux aplats et aux éléments décoratifs. Le texte d'accent
@@ -229,12 +232,16 @@ export const photos = {
 };
 ```
 
-Le voile chaleureux posé sur l'image d'ambiance (`.voile-hero` dans
-`app/globals.css`) est calé sur des **mesures de contraste** : un script
-Playwright relève chaque ligne de texte du premier écran et la compare au pixel
-le plus défavorable de la photo, en clair et en sombre, de 360 à 1536 px. Si
-vous remplacez l'image de fond par une photo plus contrastée (ciel très sombre,
-grands aplats blancs), refaites ce contrôle avant de publier.
+La lisibilité du hero repose sur **deux couches**, pas sur un voile opaque :
+un voile léger sur toute la photo (`.voile-hero`, 0,26 à 0,55 selon la zone,
+plus dense seulement sous l'en-tête) et un **panneau de verre** derrière chaque
+bloc de texte (`.glass-photo`, 88 %). La villa reste donc franchement visible,
+y compris derrière le texte. Les opacités sont calées sur des **mesures** : un
+script Playwright relève la boîte de chaque ligne de texte, photographie le
+fond réellement composé et la compare au pixel le plus défavorable, en clair et
+en sombre, de 360 à 1536 px. Si vous remplacez l'image de fond par une photo
+plus contrastée (ciel très sombre, grands aplats blancs), refaites ce contrôle
+avant de publier.
 
 **Réalisations** : ajouter une entrée par chantier dans `realisations.projets`.
 `categorie` doit reprendre **exactement** un libellé de `realisations.filtres`

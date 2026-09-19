@@ -301,9 +301,66 @@ export const realisations = {
 } as const;
 
 /**
+ * Une vignette de démonstration du carrousel.
+ *
+ * Ce sont des **illustrations dessinées pour le site** (SVG, palette terre
+ * cuite / miel / crème), pas des photos : aucune image empruntée, aucun
+ * chantier réel représenté. Les légendes restent génériques — pas de nom de
+ * client, pas de ville, aucune prétention que ce soit une réalisation de
+ * l'entreprise.
+ */
+export type SlideApercu = {
+  /** Chemin depuis /public. */
+  image: string;
+  /** Légende générique, de la forme « Exemple · Cuisine ». */
+  legende: string;
+  /** Description de l'illustration pour les lecteurs d'écran. */
+  alt: string;
+};
+
+const apercuCarrousel: SlideApercu[] = [
+  {
+    image: "/images/apercu/renovation-complete.svg",
+    legende: "Exemple · Rénovation complète",
+    alt: "Illustration d'aperçu : une maison normande à colombages entourée d'un échafaudage",
+  },
+  {
+    image: "/images/apercu/cuisine.svg",
+    legende: "Exemple · Cuisine",
+    alt: "Illustration d'aperçu : une cuisine avec plan de travail, crédence et meubles",
+  },
+  {
+    image: "/images/apercu/salle-de-bain.svg",
+    legende: "Exemple · Salle de bain",
+    alt: "Illustration d'aperçu : une salle de bain avec baignoire, vasque et miroir",
+  },
+  {
+    image: "/images/apercu/extension.svg",
+    legende: "Exemple · Extension",
+    alt: "Illustration d'aperçu : une extension vitrée accolée à une maison",
+  },
+  {
+    image: "/images/apercu/surelevation.svg",
+    legende: "Exemple · Surélévation",
+    alt: "Illustration d'aperçu : une charpente en cours de pose au-dessus d'un étage existant",
+  },
+  {
+    image: "/images/apercu/amenagement-interieur.svg",
+    legende: "Exemple · Aménagement intérieur",
+    alt: "Illustration d'aperçu : un salon aménagé, canapé, étagère et lampadaire",
+  },
+  {
+    image: "/images/apercu/amenagement-exterieur.svg",
+    legende: "Exemple · Aménagement extérieur",
+    alt: "Illustration d'aperçu : une terrasse en bois avec pergola et jardinières",
+  },
+];
+
+/**
  * Carrousel de réalisations affiché sur l'accueil.
- * Il ne montre que les projets qui ont une photo réelle : tant qu'il n'y en a
- * pas, la section affiche un état vide court et honnête.
+ * Il ne montre que les projets qui ont une photo réelle. Tant qu'il n'y en a
+ * pas, il présente des vignettes d'**aperçu** clairement étiquetées (voir
+ * `afficherApercu`) — ou, si l'aperçu est désactivé, un état vide honnête.
  */
 export const carrouselRealisations = {
   surtitre: "En images",
@@ -324,6 +381,21 @@ export const carrouselRealisations = {
   etatVideMention: "Les photos de nos chantiers arrivent bientôt",
   etatVideLien: "Parler de votre projet",
   etatVideHref: "/contact",
+
+  /**
+   * Aperçu du rendu, en attendant les vraies photos de chantier.
+   *
+   * `false` suffit à revenir à l'état vide, sans toucher au code. Dès qu'un
+   * projet de `realisations.projets` a une image, l'aperçu s'efface tout seul :
+   * le carrousel montre alors les vraies réalisations.
+   */
+  afficherApercu: true,
+  apercu: apercuCarrousel,
+  /** Étiquette posée sur chaque vignette de démonstration. */
+  badgeApercu: "Aperçu",
+  /** Mention affichée au-dessus des vignettes : dit ce que l'on regarde. */
+  mentionApercu:
+    "Aperçu du rendu — vos photos de chantier remplaceront ces images",
 } as const;
 
 export const devis = {

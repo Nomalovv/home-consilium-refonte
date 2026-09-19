@@ -1,7 +1,14 @@
 "use client";
 
 import Link from "next/link";
-import { useCallback, useEffect, useRef, useState, type KeyboardEvent } from "react";
+import {
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+  type KeyboardEvent,
+  type ReactNode,
+} from "react";
 
 import { CarteRealisation } from "@/components/sections/CarteRealisation";
 import { Section } from "@/components/sections/Section";
@@ -9,10 +16,10 @@ import { ButtonLink } from "@/components/ui/Button";
 import {
   carrouselRealisations,
   realisations,
-  type Projet,
+  type SlideApercu,
 } from "@/content/entreprise";
 import { useReducedMotion } from "@/lib/hooks";
-import { cn } from "@/lib/utils";
+import { asset, cn } from "@/lib/utils";
 
 /**
  * Carrousel de réalisations de l'accueil.
@@ -22,15 +29,78 @@ import { cn } from "@/lib/utils";
  * le piloter. Pas d'autoplay : rien ne bouge tant que la personne n'agit pas.
  *
  * Seuls les projets réellement photographiés sont affichés. Tant qu'il n'y en
- * a aucun, la section affiche un état vide court plutôt que des cartes
- * factices.
+ * a aucun, la section montre des vignettes d'**aperçu** — des illustrations
+ * dessinées pour le site, étiquetées « Aperçu », qui laissent voir comment le
+ * carrousel se comportera une fois les vraies photos déposées. Aucune photo
+ * empruntée, aucun chantier inventé. `carrouselRealisations.afficherApercu`
+ * à `false` ramène l'état vide.
  */
 export function CarrouselRealisations() {
   const projets = realisations.projets.filter((p) => p.image);
 
-  if (projets.length === 0) return <EtatVide />;
+  // Dès qu'une vraie photo existe, l'aperçu s'efface de lui-même.
+  if (projets.length > 0) {
+    return (
+      <Piste
+        cartes={projets.map((p) => ({
+          cle: p.titre,
+          carte: <CarteRealisation projet={p} className="w-full" />,
+        }))}
+      />
+    );
+  }
 
-  return <Piste projets={projets} />;
+  if (carrouselRealisations.afficherApercu && carrouselRealisations.apercu.length > 0) {
+    return (
+      <Piste
+        apercu
+        cartes={carrouselRealisations.apercu.map((slide) => ({
+          cle: slide.image,
+          carte: <CarteApercu slide={slide} />,
+        }))}
+      />
+    );
+  }
+
+  return <EtatVide />;
+}
+
+/**
+ * Vignette de démonstration : même gabarit que la carte de réalisation, mais
+ * étiquetée « Aperçu » et légendée de façon générique. Rien n'y est présenté
+ * comme un chantier de l'entreprise.
+ */
+function CarteApercu({ slide }: { slide: SlideApercu }) {
+  return (
+    <article className="glass glass-readable flex h-full w-full flex-col overflow-hidden rounded-lg">
+      <div className="relative">
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          src={asset(slide.image)}
+          alt={slide.alt}
+          width={800}
+          height={600}
+          loading="lazy"
+          decoding="async"
+          className="aspect-[4/3] w-full bg-lin object-cover dark:bg-white/[0.06]"
+        />
+        <span
+          aria-hidden="true"
+          className="pointer-events-none absolute inset-0 bg-gradient-to-t from-terre-800/20 via-transparent to-transparent"
+        />
+        {/* Terre cuite 800 + crème : 6,7:1, identique en clair et en sombre. */}
+        <span className="absolute left-3 top-3 rounded-full bg-terre-800 px-2.5 py-1 text-[12px] font-semibold uppercase tracking-[0.1em] text-terre-100">
+          {carrouselRealisations.badgeApercu}
+        </span>
+      </div>
+
+      <div className="flex flex-1 flex-col p-4 sm:p-5">
+        <p className="text-balance font-display text-[17px] font-semibold text-ardoise-900 dark:text-ardoise-100 sm:text-[18px]">
+          {slide.legende}
+        </p>
+      </div>
+    </article>
+  );
 }
 
 /** Distance d'un « pas » : d'une carte à la suivante, gouttière comprise. */
@@ -42,7 +112,14 @@ function pasDeDefilement(piste: HTMLElement): number {
   return piste.clientWidth;
 }
 
-function Piste({ projets }: { projets: Projet[] }) {
+function Piste({
+  cartes,
+  apercu = false,
+}: {
+  cartes: { cle: string; carte: ReactNode }[];
+  /** Mode démonstration : intro honnête + mention « Aperçu du rendu ». */
+  apercu?: boolean;
+}) {
   const piste = useRef<HTMLUListElement>(null);
   const [versGauche, setVersGauche] = useState(false);
   const [versDroite, setVersDroite] = useState(false);
@@ -57,8 +134,8 @@ function Piste({ projets }: { projets: Projet[] }) {
     setVersGauche(el.scrollLeft > 4);
     setVersDroite(el.scrollLeft < restant - 4);
     const pas = pasDeDefilement(el) || 1;
-    setActif(Math.max(0, Math.min(projets.length - 1, Math.round(el.scrollLeft / pas))));
-  }, [projets.length]);
+    setActif(Math.max(0, Math.min(cartes.length - 1, Math.round(el.scrollLeft / pas))));
+  }, [cartes.length]);
 
   useEffect(() => {
     const el = piste.current;
@@ -114,11 +191,31 @@ function Piste({ projets }: { projets: Projet[] }) {
         <h2 className="text-balance font-display text-h2 font-semibold text-ardoise-900 dark:text-ardoise-100">
           {carrouselRealisations.titre}
         </h2>
-        <p className="mt-3 max-w-lisible text-corps-lg text-ink-muted sm:mt-4">
-          <span className="sm:hidden">{carrouselRealisations.introCourte}</span>
-          <span className="hidden sm:inline">{carrouselRealisations.intro}</span>
-        </p>
+        {apercu ? (
+          /*
+            En mode aperçu, l'intro habituelle serait fausse : ces vignettes ne
+            sont pas des chantiers photographiés. On garde donc le texte de
+            l'état vide, qui dit la vérité, et la mention d'aperçu juste après.
+          */
+          <p className="mt-3 max-w-lisible text-corps-lg text-ink-muted sm:mt-4">
+            {carrouselRealisations.etatVide}
+          </p>
+        ) : (
+          <p className="mt-3 max-w-lisible text-corps-lg text-ink-muted sm:mt-4">
+            <span className="sm:hidden">{carrouselRealisations.introCourte}</span>
+            <span className="hidden sm:inline">{carrouselRealisations.intro}</span>
+          </p>
+        )}
       </div>
+
+      {apercu && (
+        <p className="glass glass-readable mt-5 inline-flex items-center gap-2.5 rounded-full py-2 pe-4 ps-2.5 text-[13px] text-ink sm:mt-6 sm:text-[13.5px]">
+          <span className="rounded-full bg-terre-800 px-2.5 py-1 text-[11.5px] font-semibold uppercase tracking-[0.1em] text-terre-100">
+            {carrouselRealisations.badgeApercu}
+          </span>
+          {carrouselRealisations.mentionApercu}
+        </p>
+      )}
 
       {/*
         Région défilante focalisable : sans `tabIndex`, un contenu qui déborde
@@ -130,11 +227,14 @@ function Piste({ projets }: { projets: Projet[] }) {
         role="group"
         aria-label={carrouselRealisations.aria}
         onKeyDown={surTouche}
-        className="carrousel-photos mt-7 sm:mt-10"
+        className={cn(
+          "carrousel-photos",
+          apercu ? "mt-5 sm:mt-7" : "mt-7 sm:mt-10",
+        )}
       >
-        {projets.map((p) => (
-          <li key={p.titre} className="flex">
-            <CarteRealisation projet={p} className="w-full" />
+        {cartes.map((c) => (
+          <li key={c.cle} className="flex">
+            {c.carte}
           </li>
         ))}
       </ul>
@@ -157,9 +257,9 @@ function Piste({ projets }: { projets: Projet[] }) {
 
         {/* Indicateur décoratif : la position est déjà lisible à l'écran. */}
         <ul aria-hidden="true" className="flex items-center gap-1.5">
-          {projets.map((p, i) => (
+          {cartes.map((c, i) => (
             <li
-              key={p.titre}
+              key={c.cle}
               className={cn(
                 "h-1.5 rounded-full transition-all duration-300 ease-doux",
                 i === actif
@@ -170,9 +270,23 @@ function Piste({ projets }: { projets: Projet[] }) {
           ))}
         </ul>
 
+        {/* En aperçu, la section garde son appel à l'action. */}
+        {apercu && (
+          <ButtonLink
+            href={carrouselRealisations.etatVideHref}
+            variante="secondaire"
+            className="sm:ms-auto"
+          >
+            {carrouselRealisations.etatVideLien}
+          </ButtonLink>
+        )}
+
         <Link
           href={carrouselRealisations.href}
-          className="lien-souligne cible-tactile group ms-auto inline-flex items-center gap-2 font-semibold text-terre-700 dark:text-terre-300"
+          className={cn(
+            "lien-souligne cible-tactile group inline-flex items-center gap-2 font-semibold text-terre-700 dark:text-terre-300",
+            !apercu && "ms-auto",
+          )}
         >
           {carrouselRealisations.lien}
           <span

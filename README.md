@@ -42,8 +42,10 @@ empruntée. Le premier écran de l'accueil est bâti sur deux d'entre elles : un
 villa normande face à la mer en **fond plein écran** (image d'ambiance, sous un
 voile chaleureux qui garde le texte lisible) et le **portrait du dirigeant** au
 premier plan, dans un cadre arrondi. Tant qu'une photo n'est pas déposée, les
-illustrations tiennent la place et le carrousel de réalisations affiche un état
-vide honnête. Voir [Ajouter vos photos](#ajouter-vos-photos).
+illustrations tiennent la place, et le carrousel de réalisations tourne en mode
+aperçu — des vignettes dessinées, marquées « Aperçu », qui ne prétendent jamais
+être des chantiers de l'entreprise. Voir
+[Ajouter vos photos](#ajouter-vos-photos).
 
 Support **clair / sombre complet** : les tokens CSS suivent
 `prefers-color-scheme` par défaut et restent surchargeables par l'utilisateur
@@ -267,7 +269,39 @@ carte texte) mais **n'apparaît pas dans le carrousel** de l'accueil, qui est un
 section d'images. Le carrousel apparaît dès qu'**une seule** photo est
 renseignée.
 
-### 3. Vérifier puis publier
+### 3. L'aperçu du carrousel, et comment le retirer
+
+Tant qu'aucun chantier n'est photographié, le carrousel de l'accueil tourne en
+mode **aperçu** : sept vignettes de démonstration, chacune marquée « Aperçu »,
+sous la mention « Aperçu du rendu — vos photos de chantier remplaceront ces
+images ». Elles montrent le comportement du carrousel (défilement, boutons,
+points, clavier) sans faire passer quoi que ce soit pour une réalisation de
+l'entreprise.
+
+Ce sont des **illustrations dessinées pour le site** (SVG, palette terre cuite /
+miel / crème, `public/images/apercu/`), pas des photos : rien n'est emprunté,
+aucun chantier, aucun client, aucune ville n'est inventé. Les légendes restent
+génériques (« Exemple · Cuisine »).
+
+Il disparaît **tout seul** dès qu'un projet de `realisations.projets` a une
+image : le carrousel montre alors les vraies réalisations. Pour le retirer sans
+attendre — et revenir à l'état vide honnête —, une seule ligne dans
+`content/entreprise.ts` :
+
+```ts
+export const carrouselRealisations = {
+  // …
+  afficherApercu: false,
+};
+```
+
+Une fois les vraies photos en ligne, le dossier `public/images/apercu/` et le
+tableau `apercu` peuvent être supprimés.
+
+La page `/realisations` n'est pas concernée : elle garde son état vide honnête
+tant qu'aucun projet réel n'est publié.
+
+### 4. Vérifier puis publier
 
 ```bash
 npm run dev     # contrôler l'accueil et /realisations, en clair et en sombre
@@ -366,7 +400,9 @@ Autres points laissés volontairement vides, en attente de contenu réel :
   galerie filtrable et le carrousel de l'accueil sont prêts et se remplissent
   dès que `realisations.projets` est renseigné (voir
   [Ajouter vos photos](#ajouter-vos-photos)). Les filtres restent inertes tant
-  que le tableau est vide.
+  que le tableau est vide, et le carrousel tourne en mode aperçu — vignettes
+  dessinées, étiquetées « Aperçu », à retirer d'une ligne
+  (`afficherApercu: false`) ou remplacées d'elles-mêmes par les vraies photos.
 - **Photo du bâtiment** — `photos.batiment.src` est vide. Ce n'est plus
   bloquant : le panneau du hero affiche le portrait du dirigeant. La photo du
   bâtiment reprendrait sa place si le portrait était retiré.

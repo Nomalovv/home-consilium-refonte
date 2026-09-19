@@ -1,0 +1,43 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600" width="800" height="600" role="img">
+  <title>Illustration d'aperçu : maison normande en rénovation</title>
+  <defs>
+    <linearGradient id="ciel" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#FAF0DA"/>
+      <stop offset="1" stop-color="#F8EAE0"/>
+    </linearGradient>
+  </defs>
+  <rect width="800" height="600" fill="url(#ciel)"/>
+  <circle cx="648" cy="118" r="52" fill="#E8C98A" opacity=".75"/>
+  <circle cx="648" cy="118" r="30" fill="#C9993F" opacity=".7"/>
+
+  <!-- collines -->
+  <path d="M0 452c110-46 196-42 300-10s196 30 300-6 200-14 200-14v178H0z" fill="#96B7AE" opacity=".45"/>
+  <path d="M0 492c140-34 240-26 340 2s212 20 460-22v128H0z" fill="#457066" opacity=".28"/>
+
+  <!-- maison -->
+  <path d="M400 128 196 286c-9 7-5 22 7 22h394c12 0 16-15 7-22L400 128z" fill="#B5623E"/>
+  <path d="M400 128 196 286c-9 7-5 22 7 22h197V128z" fill="#9C4F30"/>
+  <rect x="284" y="180" width="28" height="60" rx="8" fill="#7E3F26"/>
+  <rect x="232" y="308" width="336" height="176" rx="14" fill="#F5EDE1"/>
+  <g stroke="#9C4F30" stroke-width="9" stroke-linecap="round" opacity=".8">
+    <path d="M286 320v152M514 320v152"/>
+    <path d="M286 320l64 152M514 320l-64 152"/>
+    <path d="M232 396h336"/>
+  </g>
+  <rect x="368" y="392" width="64" height="92" rx="10" fill="#2B5049"/>
+  <circle cx="418" cy="440" r="5" fill="#E8C98A"/>
+  <rect x="266" y="332" width="54" height="42" rx="9" fill="#E8C98A"/>
+  <rect x="480" y="332" width="54" height="42" rx="9" fill="#E8C98A"/>
+  <rect x="266" y="414" width="54" height="42" rx="9" fill="#E8C98A" opacity=".6"/>
+  <rect x="480" y="414" width="54" height="42" rx="9" fill="#E8C98A" opacity=".6"/>
+
+  <!-- échafaudage -->
+  <g stroke="#457066" stroke-width="7" stroke-linecap="round" opacity=".85" fill="none">
+    <path d="M204 494V244M596 494V244"/>
+    <path d="M204 244h392M204 330h392M204 416h392"/>
+    <path d="M204 244l68 86M596 330l-68 86"/>
+  </g>
+  <rect x="170" y="470" width="460" height="16" rx="8" fill="#D9C8B0"/>
+  <rect x="0" y="486" width="800" height="114" fill="#EADFCE"/>
+  <path d="M0 486h800" stroke="#B5623E" stroke-width="4" opacity=".35"/>
+</svg>

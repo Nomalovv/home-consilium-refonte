@@ -1,0 +1,46 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600" width="800" height="600" role="img">
+  <title>Illustration d'aperçu : surélévation et charpente</title>
+  <defs>
+    <linearGradient id="cielSur" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#F8EAE0"/>
+      <stop offset="1" stop-color="#FBF6EE"/>
+    </linearGradient>
+  </defs>
+  <rect width="800" height="600" fill="url(#cielSur)"/>
+  <circle cx="118" cy="128" r="44" fill="#E8C98A" opacity=".6"/>
+
+  <!-- charpente en cours -->
+  <g stroke="#C9993F" stroke-width="16" stroke-linecap="round" fill="none">
+    <path d="M400 148 216 268M400 148l184 120"/>
+    <path d="M254 244h292"/>
+  </g>
+  <g stroke="#B5623E" stroke-width="11" stroke-linecap="round">
+    <path d="M400 148v96M330 196v62M470 196v62"/>
+  </g>
+
+  <!-- tuiles posées sur le pan gauche -->
+  <path d="M400 168 244 270h156z" fill="#B5623E" opacity=".9"/>
+  <g stroke="#7E3F26" stroke-width="4" opacity=".5">
+    <path d="M296 238h104M270 254h130"/>
+  </g>
+
+  <!-- étage existant -->
+  <rect x="200" y="288" width="400" height="80" rx="10" fill="#EADFCE"/>
+  <rect x="180" y="278" width="440" height="20" rx="10" fill="#9C4F30"/>
+  <rect x="216" y="384" width="368" height="130" rx="12" fill="#F5EDE1"/>
+  <g stroke="#9C4F30" stroke-width="8" stroke-linecap="round" opacity=".65">
+    <path d="M216 452h368M400 384v130"/>
+  </g>
+  <rect x="252" y="406" width="58" height="36" rx="8" fill="#E8C98A"/>
+  <rect x="490" y="406" width="58" height="36" rx="8" fill="#E8C98A"/>
+  <rect x="368" y="470" width="64" height="44" rx="8" fill="#2B5049"/>
+
+  <!-- échafaudage -->
+  <g stroke="#457066" stroke-width="7" stroke-linecap="round" opacity=".8" fill="none">
+    <path d="M176 516V262M624 516V262"/>
+    <path d="M176 262h448M176 348h448M176 434h448"/>
+  </g>
+
+  <rect x="0" y="516" width="800" height="84" fill="#EADFCE"/>
+  <rect x="140" y="498" width="520" height="18" rx="9" fill="#D9C8B0"/>
+</svg>

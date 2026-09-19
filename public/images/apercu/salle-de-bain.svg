@@ -1,0 +1,53 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600" width="800" height="600" role="img">
+  <title>Illustration d'aperçu : salle de bain</title>
+  <defs>
+    <linearGradient id="murBain" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#FBF6EE"/>
+      <stop offset="1" stop-color="#F8EAE0"/>
+    </linearGradient>
+    <pattern id="metro" width="96" height="48" patternUnits="userSpaceOnUse">
+      <rect width="96" height="48" fill="#EADFCE"/>
+      <rect x="3" y="3" width="42" height="42" rx="7" fill="#F3E0B8"/>
+      <rect x="51" y="3" width="42" height="42" rx="7" fill="#F0D6C5"/>
+    </pattern>
+  </defs>
+  <rect width="800" height="600" fill="url(#murBain)"/>
+  <rect x="0" y="132" width="800" height="240" fill="url(#metro)" opacity=".95"/>
+
+  <!-- miroir -->
+  <circle cx="232" cy="216" r="84" fill="#DFEAE5"/>
+  <circle cx="232" cy="216" r="84" fill="none" stroke="#2B5049" stroke-width="11"/>
+  <path d="M198 192c8-16 24-26 42-27" stroke="#FBF6EE" stroke-width="11" fill="none" stroke-linecap="round"/>
+
+  <!-- vasque et meuble -->
+  <rect x="146" y="358" width="172" height="18" rx="9" fill="#2B5049"/>
+  <path d="M180 338h104c0 20-16 34-34 34h-36c-18 0-34-14-34-34z" fill="#DFEAE5"/>
+  <path d="M232 338v-40c0-13 10-23 23-23h11" stroke="#457066" stroke-width="10" fill="none" stroke-linecap="round"/>
+  <rect x="146" y="376" width="172" height="118" rx="12" fill="#B5623E"/>
+  <rect x="146" y="376" width="172" height="10" fill="#7E3F26" opacity=".35"/>
+  <rect x="214" y="428" width="36" height="9" rx="4.5" fill="#F8EAE0" opacity=".9"/>
+
+  <!-- baignoire -->
+  <path d="M430 352h274c12 0 20 10 18 22l-14 82c-4 22-18 34-40 34H466c-22 0-36-12-40-34l-14-82c-2-12 6-22 18-22z" fill="#DFEAE5"/>
+  <path d="M442 388h250l-8 50c-3 18-12 26-28 26H478c-16 0-25-8-28-26z" fill="#96B7AE" opacity=".7"/>
+  <g fill="#FBF6EE" opacity=".8">
+    <circle cx="512" cy="418" r="9"/>
+    <circle cx="556" cy="404" r="6"/>
+    <circle cx="600" cy="420" r="7"/>
+  </g>
+  <path d="M472 350v-50c0-26 21-47 47-47h32" stroke="#457066" stroke-width="11" fill="none" stroke-linecap="round"/>
+  <circle cx="558" cy="253" r="13" fill="#C9993F"/>
+
+  <!-- porte-serviettes -->
+  <rect x="330" y="176" width="72" height="13" rx="6.5" fill="#9C4F30"/>
+  <path d="M346 186h20l-6 118h-14z" fill="#C77850"/>
+  <path d="M370 186h20l-6 96h-14z" fill="#E3B79E"/>
+
+  <!-- tabouret et plante -->
+  <rect x="656" y="452" width="86" height="14" rx="7" fill="#9C4F30"/>
+  <path d="M670 466v42M728 466v42" stroke="#9C4F30" stroke-width="10" stroke-linecap="round"/>
+  <rect x="678" y="400" width="44" height="52" rx="10" fill="#EADFCE"/>
+  <circle cx="700" cy="384" r="30" fill="#457066" opacity=".75"/>
+
+  <rect x="0" y="508" width="800" height="92" fill="#EADFCE"/>
+</svg>

@@ -6,8 +6,7 @@ import {
   useEffect,
   useRef,
   useState,
-  type KeyboardEvent,
-  type PointerEvent as ReactPointerEvent,
+  type CSSProperties,
   type ReactNode,
 } from "react";
 
@@ -15,30 +14,43 @@ import { CarteRealisation } from "@/components/sections/CarteRealisation";
 import { Section } from "@/components/sections/Section";
 import { ButtonLink } from "@/components/ui/Button";
 import {
+  Visionneuse,
+  type ImageVisionneuse,
+} from "@/components/ui/Visionneuse";
+import {
   carrouselRealisations,
   realisations,
+  type Projet,
   type SlideApercu,
 } from "@/content/entreprise";
+import { visionneuse as libellesVisionneuse } from "@/content/interface";
 import { useReducedMotion } from "@/lib/hooks";
 import { asset, cn } from "@/lib/utils";
+
+/** Une vignette du carrousel, avec ce qu'il faut pour l'agrandir. */
+type Vignette = {
+  cle: string;
+  legende: string;
+  carte: ReactNode;
+  /** Image principale puis, le cas échéant, le reste de la galerie du projet. */
+  images: ImageVisionneuse[];
+};
 
 /**
  * Carrousel de réalisations de l'accueil.
  *
- * Il défile tout seul, une vignette à la fois, et s'arrête dès qu'on s'y
- * intéresse : survol à la souris, focus clavier, tape sur une image, flèche,
- * point de progression ou glissement tactile figent le défilement pendant
- * `dureePauseMs`, avec un compte à rebours visible. Un bouton Pause / Lecture
- * permet de le figer aussi longtemps qu'on veut.
+ * Le mouvement est permanent et visible : un **anneau 3D** qui tourne d'un
+ * cran toutes les `dureeSlideMs` à partir de la tablette, une **bande qui
+ * défile en boucle** sur téléphone. Les deux sont animés en `transform` /
+ * `opacity` seulement, sans aucun rendu React par image : l'anneau ne bouge
+ * qu'au changement de cran, la bande est une animation CSS pure.
  *
- * Le défilement reste celui du navigateur (`scroll-snap`) : le glissement
- * tactile est donc natif, fluide et interruptible ; le minuteur ne fait que
- * piloter un `scrollTo`. Les seules propriétés animées sont `transform` et
- * `opacity`.
+ * Un clic sur une vignette ouvre la visionneuse plein écran ; le carrousel
+ * s'arrête tant qu'elle est ouverte et repart à sa fermeture.
  *
- * WCAG 2.2.2 : aucun autoplay si `prefers-reduced-motion`, bouton de pause
- * toujours atteignable, arrêt quand l'onglet passe en arrière-plan ou quand la
- * section sort du champ, annonces `aria-live` uniquement à l'arrêt.
+ * WCAG 2.2.2 : bouton Pause / Lecture toujours atteignable, arrêt au survol,
+ * au focus, hors écran et en arrière-plan, aucun mouvement automatique sous
+ * `prefers-reduced-motion` (l'anneau reste navigable à la main).
  *
  * Seuls les projets réellement photographiés sont affichés. Tant qu'il n'y en
  * a aucun, la section montre des vignettes d'**aperçu** — des illustrations
@@ -51,29 +63,50 @@ export function CarrouselRealisations() {
 
   // Dès qu'une vraie photo existe, l'aperçu s'efface de lui-même.
   if (projets.length > 0) {
-    return (
-      <Piste
-        cartes={projets.map((p) => ({
-          cle: p.titre,
-          carte: <CarteRealisation projet={p} className="w-full" />,
-        }))}
-      />
-    );
+    return <Piste vignettes={projets.map(vignetteDeProjet)} />;
   }
 
   if (carrouselRealisations.afficherApercu && carrouselRealisations.apercu.length > 0) {
     return (
       <Piste
         apercu
-        cartes={carrouselRealisations.apercu.map((slide) => ({
-          cle: slide.image,
-          carte: <CarteApercu slide={slide} />,
-        }))}
+        vignettes={carrouselRealisations.apercu.map(vignetteDApercu)}
       />
     );
   }
 
   return <EtatVide />;
+}
+
+function vignetteDeProjet(projet: Projet): Vignette {
+  const legende = `${projet.titre} — ${projet.categorie} · ${projet.ville}`;
+  const alt =
+    projet.alt ?? realisations.altParDefaut(projet.titre, projet.ville);
+  return {
+    cle: projet.titre,
+    legende,
+    carte: <CarteRealisation projet={projet} className="w-full" />,
+    images: [
+      { src: projet.image, alt, legende },
+      ...(projet.images ?? []).map((src) => ({ src, alt, legende })),
+    ],
+  };
+}
+
+function vignetteDApercu(slide: SlideApercu): Vignette {
+  return {
+    cle: slide.image,
+    legende: slide.legende,
+    carte: <CarteApercu slide={slide} />,
+    images: [
+      {
+        src: slide.image,
+        alt: slide.alt,
+        legende: slide.legende,
+        badge: carrouselRealisations.badgeApercu,
+      },
+    ],
+  };
 }
 
 /**
@@ -100,12 +133,15 @@ function CarteApercu({ slide }: { slide: SlideApercu }) {
           className="pointer-events-none absolute inset-0 bg-gradient-to-t from-terre-800/20 via-transparent to-transparent"
         />
         {/* Terre cuite 800 + crème : 6,8:1, identique en clair et en sombre. */}
-        <span className="absolute left-3 top-3 rounded-full bg-terre-800 px-2.5 py-1 text-[12px] font-semibold uppercase tracking-[0.1em] text-terre-100">
+        <span
+          data-legende
+          className="absolute left-3 top-3 rounded-full bg-terre-800 px-2.5 py-1 text-[12px] font-semibold uppercase tracking-[0.1em] text-terre-100"
+        >
           {carrouselRealisations.badgeApercu}
         </span>
       </div>
 
-      <div className="flex flex-1 flex-col p-4 sm:p-5">
+      <div data-legende className="flex flex-1 flex-col p-4 sm:p-5">
         <p className="text-balance font-display text-[17px] font-semibold text-ardoise-900 dark:text-ardoise-100 sm:text-[18px]">
           {slide.legende}
         </p>
@@ -114,90 +150,96 @@ function CarteApercu({ slide }: { slide: SlideApercu }) {
   );
 }
 
-/** Distance d'un « pas » : d'une carte à la suivante, gouttière comprise. */
-function pasDeDefilement(piste: HTMLElement): number {
-  const premiere = piste.children[0] as HTMLElement | undefined;
-  const seconde = piste.children[1] as HTMLElement | undefined;
-  if (premiere && seconde) return seconde.offsetLeft - premiere.offsetLeft;
-  if (premiere) return premiere.getBoundingClientRect().width;
-  return piste.clientWidth;
+/** Écart angulaire entre deux vignettes de l'anneau. */
+const PAS_ANGULAIRE = 30;
+/** Nombre de vignettes visibles de chaque côté de celle de devant. */
+const PROFONDEUR = 2;
+
+/** Distance circulaire la plus courte de `i` à `actif` : l'anneau boucle. */
+function ecartCirculaire(i: number, actif: number, total: number): number {
+  const brut = (((i - actif) % total) + total) % total;
+  return brut > total / 2 ? brut - total : brut;
+}
+
+/** Place une vignette sur le demi-cercle (variables lues par `.anneau-carte`). */
+function placement(ecart: number): CSSProperties {
+  const angle = ecart * PAS_ANGULAIRE;
+  const rad = (angle * Math.PI) / 180;
+  const distance = Math.min(Math.abs(ecart), PROFONDEUR + 1);
+  return {
+    "--sin": Math.sin(rad).toFixed(4),
+    "--cos": Math.cos(rad).toFixed(4),
+    "--angle": `${-angle}deg`,
+    "--echelle": (1 - distance * 0.11).toFixed(3),
+    zIndex: 20 - distance,
+    opacity: distance === 0 ? 1 : distance === 1 ? 0.62 : distance === 2 ? 0.34 : 0,
+  } as CSSProperties;
 }
 
 function Piste({
-  cartes,
+  vignettes,
   apercu = false,
 }: {
-  cartes: { cle: string; carte: ReactNode }[];
-  /** Mode démonstration : intro honnête + mention « Aperçu du rendu ». */
+  vignettes: Vignette[];
   apercu?: boolean;
 }) {
-  const { dureeSlideMs, dureePauseMs } = carrouselRealisations;
+  const { dureeSlideMs, dureePauseMs, dureeBandeParVignetteMs } =
+    carrouselRealisations;
+  const total = vignettes.length;
 
-  const piste = useRef<HTMLUListElement>(null);
   const bloc = useRef<HTMLDivElement>(null);
-  /** Jusqu'à quand les événements `scroll` viennent de nous, pas de la personne. */
-  const defilementProgramme = useRef(0);
   const figeRef = useRef<number | null>(null);
+  const departToucher = useRef<number | null>(null);
 
   const [actif, setActif] = useState(0);
-  const [positions, setPositions] = useState(1);
-  const [versGauche, setVersGauche] = useState(false);
-  const [versDroite, setVersDroite] = useState(false);
+  const [decalageBande, setDecalageBande] = useState(0);
   const [pauseManuelle, setPauseManuelle] = useState(false);
   const [figeJusqua, setFigeJusqua] = useState<number | null>(null);
   const [restant, setRestant] = useState(0);
   const [survol, setSurvol] = useState(false);
   const [dansLeChamp, setDansLeChamp] = useState(false);
   const [ongletVisible, setOngletVisible] = useState(true);
-  /** Relance l'animation de la barre quand on reprend sans changer de vignette. */
+  const [vue, setVue] = useState<number | null>(null);
   const [cycle, setCycle] = useState(0);
 
   const mouvementReduit = useReducedMotion();
 
-  /** Fige le défilement pour `dureePauseMs`, à chaque geste de la personne. */
+  /* Toutes les images agrandissables, dans l'ordre des vignettes. */
+  const imagesVisionneuse = vignettes.flatMap((v) => v.images);
+  const departVisionneuse: number[] = [];
+  vignettes.reduce((n, v) => {
+    departVisionneuse.push(n);
+    return n + v.images.length;
+  }, 0);
+
+  /** Fige le défilement après une navigation manuelle. */
   const figer = useCallback(() => {
     const cible = Date.now() + dureePauseMs;
-    // Pendant un glissement, `scroll` se déclenche en rafale : on ne repousse
-    // l'échéance que si elle a déjà bougé d'au moins une seconde.
     if (figeRef.current && cible - figeRef.current < 1000) return;
     figeRef.current = cible;
     setFigeJusqua(cible);
     setRestant(Math.ceil(dureePauseMs / 1000));
   }, [dureePauseMs]);
 
-  const majEtat = useCallback(() => {
-    const el = piste.current;
-    if (!el) return;
-    const restantPx = el.scrollWidth - el.clientWidth;
-    const pas = pasDeDefilement(el) || 1;
-    // Marge de 4 px : les navigateurs arrondissent le scrollLeft.
-    setVersGauche(el.scrollLeft > 4);
-    setVersDroite(el.scrollLeft < restantPx - 4);
-    setPositions(Math.max(1, Math.round(restantPx / pas) + 1));
-    setActif(
-      Math.max(0, Math.min(cartes.length - 1, Math.round(el.scrollLeft / pas))),
-    );
-  }, [cartes.length]);
+  const tourner = useCallback(
+    (pas: 1 | -1, parLaPersonne: boolean) => {
+      setActif((i) => (i + pas + total) % total);
+      setDecalageBande((d) => d - pas);
+      if (parLaPersonne) figer();
+    },
+    [total, figer],
+  );
 
-  useEffect(() => {
-    const el = piste.current;
-    if (!el) return;
-    majEtat();
-    const surDefilement = () => {
-      majEtat();
-      // Défilement déclenché par la personne (glissement tactile, molette) :
-      // on fige, comme pour les autres commandes.
-      if (Date.now() > defilementProgramme.current) figer();
-    };
-    el.addEventListener("scroll", surDefilement, { passive: true });
-    window.addEventListener("resize", majEtat);
-    return () => {
-      el.removeEventListener("scroll", surDefilement);
-      window.removeEventListener("resize", majEtat);
-    };
-  }, [majEtat, figer]);
+  const allerA = useCallback(
+    (i: number) => {
+      setDecalageBande((d) => d - ecartCirculaire(i, actif, total) * -1);
+      setActif(i);
+      figer();
+    },
+    [actif, total, figer],
+  );
 
-  /** Arrêt quand la section n'est plus à l'écran. */
+  /* Arrêt quand la section n'est plus à l'écran. */
   useEffect(() => {
     const el = bloc.current;
     if (!el || typeof IntersectionObserver === "undefined") {
@@ -206,13 +248,13 @@ function Piste({
     }
     const obs = new IntersectionObserver(
       ([entree]) => setDansLeChamp(entree.isIntersecting),
-      { threshold: 0.25 },
+      { threshold: 0.2 },
     );
     obs.observe(el);
     return () => obs.disconnect();
   }, []);
 
-  /** Arrêt quand l'onglet passe en arrière-plan. */
+  /* Arrêt quand l'onglet passe en arrière-plan. */
   useEffect(() => {
     const surChangement = () => setOngletVisible(!document.hidden);
     surChangement();
@@ -220,7 +262,7 @@ function Piste({
     return () => document.removeEventListener("visibilitychange", surChangement);
   }, []);
 
-  /** Compte à rebours du figeage, puis reprise. */
+  /* Compte à rebours du figeage, puis reprise. */
   useEffect(() => {
     if (figeJusqua === null) return;
     const tic = () => {
@@ -239,81 +281,62 @@ function Piste({
     return () => window.clearInterval(id);
   }, [figeJusqua]);
 
-  const allerA = useCallback(
-    (index: number, parLaPersonne: boolean) => {
-      const el = piste.current;
-      if (!el) return;
-      const pas = pasDeDefilement(el) || 1;
-      const cible = Math.max(
-        0,
-        Math.min(index, Math.round((el.scrollWidth - el.clientWidth) / pas)),
-      );
-      defilementProgramme.current = Date.now() + 1000;
-      el.scrollTo({
-        left: cible * pas,
-        behavior: mouvementReduit ? "auto" : "smooth",
-      });
-      if (parLaPersonne) figer();
-    },
-    [mouvementReduit, figer],
-  );
-
-  const glisser = useCallback(
-    (sens: 1 | -1) => allerA(actif + sens, true),
-    [allerA, actif],
-  );
-
-  const enPause = pauseManuelle || figeJusqua !== null || survol;
+  const visionneuseOuverte = vue !== null;
+  const enPause =
+    pauseManuelle || figeJusqua !== null || survol || visionneuseOuverte;
   const defilementAuto =
-    !mouvementReduit && !enPause && dansLeChamp && ongletVisible && positions > 1;
+    !mouvementReduit && !enPause && dansLeChamp && ongletVisible && total > 1;
 
-  /** Avance automatique : un minuteur par vignette, remis à zéro à chaque arrêt. */
+  /* Rotation automatique : un minuteur par cran, remis à zéro à chaque arrêt. */
   useEffect(() => {
     if (!defilementAuto) return;
-    const id = window.setTimeout(() => {
-      allerA(actif + 1 >= positions ? 0 : actif + 1, false);
-    }, dureeSlideMs);
+    const id = window.setTimeout(() => tourner(1, false), dureeSlideMs);
     return () => window.clearTimeout(id);
-  }, [defilementAuto, actif, positions, cycle, dureeSlideMs, allerA]);
+  }, [defilementAuto, actif, cycle, dureeSlideMs, tourner]);
 
-  /** Flèches, Début et Fin sur la piste (qui est focalisable au clavier). */
-  const surTouche = (e: KeyboardEvent<HTMLUListElement>) => {
-    const el = piste.current;
-    if (!el) return;
+  const surToucheAnneau = (e: React.KeyboardEvent) => {
     if (e.key === "ArrowRight") {
       e.preventDefault();
-      glisser(1);
+      tourner(1, true);
     } else if (e.key === "ArrowLeft") {
       e.preventDefault();
-      glisser(-1);
-    } else if (e.key === "Home") {
-      e.preventDefault();
-      allerA(0, true);
-    } else if (e.key === "End") {
-      e.preventDefault();
-      allerA(positions - 1, true);
+      tourner(-1, true);
     }
   };
 
+  /** Glissement horizontal : un cran par geste, sur l'anneau comme sur la bande. */
+  const surDepartToucher = (e: React.TouchEvent) => {
+    departToucher.current = e.touches[0]?.clientX ?? null;
+  };
+  const surFinToucher = (e: React.TouchEvent) => {
+    const depart = departToucher.current;
+    const fin = e.changedTouches[0]?.clientX;
+    departToucher.current = null;
+    if (depart === null || fin === undefined) return;
+    if (Math.abs(fin - depart) < 44) return;
+    tourner(fin < depart ? 1 : -1, true);
+  };
+
   /** Le survol n'existe qu'à la souris : sur un écran tactile, il collerait. */
-  const surEntree = (e: ReactPointerEvent) => {
+  const surEntree = (e: React.PointerEvent) => {
     if (e.pointerType === "mouse") setSurvol(true);
   };
-  const surSortie = (e: ReactPointerEvent) => {
+  const surSortie = (e: React.PointerEvent) => {
     if (e.pointerType === "mouse") setSurvol(false);
   };
 
-  const positionLisible = Math.min(actif + 1, positions);
+  const ouvrir = (indexVignette: number) => setVue(departVisionneuse[indexVignette]);
 
   return (
     <Section id="realisations" aria={carrouselRealisations.titre}>
       <div
         ref={bloc}
-        onPointerEnter={surEntree}
-        onPointerLeave={surSortie}
-        onFocusCapture={() => setSurvol(true)}
-        onBlurCapture={() => setSurvol(false)}
-        style={{ ["--duree-slide" as string]: `${dureeSlideMs}ms` }}
+        style={
+          {
+            "--duree-slide": `${dureeSlideMs}ms`,
+            "--duree-bande": `${(dureeBandeParVignetteMs * total) / 1000}s`,
+          } as CSSProperties
+        }
       >
         <div className="max-w-3xl">
           <p className="mb-2.5 flex items-center gap-2 text-[12.5px] font-semibold uppercase tracking-[0.16em] text-terre-700 dark:text-terre-300 sm:text-[13px]">
@@ -349,50 +372,42 @@ function Piste({
           </p>
         )}
 
-        {/*
-          Région défilante focalisable : sans `tabIndex`, un contenu qui déborde
-          reste inatteignable au clavier.
-        */}
-        <ul
-          ref={piste}
-          tabIndex={0}
-          role="group"
-          aria-label={carrouselRealisations.aria}
-          onKeyDown={surTouche}
-          onPointerDown={figer}
-          className={cn(
-            "carrousel-photos",
-            apercu ? "mt-5 sm:mt-7" : "mt-7 sm:mt-10",
-          )}
-        >
-          {cartes.map((c, i) => (
-            <li
-              key={c.cle}
-              data-actif={i === actif ? "true" : "false"}
-              className={cn(
-                "flex transition-[transform,opacity] duration-500 ease-doux",
-                /* Zoom très lent sur la vignette active, façon Ken Burns. */
-                "[&_img]:transition-transform [&_img]:ease-out",
-                i === actif
-                  ? "opacity-100 [&>article]:shadow-lift [&>article]:ring-1 [&>article]:ring-terre-500/60 [&_img]:scale-[1.06] [&_img]:duration-[6000ms]"
-                  : /* 0,85 et pas moins : en dessous, le badge « Aperçu »
-                       posé sur la vignette tombe sous le seuil AA. */
-                    "scale-[0.97] opacity-[0.85] [&_img]:scale-100 [&_img]:duration-700",
-              )}
-            >
-              {c.carte}
-            </li>
-          ))}
-        </ul>
+        {/* Téléphone : bande qui défile en boucle. */}
+        <Bande
+          vignettes={vignettes}
+          decalage={decalageBande}
+          enPause={enPause}
+          onOuvrir={ouvrir}
+          onDepartToucher={surDepartToucher}
+          onFinToucher={surFinToucher}
+          onEntree={surEntree}
+          onSortie={surSortie}
+          onFocus={() => setSurvol(true)}
+          onBlur={() => setSurvol(false)}
+        />
 
-        {/* Barre de progression « story » + compteur */}
-        <div className="mt-4 flex items-center gap-3 sm:mt-5">
+        {/* Tablette et plus : demi-arc de cercle en rotation. */}
+        <Anneau
+          vignettes={vignettes}
+          actif={actif}
+          onOuvrir={ouvrir}
+          onTouche={surToucheAnneau}
+          onDepartToucher={surDepartToucher}
+          onFinToucher={surFinToucher}
+          onEntree={surEntree}
+          onSortie={surSortie}
+          onFocus={() => setSurvol(true)}
+          onBlur={() => setSurvol(false)}
+        />
+
+        {/* Points de progression et compteur : l'anneau a des crans, pas la bande. */}
+        <div className="mt-4 hidden items-center gap-3 md:flex">
           <ul className="flex flex-1 flex-wrap items-center gap-0.5">
-            {Array.from({ length: positions }, (_, i) => (
-              <li key={i}>
+            {vignettes.map((v, i) => (
+              <li key={v.cle}>
                 <button
                   type="button"
-                  onClick={() => allerA(i, true)}
+                  onClick={() => allerA(i)}
                   aria-label={carrouselRealisations.allerA(i + 1)}
                   aria-current={i === actif ? "true" : undefined}
                   className="group flex h-11 items-center px-1"
@@ -426,18 +441,18 @@ function Piste({
           </ul>
 
           <p className="shrink-0 font-display text-[13px] font-semibold tabular-nums tracking-wide text-ink-muted sm:text-[14px]">
-            {carrouselRealisations.compteur(positionLisible, positions)}
+            {carrouselRealisations.compteur(actif + 1, total)}
           </p>
         </div>
 
         {/* État du défilement : figeage en cours, ou mouvement réduit. */}
         {mouvementReduit ? (
-          <p className="mt-2 text-[13px] text-ink-muted">
+          <p className="mt-3 text-[13px] text-ink-muted">
             {carrouselRealisations.mouvementReduit}
           </p>
         ) : (
           (figeJusqua !== null || pauseManuelle) && (
-            <p className="mt-2 flex items-center gap-2 text-[13px] text-ink-muted">
+            <p className="mt-3 flex items-center gap-2 text-[13px] text-ink-muted">
               <span
                 aria-hidden="true"
                 className="inline-block h-1.5 w-1.5 rounded-full bg-terre-600"
@@ -451,27 +466,23 @@ function Piste({
         )}
 
         {/*
-          Annonce vocale seulement à l'arrêt : pendant le défilement automatique,
-          une annonce toutes les quelques secondes serait insupportable.
+          Annonce vocale seulement à l'arrêt : pendant la rotation, une annonce
+          toutes les quelques secondes serait insupportable.
         */}
         <p className="sr-only" aria-live="polite">
-          {!defilementAuto
-            ? carrouselRealisations.annonce(positionLisible, positions)
-            : ""}
+          {!defilementAuto ? carrouselRealisations.annonce(actif + 1, total) : ""}
         </p>
 
         <div className="mt-4 flex flex-wrap items-center gap-x-3 gap-y-3 sm:mt-5">
           <div className="flex items-center gap-2">
             <BoutonPiste
               libelle={carrouselRealisations.precedent}
-              disponible={versGauche}
-              onClick={() => glisser(-1)}
+              onClick={() => tourner(-1, true)}
               sens="precedent"
             />
             <BoutonPiste
               libelle={carrouselRealisations.suivant}
-              disponible={versDroite}
-              onClick={() => glisser(1)}
+              onClick={() => tourner(1, true)}
               sens="suivant"
             />
             <BoutonPauseLecture
@@ -479,7 +490,6 @@ function Piste({
               onClick={() => {
                 setPauseManuelle((p) => {
                   if (p) {
-                    // Reprise explicite : on annule aussi le figeage en cours.
                     figeRef.current = null;
                     setFigeJusqua(null);
                     setCycle((c) => c + 1);
@@ -518,18 +528,180 @@ function Piste({
           </Link>
         </div>
       </div>
+
+      {vue !== null && (
+        <Visionneuse
+          images={imagesVisionneuse}
+          index={vue}
+          onIndex={setVue}
+          onFermer={() => setVue(null)}
+        />
+      )}
     </Section>
+  );
+}
+
+/**
+ * Anneau 3D — tablette et grand écran.
+ *
+ * Les vignettes sont posées sur un demi-cercle : celle de devant fait face et
+ * porte seule le texte, les latérales sont inclinées, reculées et atténuées.
+ * Comme elles n'affichent plus que leur image, leur atténuation ne pose aucun
+ * problème de contraste ; elles sont sorties de l'arbre d'accessibilité et du
+ * parcours clavier, la vignette de devant restant le seul élément actionnable.
+ */
+function Anneau({
+  vignettes,
+  actif,
+  onOuvrir,
+  onTouche,
+  onDepartToucher,
+  onFinToucher,
+  onEntree,
+  onSortie,
+  onFocus,
+  onBlur,
+}: {
+  vignettes: Vignette[];
+  actif: number;
+  onOuvrir: (i: number) => void;
+  onTouche: (e: React.KeyboardEvent) => void;
+  onDepartToucher: (e: React.TouchEvent) => void;
+  onFinToucher: (e: React.TouchEvent) => void;
+  onEntree: (e: React.PointerEvent) => void;
+  onSortie: (e: React.PointerEvent) => void;
+  onFocus: () => void;
+  onBlur: () => void;
+}) {
+  const total = vignettes.length;
+  return (
+    <div
+      onKeyDown={onTouche}
+      onTouchStart={onDepartToucher}
+      onTouchEnd={onFinToucher}
+      onPointerEnter={onEntree}
+      onPointerLeave={onSortie}
+      onFocusCapture={onFocus}
+      onBlurCapture={onBlur}
+      className="anneau mt-6 hidden h-[clamp(330px,33vw,470px)] md:block"
+    >
+      <span aria-hidden="true" className="anneau-ombre" />
+      {vignettes.map((v, i) => {
+        const ecart = ecartCirculaire(i, actif, total);
+        const devant = ecart === 0;
+        const cachee = Math.abs(ecart) > PROFONDEUR;
+        return (
+          <div
+            key={v.cle}
+            style={placement(ecart)}
+            aria-hidden={!devant}
+            className={cn(
+              "anneau-carte w-[min(46%,420px)]",
+              cachee && "pointer-events-none",
+              !devant && "[&_[data-legende]]:opacity-0",
+              "[&_[data-legende]]:transition-opacity [&_[data-legende]]:duration-500",
+            )}
+          >
+            <button
+              type="button"
+              tabIndex={devant ? 0 : -1}
+              onClick={() => onOuvrir(i)}
+              aria-label={libellesVisionneuse.agrandir(v.legende)}
+              className={cn(
+                "block w-full rounded-lg text-left transition-shadow duration-500",
+                devant && "shadow-lift [&>article]:ring-1 [&>article]:ring-terre-500/60",
+              )}
+            >
+              {v.carte}
+            </button>
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
+/**
+ * Bande défilante — téléphone.
+ *
+ * Deux copies de la liste glissent d'une demi-longueur en boucle : le
+ * mouvement est continu, sans coupure, et ne coûte rien (animation CSS sur
+ * `transform`, aucun rendu React). Le décalage manuel des boutons est porté
+ * par un conteneur séparé pour ne pas perturber l'animation.
+ */
+function Bande({
+  vignettes,
+  decalage,
+  enPause,
+  onOuvrir,
+  onDepartToucher,
+  onFinToucher,
+  onEntree,
+  onSortie,
+  onFocus,
+  onBlur,
+}: {
+  vignettes: Vignette[];
+  decalage: number;
+  enPause: boolean;
+  onOuvrir: (i: number) => void;
+  onDepartToucher: (e: React.TouchEvent) => void;
+  onFinToucher: (e: React.TouchEvent) => void;
+  onEntree: (e: React.PointerEvent) => void;
+  onSortie: (e: React.PointerEvent) => void;
+  onFocus: () => void;
+  onBlur: () => void;
+}) {
+  const copies = [0, 1];
+  return (
+    <div
+      onTouchStart={onDepartToucher}
+      onTouchEnd={onFinToucher}
+      onPointerEnter={onEntree}
+      onPointerLeave={onSortie}
+      onFocusCapture={onFocus}
+      onBlurCapture={onBlur}
+      className="bande mt-5 md:hidden"
+    >
+      <div
+        className="transition-transform duration-700 ease-doux"
+        style={{ transform: `translate3d(${decalage * 274}px, 0, 0)` }}
+      >
+        <div
+          className="bande-piste"
+          style={{ animationPlayState: enPause ? "paused" : "running" }}
+        >
+          {copies.map((copie) =>
+            vignettes.map((v, i) => (
+              <div
+                key={`${copie}-${v.cle}`}
+                aria-hidden={copie === 1}
+                className="w-[260px] shrink-0"
+              >
+                <button
+                  type="button"
+                  tabIndex={copie === 1 ? -1 : 0}
+                  onClick={() => onOuvrir(i)}
+                  aria-label={libellesVisionneuse.agrandir(v.legende)}
+                  className="block w-full rounded-lg text-left"
+                >
+                  {v.carte}
+                </button>
+              </div>
+            )),
+          )}
+        </div>
+      </div>
+    </div>
   );
 }
 
 function BoutonPiste({
   libelle,
-  disponible,
   onClick,
   sens,
 }: {
   libelle: string;
-  disponible: boolean;
   onClick: () => void;
   sens: "precedent" | "suivant";
 }) {
@@ -537,13 +709,11 @@ function BoutonPiste({
     <button
       type="button"
       onClick={onClick}
-      disabled={!disponible}
       aria-label={libelle}
       className={cn(
         "glass glass-sm cible-tactile inline-flex h-11 w-11 items-center justify-center rounded-full",
         "text-ardoise-900 transition-all duration-300 ease-doux dark:text-ardoise-100",
         "hover:-translate-y-0.5 hover:shadow-lift motion-reduce:hover:translate-y-0",
-        "disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:translate-y-0 disabled:hover:shadow-none",
       )}
     >
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">

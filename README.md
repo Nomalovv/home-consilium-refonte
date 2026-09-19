@@ -72,8 +72,14 @@ Support **clair / sombre complet** : les tokens CSS suivent
   réellement composé (voile + photo) et compare — 232 lignes contrôlées en
   clair et en sombre, de 360 à 1536 px, toutes au-dessus du seuil AA.
 - `prefers-reduced-motion` respecté partout (blobs, flottements, fumée,
-  transitions, timeline, accordéons, transitions de page). La photo du hero est
-  fixe : aucun parallaxe, aucune animation d'entrée.
+  transitions, timeline, accordéons, transitions de page, rotation du
+  carrousel). La photo du hero est fixe : aucun parallaxe, aucune animation
+  d'entrée.
+- Mouvement automatique (carrousel de l'accueil) : bouton Pause / Lecture
+  toujours atteignable, arrêt au survol, au focus, hors écran et en
+  arrière-plan — critère WCAG 2.2.2.
+- Visionneuse d'images : `role="dialog"` + `aria-modal`, focus piégé puis rendu
+  à l'élément déclencheur, fermeture par `Échap`, défilement du corps bloqué.
 - Navigation clavier, cibles tactiles ≥ 44px (hors liens en ligne dans une
   phrase, couverts par l'exception 2.5.8), ARIA, lien d'évitement, gestion du
   focus au changement de route (`PageTransition`).
@@ -115,7 +121,8 @@ Support **clair / sombre complet** : les tokens CSS suivent
                              BarreActionMobile (CTA fixe mobile),
                              ReadingProgress, CookieNotice
   ui/                        Button, Card, Input, Badge, Accordion, GlassSurface,
-                             Logo, Blobs, ThemeToggle, Illustrations
+                             Logo, Blobs, ThemeToggle, Illustrations,
+                             Visionneuse (images en grand)
   sections/                  Hero, CTA, ServiceGrid, ServicesExplorer, Testimonials,
                              MethodeCondensee, CitationValeurs, ZoneIntervention,
                              TraitsMarque, GalerieRealisations, CarrouselRealisations,
@@ -283,33 +290,52 @@ miel / crème, `public/images/apercu/`), pas des photos : rien n'est emprunté,
 aucun chantier, aucun client, aucune ville n'est inventé. Les légendes restent
 génériques (« Exemple · Cuisine »).
 
-### Le carrousel défile tout seul
+### Le carrousel tourne tout seul
 
-Le carrousel de l'accueil avance d'une vignette toutes les 4,5 s, avec une barre
-de progression façon « story », un compteur « 01 / 05 » et un zoom très lent sur
-la vignette active. Il s'arrête dès qu'on s'y intéresse :
+Le mouvement est permanent et visible, avec deux mises en scène :
+
+- **tablette et grand écran** — un **anneau 3D** : les vignettes sont posées sur
+  un demi-cercle (`perspective`, `rotateY`, `translateZ`), celle de devant fait
+  face et porte seule le texte, les latérales sont inclinées, reculées et
+  atténuées. L'anneau tourne d'un cran toutes les 3,2 s, en boucle infinie ;
+- **téléphone** — une **bande** qui défile en continu : deux copies de la liste
+  glissent d'une demi-longueur, donc une boucle sans coupure.
+
+**Un clic ou une tape sur une image ouvre la visionneuse plein écran** :
+image entière (`object-contain`, jamais déformée), légende, badge « Aperçu » le
+cas échéant, compteur, précédent / suivant, glissement horizontal, `Échap`, clic
+à côté ou croix pour fermer, focus piégé puis rendu à la vignette d'origine,
+défilement de la page bloqué. Si un projet a d'autres photos (`images`), la
+visionneuse les enchaîne.
 
 | Geste | Effet |
 | --- | --- |
-| Survol à la souris, focus clavier | pause tant que le pointeur ou le focus reste sur le carrousel |
-| Tape sur une vignette, glissement tactile, flèches, points, précédent / suivant | figeage **30 s**, avec compte à rebours affiché, puis reprise |
+| Clic / tape sur une image | ouvre la visionneuse ; le carrousel s'arrête le temps de la consultation puis **repart aussitôt** |
+| Survol à la souris, focus clavier sur une vignette | pause tant que le pointeur ou le focus y reste |
+| Précédent / suivant, point de progression, flèches, glissement | figeage **30 s**, avec compte à rebours affiché, puis reprise |
 | Bouton **Pause / Lecture** | figeage aussi longtemps qu'on veut (`aria-pressed`) |
 | Onglet en arrière-plan, carrousel hors de l'écran | arrêt automatique |
-| `prefers-reduced-motion: reduce` | **aucun** défilement automatique, carrousel manuel, message explicite |
+| `prefers-reduced-motion: reduce` | **aucun** mouvement automatique : anneau fixe, navigable à la main, message explicite — la visionneuse reste disponible |
 
-Deux réglages, dans `content/entreprise.ts` :
+Trois réglages, dans `content/entreprise.ts` :
 
 ```ts
 export const carrouselRealisations = {
   // …
-  dureeSlideMs: 4500,   // temps d'affichage d'une vignette
-  dureePauseMs: 30000,  // durée du figeage après une interaction
+  dureeSlideMs: 3200,             // un cran d'anneau
+  dureePauseMs: 30000,            // figeage après une navigation manuelle
+  dureeBandeParVignetteMs: 5200,  // vitesse de la bande, sur téléphone
 };
 ```
 
-Seules `transform` et `opacity` sont animées, et l'annonce `aria-live` n'est
-émise qu'à l'arrêt (jamais pendant le défilement). Le carrousel des vraies
-photos se comporte exactement comme celui de l'aperçu.
+Seules `transform` et `opacity` sont animées : l'anneau ne rend qu'au changement
+de cran, la bande est une animation CSS pure (aucun rendu React par image).
+L'annonce `aria-live` n'est émise qu'à l'arrêt, jamais pendant la rotation. Les
+points de progression et le compteur n'apparaissent qu'à partir de la tablette :
+la bande du téléphone défile en continu, elle n'a pas de crans. Sans support de
+`transform-style: preserve-3d`, l'anneau retombe proprement sur un alignement à
+plat. Le carrousel des vraies photos se comporte exactement comme celui de
+l'aperçu.
 
 L'aperçu disparaît **tout seul** dès qu'un projet de `realisations.projets` a
 une image : le carrousel montre alors les vraies réalisations. Pour le retirer sans

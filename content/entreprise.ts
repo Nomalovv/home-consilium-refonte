@@ -398,10 +398,16 @@ export const carrouselRealisations = {
   suivant: "Voir les réalisations suivantes",
 
   /* --- Défilement automatique ------------------------------------------ */
-  /** Temps d'affichage d'une vignette avant l'avance automatique. */
-  dureeSlideMs: 4500,
-  /** Durée du figeage déclenché par une interaction (tap, flèche, point…). */
+  /** Temps d'affichage d'une vignette avant que l'anneau tourne d'un cran. */
+  dureeSlideMs: 3200,
+  /**
+   * Durée du figeage après une navigation manuelle (précédent / suivant,
+   * point, flèche, glissement). Ouvrir une image ne déclenche pas de figeage :
+   * le carrousel s'arrête le temps de la visionneuse, puis repart aussitôt.
+   */
   dureePauseMs: 30000,
+  /** Bande du téléphone : temps de passage d'une vignette. */
+  dureeBandeParVignetteMs: 5200,
   boutonPause: "Pause",
   boutonLecture: "Lecture",
   ariaPause: "Mettre en pause le défilement automatique",

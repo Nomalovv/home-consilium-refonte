@@ -45,7 +45,7 @@ export function CarteRealisation({
         </div>
       )}
 
-      <div className="flex flex-1 flex-col p-5 sm:p-6">
+      <div data-legende className="flex flex-1 flex-col p-5 sm:p-6">
         <h3 className="text-balance font-display text-h3 font-semibold text-ardoise-900 dark:text-ardoise-100">
           {projet.titre}
         </h3>

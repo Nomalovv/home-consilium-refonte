@@ -128,6 +128,19 @@ export const quiz = {
   note: "Le formulaire de contact sera pré-rempli avec vos réponses.",
 } as const;
 
+/** Visionneuse plein écran ouverte au clic sur une image du carrousel. */
+export const visionneuse = {
+  aria: "Visionneuse d'images",
+  fermer: "Fermer la visionneuse",
+  precedent: "Image précédente",
+  suivant: "Image suivante",
+  compteur: (position: number, total: number) => `${position} / ${total}`,
+  /** Libellé du bouton posé sur une vignette du carrousel. */
+  agrandir: (legende: string) => `Agrandir : ${legende}`,
+  /** Rappel discret des commandes, sous l'image. */
+  aide: "Échap pour fermer · flèches pour naviguer",
+} as const;
+
 /** Barre d'action fixe affichée sur mobile uniquement. */
 export const barreAction = {
   aria: "Actions rapides",

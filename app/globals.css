@@ -270,6 +270,117 @@
     background-color: rgb(var(--hc-bg) / 0.88);
   }
 
+  /* ------------------------------------------------------------------ */
+  /* Carrousel des réalisations : anneau 3D (tablette et plus) et bande  */
+  /* défilante (téléphone). Tout est animé en `transform` / `opacity`.   */
+  /* ------------------------------------------------------------------ */
+
+  /**
+   * Scène 3D de l'anneau. Le rayon pilote l'écartement des vignettes : il
+   * grandit avec l'écran pour que le demi-arc reste lisible sans déborder.
+   */
+  .anneau {
+    position: relative;
+    perspective: 1400px;
+    -webkit-perspective: 1400px;
+    perspective-origin: 50% 45%;
+    transform-style: preserve-3d;
+    --rayon: 330px;
+    /* Le débord latéral est rogné sans créer de défilement de page. */
+    overflow-x: clip;
+  }
+
+  @media (min-width: 1024px) {
+    .anneau {
+      --rayon: 470px;
+    }
+  }
+
+  @media (min-width: 1280px) {
+    .anneau {
+      --rayon: 560px;
+    }
+  }
+
+  /**
+   * Une vignette posée sur le demi-cercle : `--sin` / `--cos` donnent sa
+   * place sur l'arc, `--angle` son inclinaison, `--echelle` son éloignement.
+   * Les quatre variables sont calculées en JavaScript une fois par vignette
+   * et par pas — jamais à chaque image.
+   */
+  .anneau-carte {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%)
+      translateX(calc(var(--rayon) * var(--sin)))
+      translateZ(calc(var(--rayon) * (var(--cos) - 1))) rotateY(var(--angle))
+      scale(var(--echelle));
+    transition:
+      transform 900ms cubic-bezier(0.22, 1, 0.36, 1),
+      opacity 900ms cubic-bezier(0.22, 1, 0.36, 1);
+    will-change: transform, opacity;
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+  }
+
+  /** Repli sans 3D : les vignettes s'alignent à plat, sans inclinaison. */
+  @supports not (transform-style: preserve-3d) {
+    .anneau-carte {
+      transform: translate(-50%, -50%)
+        translateX(calc(var(--rayon) * var(--sin))) scale(var(--echelle));
+    }
+  }
+
+  /** Ombre portée douce sous la vignette de devant. */
+  .anneau-ombre {
+    position: absolute;
+    left: 50%;
+    bottom: 2%;
+    width: 46%;
+    height: 26px;
+    transform: translateX(-50%);
+    background: radial-gradient(
+      50% 50% at 50% 50%,
+      rgba(124, 74, 48, 0.32),
+      transparent 70%
+    );
+    filter: blur(6px);
+    pointer-events: none;
+  }
+
+  /**
+   * Bande défilante du téléphone : deux copies de la liste qui glissent d'une
+   * demi-longueur, donc une boucle sans coupure. Pas de `gap` — la gouttière
+   * est une marge portée par chaque vignette, sinon la demi-longueur tomberait
+   * à côté et la boucle sauterait.
+   */
+  .bande {
+    overflow-x: clip;
+    margin-inline: -16px;
+    padding-inline: 16px;
+  }
+
+  .bande-piste {
+    display: flex;
+    width: max-content;
+    animation: defilement-bande var(--duree-bande, 32s) linear infinite;
+    will-change: transform;
+  }
+
+  .bande-piste > * {
+    margin-inline-end: 14px;
+  }
+
+  @keyframes defilement-bande {
+    from {
+      transform: translate3d(0, 0, 0);
+    }
+    to {
+      transform: translate3d(-50%, 0, 0);
+    }
+  }
+
   /** Motif discret de petites tuiles — rappel des toits normands. */
   .motif-tuiles {
     background-image: radial-gradient(
@@ -483,6 +594,14 @@
   .voile-hero {
     background-image: none !important;
     background-color: rgb(var(--hc-bg) / 0.97);
+  }
+}
+
+/* Mouvement réduit : la bande s'arrête net, l'anneau ne glisse plus. */
+@media (prefers-reduced-motion: reduce) {
+  .bande-piste {
+    animation: none !important;
+    transform: none !important;
   }
 }
 

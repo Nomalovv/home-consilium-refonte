@@ -83,7 +83,7 @@ export const accueil = {
   },
   services: {
     surtitre: "Nos domaines",
-    titre: "Cinq domaines, un seul interlocuteur",
+    titre: "Six domaines, un seul interlocuteur",
     intro:
       "Du chantier complet au lot technique, nous choisissons les entreprises adaptées et coordonnons leur intervention.",
     introCourte: "Du chantier complet au petit lot technique.",

@@ -9,7 +9,7 @@ import { zoneIntervention } from "@/content/entreprise";
 export const metadata = construireMetadata({
   titre: "Nos services",
   description:
-    "Rénovation complète, cuisine et salle de bain, extension et surélévation, aménagement intérieur et extérieur : les cinq domaines de Home Consilium, courtier en travaux en Normandie.",
+    "Construction clé en main, rénovation complète, cuisine et salle de bain, extension et surélévation, aménagement intérieur et extérieur : les six domaines de Home Consilium, courtier en travaux en Normandie.",
   chemin: "/services",
 });
 
@@ -20,7 +20,7 @@ export default function ServicesPage() {
         compact
         badge={zoneIntervention.badge}
         surtitre="Services"
-        titre="Cinq domaines, un seul interlocuteur"
+        titre="Six domaines, un seul interlocuteur"
         intro="Chaque domaine regroupe les corps de métier que nous coordonnons pour vous. Votre projet n'entre dans aucune case ? Parlez-nous-en quand même."
       />
 

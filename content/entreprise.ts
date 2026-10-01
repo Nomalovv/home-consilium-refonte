@@ -183,7 +183,7 @@ export const traitsMarque = [
 /** Chiffres structurels et vérifiables uniquement. Aucun chiffre business inventé. */
 export const chiffresStructurels = [
   { valeur: "4", libelle: "étapes de méthode" },
-  { valeur: "5", libelle: "domaines de service" },
+  { valeur: "6", libelle: "domaines de service" },
   { valeur: "100%", libelle: "Normandie" },
 ] as const;
 

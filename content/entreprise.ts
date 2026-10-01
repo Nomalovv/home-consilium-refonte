@@ -272,24 +272,19 @@ export const photos: {
 /**
  * Bloc « qui est derrière Home Consilium », sur /a-propos.
  *
- * Deux faits seulement ont été communiqués sur le dirigeant : son prénom et
- * ses onze ans d'expérience dans le bâtiment. Tout le reste du texte est la
- * reformulation de ce que le site dit déjà de son métier (interlocuteur
- * unique, sélection des entreprises, comparaison des devis, suivi de
- * chantier). Aucun nom de famille, aucun titre précis, aucun parcours, aucune
- * citation : rien qui n'ait été fourni.
+ * Le texte est la parole du dirigeant lui-même (citation à la première
+ * personne, fournie telle quelle) : son expérience terrain, pourquoi il est
+ * devenu courtier en travaux, et son rôle auprès des clients.
  */
 export const sectionDirigeant = {
   surtitre: "Qui est derrière Home Consilium",
   titre: "Eren, votre interlocuteur unique",
   paragraphes: [
-    "Eren dirige Home Consilium et suit lui-même les projets : c'est la même personne qui vous répond, du premier appel au dernier coup de pinceau.",
-    "Son rôle tient en quatre temps : écouter votre projet, choisir les entreprises adaptées parmi les artisans normands vérifiés, comparer les devis poste par poste et suivre le chantier jusqu'à la réception.",
+    "Fort de près de 10 ans d'expérience dans le bâtiment et la rénovation, j'ai choisi de devenir courtier en travaux pour mettre mon expérience terrain au service de mes clients. Mon rôle : vous accompagner, sélectionner les bons professionnels et vous aider à avancer sereinement dans votre projet.",
   ],
   /** Version courte affichée sous `sm`. */
   paragraphesCourts: [
-    "Eren dirige Home Consilium et suit lui-même les projets : la même personne du premier appel à la réception du chantier.",
-    "Écouter, choisir les bonnes entreprises, comparer les devis, suivre le chantier.",
+    "Fort de près de 10 ans d'expérience dans le bâtiment et la rénovation, j'ai choisi de devenir courtier en travaux pour mettre mon expérience terrain au service de mes clients. Mon rôle : vous accompagner, sélectionner les bons professionnels et vous aider à avancer sereinement dans votre projet.",
   ],
 } as const;
 

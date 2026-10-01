@@ -175,6 +175,7 @@ export const services: Service[] = [
       { titre: "Optimisation des volumes" },
       { titre: "Peinture & revêtements" },
       { titre: "Menuiseries intérieures" },
+      { titre: "Carrelage & parquet" },
     ],
     estCePourMoi: [
       "Mes volumes actuels ne correspondent plus à mon usage du logement.",

@@ -33,9 +33,9 @@ export const services: Service[] = [
     description:
       "Votre maison neuve, du terrain à la remise des clés : terrassement, gros œuvre, charpente, second œuvre et finitions coordonnés dans un seul projet, avec un seul interlocuteur.",
     sousServices: [
-      { titre: "Maison individuelle neuve" },
-      { titre: "Conception & démarches de permis" },
-      { titre: "Suivi de chantier clé en main" },
+      { titre: "Maison" },
+      { titre: "Haras" },
+      { titre: "Commerce" },
     ],
     estCePourMoi: [
       "Je pars d'un terrain ou d'un projet de construction neuve et je ne sais pas par où commencer.",

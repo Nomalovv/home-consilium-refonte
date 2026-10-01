@@ -184,7 +184,7 @@ export const traitsMarque = [
 export const chiffresStructurels = [
   { valeur: "4", libelle: "étapes de méthode" },
   { valeur: "6", libelle: "domaines de service" },
-  { valeur: "100%", libelle: "Normandie" },
+  { valeur: "1", libelle: "interlocuteur" },
 ] as const;
 
 /**

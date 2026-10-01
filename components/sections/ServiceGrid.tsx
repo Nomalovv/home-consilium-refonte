@@ -20,6 +20,14 @@ type Props = {
  * visuel chaleureux sans rien affirmer sur le contenu.
  */
 const PICTOS: Record<string, React.ReactNode> = {
+  "construction-complete": (
+    <>
+      <path d="M4 20V10l8-6 8 6v10" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+      <path d="M2 20h20" strokeWidth="2" strokeLinecap="round" />
+      <path d="M12 4.5V2" strokeWidth="2" strokeLinecap="round" />
+      <path d="M12 2l3.2 1.6L12 5.2" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+    </>
+  ),
   "renovation-complete": (
     <>
       <path d="M4 12 12 5l8 7" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />

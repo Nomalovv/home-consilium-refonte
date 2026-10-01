@@ -1,5 +1,5 @@
 /**
- * Les 5 domaines de service réels + la carte « Autre ».
+ * Les 6 domaines de service réels + la carte « Autre ».
  * Ajouter un service = ajouter une entrée dans `services` : la route
  * /services/[slug] et le sitemap se mettent à jour automatiquement.
  */
@@ -26,6 +26,43 @@ export type Service = {
 export const CTA_SERVICE = "Parler de ce projet";
 
 export const services: Service[] = [
+  {
+    slug: "construction-complete",
+    titre: "Construction complète clé en main",
+    titreCourt: "Construction clé en main",
+    description:
+      "Votre maison neuve, du terrain à la remise des clés : terrassement, gros œuvre, charpente, second œuvre et finitions coordonnés dans un seul projet, avec un seul interlocuteur.",
+    sousServices: [
+      { titre: "Maison individuelle neuve" },
+      { titre: "Conception & démarches de permis" },
+      { titre: "Suivi de chantier clé en main" },
+    ],
+    estCePourMoi: [
+      "Je pars d'un terrain ou d'un projet de construction neuve et je ne sais pas par où commencer.",
+      "Je veux un planning unique et un seul interlocuteur du premier coup de pelle à la remise des clés.",
+      "Je veux comparer des devis clairs plutôt que de démarcher chaque entreprise moi-même.",
+    ],
+    faq: [
+      {
+        question: "Gérez-vous aussi les constructions neuves, ou seulement la rénovation ?",
+        reponse:
+          "Les deux. Pour une construction neuve, nous sélectionnons et coordonnons les entreprises nécessaires — terrassement, gros œuvre, charpente, second œuvre, finitions — du premier coup de pelle à la remise des clés.",
+      },
+      {
+        question: "Qui s'occupe de la conception et du permis de construire ?",
+        reponse:
+          "Nous vous orientons vers les bons interlocuteurs (maître d'œuvre, architecte, bureau d'études) pour la conception et les démarches, et nous coordonnons leur intervention dans le planning du projet.",
+      },
+      {
+        question: "Suis-je engagé après le premier échange ?",
+        reponse:
+          "Non. Le premier échange est sans engagement et vous n'avez aucune obligation de donner suite.",
+      },
+    ],
+    connexes: ["extension-surelevation", "renovation-complete"],
+    metaDescription:
+      "Construction de maison neuve clé en main en Normandie : terrassement, gros œuvre, charpente, second œuvre et finitions coordonnés dans un seul projet par votre courtier en travaux.",
+  },
   {
     slug: "renovation-complete",
     titre: "Rénovation complète",
@@ -206,6 +243,11 @@ export const serviceAutre = {
 /** Filtres « par besoin » de la page /services (chips). */
 export const filtresBesoin = [
   { id: "tous", label: "Tous les besoins", slugs: services.map((s) => s.slug) },
+  {
+    id: "construire",
+    label: "Construire",
+    slugs: ["construction-complete"],
+  },
   {
     id: "agrandir",
     label: "Agrandir",

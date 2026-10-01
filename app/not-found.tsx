@@ -10,7 +10,7 @@ const RACCOURCIS = [
   {
     href: "/services",
     titre: "Services",
-    texte: "Les cinq domaines que nous coordonnons.",
+    texte: "Les six domaines que nous coordonnons.",
   },
   {
     href: "/methode",

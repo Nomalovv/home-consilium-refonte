@@ -18,7 +18,9 @@ export type ImageVisionneuse = {
 /**
  * Visionneuse plein écran.
  *
- * Affiche une image en grand, sans limite de temps : elle reste ouverte\n * jusqu'à ce qu'on la ferme (Échap, la croix ou un clic n'importe où).\n * Aucune commande de navigation.
+ * Affiche une image en grand, sans limite de temps : elle reste ouverte
+ * jusqu'à ce qu'on la ferme (Échap, la croix ou un clic n'importe où).
+ * Aucune commande de navigation.
  *
  * `role="dialog"` + `aria-modal`, focus pris puis rendu à l'élément qui a
  * ouvert la fenêtre, défilement du corps de page bloqué. L'image garde ses

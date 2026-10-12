@@ -39,11 +39,18 @@ type Vignette = {
  * Carrousel de réalisations de l'accueil.
  *
  * Le mouvement est permanent, sans aucune commande : un **anneau 3D** qui
- * tourne d'un cran toutes les `dureeSlideMs` à partir de la tablette, une
- * **bande qui défile en boucle** sur téléphone. Les deux sont animés en
- * `transform` / `opacity` seulement, sans aucun rendu React par image.
+ * tourne en continu à partir de la tablette (une vignette toutes les
+ * `dureeSlideMs` en moyenne), une **bande qui défile en boucle** sur
+ * téléphone. Les deux sont animés en `transform` / `opacity` seulement, sans
+ * aucun rendu React par image.
  *
- * Chaque cran dure tout l'intervalle, à vitesse constante : l'anneau tourne\n * lentement et sans arrêt, y compris sous `prefers-reduced-motion` (choix\n * assumé). Il ne s'arrête que hors écran, en arrière-plan, ou pendant qu'une\n * photo est ouverte.\n *\n * Un clic sur une vignette l'affiche en grand, sans limite de temps : la\n * visionneuse reste ouverte jusqu'à ce qu'on la ferme.
+ * L'anneau ne s'arrête jamais, y compris sous `prefers-reduced-motion` (choix
+ * assumé), mais ralentit quand une vignette passe devant pour la mettre en
+ * valeur. Il n'est suspendu que hors écran, en arrière-plan, ou pendant
+ * qu'une photo est ouverte.
+ *
+ * Un clic sur une vignette l'affiche en grand, sans limite de temps : la
+ * visionneuse reste ouverte jusqu'à ce qu'on la ferme.
  *
  * Seuls les projets réellement photographiés sont affichés. Tant qu'il n'y en
  * a aucun, la section montre des vignettes d'**aperçu** — des illustrations
@@ -140,27 +147,48 @@ function CarteApercu({ slide }: { slide: SlideApercu }) {
 
 /** Écart angulaire entre deux vignettes de l'anneau. */
 const PAS_ANGULAIRE = 30;
-/** Nombre de vignettes visibles de chaque côté de celle de devant. */
-const PROFONDEUR = 2;
+/** Au-delà de cet écart, une vignette est invisible. */
+const ECART_MAX = 2.5;
+/**
+ * Ralentissement devant (0 = vitesse constante, 1 = arrêt complet) : l'anneau
+ * ne s'arrête jamais, mais s'attarde sur la vignette de devant et passe plus
+ * vite entre deux.
+ */
+const ATTARDEMENT = 0.65;
 
-/** Distance circulaire la plus courte de `i` à `actif` : l'anneau boucle. */
-function ecartCirculaire(i: number, actif: number, total: number): number {
-  const brut = (((i - actif) % total) + total) % total;
-  return brut > total / 2 ? brut - total : brut;
+/** Écart circulaire continu de `i` à `position`, dans [-total/2, total/2[. */
+function ecartContinu(i: number, position: number, total: number): number {
+  const brut = (((i - position) % total) + total) % total;
+  return brut >= total / 2 ? brut - total : brut;
+}
+
+/**
+ * Les vignettes restent opaques (sinon, en croisant, l'une se verrait à
+ * travers l'autre) : les latérales sont assombries par un voile couleur de
+ * fond, et seules celles du fond, déjà cachées, s'effacent.
+ */
+function voileA(distance: number): number {
+  return Math.min(distance, 2) * 0.32;
+}
+function opaciteA(distance: number): number {
+  if (distance <= 2) return 1;
+  return Math.max(0, 1 - (distance - 2) / (ECART_MAX - 2));
 }
 
 /** Place une vignette sur le demi-cercle (variables lues par `.anneau-carte`). */
 function placement(ecart: number): CSSProperties {
   const angle = ecart * PAS_ANGULAIRE;
   const rad = (angle * Math.PI) / 180;
-  const distance = Math.min(Math.abs(ecart), PROFONDEUR + 1);
+  const distance = Math.abs(ecart);
   return {
     "--sin": Math.sin(rad).toFixed(4),
     "--cos": Math.cos(rad).toFixed(4),
-    "--angle": `${-angle}deg`,
-    "--echelle": (1 - distance * 0.11).toFixed(3),
-    zIndex: 20 - distance,
-    opacity: distance === 0 ? 1 : distance === 1 ? 0.62 : distance === 2 ? 0.34 : 0,
+    "--angle": `${(-angle).toFixed(2)}deg`,
+    "--echelle": (1 - Math.min(distance, 3) * 0.12).toFixed(3),
+    // La plus proche du centre passe toujours au-dessus : rien ne la coupe.
+    zIndex: Math.round(1000 - distance * 100),
+    opacity: opaciteA(distance).toFixed(3),
+    "--voile": voileA(distance).toFixed(3),
   } as CSSProperties;
 }
 
@@ -184,14 +212,10 @@ function Piste({
   const [ongletVisible, setOngletVisible] = useState(true);
   const [vue, setVue] = useState<number | null>(null);
 
-
-  const tourner = useCallback(
-    (pas: 1 | -1) => {
-      setActif((i) => (i + pas + total) % total);
-      setDecalageBande((d) => d - pas);
-    },
-    [total],
-  );
+  /** Un cran à la main : la bande glisse, l'anneau rattrape en douceur. */
+  const tourner = useCallback((pas: 1 | -1) => {
+    setDecalageBande((d) => d - pas);
+  }, []);
 
   /* Arrêt quand la section n'est plus à l'écran. */
   useEffect(() => {
@@ -218,13 +242,6 @@ function Piste({
 
   const enPause = vue !== null || !dansLeChamp || !ongletVisible;
   const defilementAuto = !enPause && total > 1;
-
-  /* Rotation automatique : un minuteur par cran, relancé à chaque reprise. */
-  useEffect(() => {
-    if (!defilementAuto) return;
-    const id = window.setTimeout(() => tourner(1), dureeSlideMs);
-    return () => window.clearTimeout(id);
-  }, [defilementAuto, actif, dureeSlideMs, tourner]);
 
   const surToucheAnneau = (e: React.KeyboardEvent) => {
     if (e.key === "ArrowRight") {
@@ -255,7 +272,6 @@ function Piste({
         ref={bloc}
         style={
           {
-            "--duree-slide": `${dureeSlideMs}ms`,
             "--duree-bande": `${(dureeBandeParVignetteMs * total) / 1000}s`,
           } as CSSProperties
         }
@@ -307,7 +323,11 @@ function Piste({
         {/* Tablette et plus : demi-arc de cercle en rotation. */}
         <Anneau
           vignettes={vignettes}
+          enMouvement={defilementAuto}
+          dureeCranMs={dureeSlideMs}
+          crans={-decalageBande}
           actif={actif}
+          onActif={setActif}
           onOuvrir={setVue}
           onTouche={surToucheAnneau}
           onDepartToucher={surDepartToucher}
@@ -321,22 +341,12 @@ function Piste({
               <li
                 key={v.cle}
                 className={cn(
-                  "block h-1.5 overflow-hidden rounded-full transition-all duration-500 ease-doux",
+                  "block h-1.5 rounded-full transition-all duration-700 ease-doux",
                   i === actif
-                    ? "w-10 bg-terre-200 dark:bg-terre-700/60"
+                    ? "w-10 bg-terre-600 dark:bg-terre-300"
                     : "w-4 bg-terre-300/80 dark:bg-terre-700",
                 )}
-              >
-                {i === actif && (
-                  <span
-                    key={`${actif}-${defilementAuto ? 1 : 0}`}
-                    className={cn(
-                      "block h-full w-full origin-left rounded-full bg-terre-600 dark:bg-terre-300",
-                      defilementAuto ? "animate-progression" : "scale-x-0",
-                    )}
-                  />
-                )}
-              </li>
+              />
             ))}
           </ul>
 
@@ -386,26 +396,99 @@ function Piste({
  *
  * Les vignettes sont posées sur un demi-cercle : celle de devant fait face et
  * porte seule le texte, les latérales sont inclinées, reculées et atténuées.
- * Comme elles n'affichent plus que leur image, leur atténuation ne pose aucun
- * problème de contraste ; elles sont sorties de l'arbre d'accessibilité et du
- * parcours clavier, la vignette de devant restant le seul élément actionnable.
+ *
+ * La rotation est continue : une boucle `requestAnimationFrame` calcule à
+ * chaque image la position de chaque vignette sur l'arc, sans aucun rendu
+ * React (seul le changement de vignette de devant en déclenche un). Les
+ * vignettes ne partagent pas de scène 3D (`preserve-3d`) : chacune est
+ * aplatie et empilée selon sa distance au centre, donc une vignette latérale
+ * inclinée ne traverse jamais celle de devant.
+ *
+ * Les latérales sont sorties de l'arbre d'accessibilité et du parcours
+ * clavier, la vignette de devant restant le seul élément actionnable.
  */
 function Anneau({
   vignettes,
+  enMouvement,
+  dureeCranMs,
+  crans,
   actif,
+  onActif,
   onOuvrir,
   onTouche,
   onDepartToucher,
   onFinToucher,
 }: {
   vignettes: Vignette[];
+  enMouvement: boolean;
+  /** Durée moyenne pour passer d'une vignette à la suivante. */
+  dureeCranMs: number;
+  /** Crans ajoutés à la main (glissement, flèches), rattrapés en douceur. */
+  crans: number;
   actif: number;
+  onActif: (i: number) => void;
   onOuvrir: (i: number) => void;
   onTouche: (e: React.KeyboardEvent) => void;
   onDepartToucher: (e: React.TouchEvent) => void;
   onFinToucher: (e: React.TouchEvent) => void;
 }) {
   const total = vignettes.length;
+  const cartes = useRef<(HTMLDivElement | null)[]>([]);
+  /* Avancée automatique (en crans) et part manuelle affichée : survivent aux
+     relances de la boucle. */
+  const avance = useRef(0);
+  const manuel = useRef(crans);
+  const devant = useRef(actif);
+
+  useEffect(() => {
+    let id = 0;
+    let precedent: number | null = null;
+
+    const image = (maintenant: number) => {
+      if (enMouvement && precedent !== null) {
+        // Un écart énorme (onglet repris, machine lente) ne fait pas sauter l'anneau.
+        avance.current += Math.min(maintenant - precedent, 100) / dureeCranMs;
+      }
+      precedent = maintenant;
+
+      manuel.current += (crans - manuel.current) * 0.1;
+      const stable = Math.abs(crans - manuel.current) < 0.002;
+      if (stable) manuel.current = crans;
+
+      const f = avance.current % 1;
+      const position =
+        Math.floor(avance.current) +
+        f -
+        (ATTARDEMENT * Math.sin(2 * Math.PI * f)) / (2 * Math.PI) +
+        manuel.current;
+
+      for (let i = 0; i < total; i++) {
+        const el = cartes.current[i];
+        if (!el) continue;
+        const ecart = ecartContinu(i, position, total);
+        const style = placement(ecart) as Record<string, string | number>;
+        for (const [cle, valeur] of Object.entries(style)) {
+          el.style.setProperty(
+            cle === "zIndex" ? "z-index" : cle,
+            String(valeur),
+          );
+        }
+        el.style.pointerEvents = Math.abs(ecart) > 2 ? "none" : "";
+      }
+
+      const nouveau = ((Math.round(position) % total) + total) % total;
+      if (nouveau !== devant.current) {
+        devant.current = nouveau;
+        onActif(nouveau);
+      }
+
+      if (enMouvement || !stable) id = requestAnimationFrame(image);
+    };
+
+    id = requestAnimationFrame(image);
+    return () => cancelAnimationFrame(id);
+  }, [enMouvement, dureeCranMs, crans, total, onActif]);
+
   return (
     <div
       onKeyDown={onTouche}
@@ -415,35 +498,31 @@ function Anneau({
     >
       <span aria-hidden="true" className="anneau-ombre" />
       {vignettes.map((v, i) => {
-        const ecart = ecartCirculaire(i, actif, total);
-        const devant = ecart === 0;
-        const cachee = Math.abs(ecart) > PROFONDEUR;
-        /* En rotation normale, la vignette qui arrive au bout de l'arc vient de
-           faire le tour : elle saute à sa place au lieu de traverser l'anneau. */
-        const bouclee = ecart === Math.floor(total / 2);
+        const estDevant = i === actif;
         return (
           <div
             key={v.cle}
-            style={{
-              ...placement(ecart),
-              ...(bouclee && { transitionProperty: "none" }),
+            ref={(el) => {
+              cartes.current[i] = el;
             }}
-            aria-hidden={!devant}
+            // Position de départ, avant la première image : identique à chaque
+            // rendu, pour que React ne réécrive jamais ce que la boucle a posé.
+            style={placement(ecartContinu(i, 0, total))}
+            aria-hidden={!estDevant}
             className={cn(
               "anneau-carte w-[min(46%,420px)]",
-              cachee && "pointer-events-none",
-              !devant && "[&_[data-legende]]:opacity-0",
+              !estDevant && "[&_[data-legende]]:opacity-0",
               "[&_[data-legende]]:transition-opacity [&_[data-legende]]:duration-500",
             )}
           >
             <button
               type="button"
-              tabIndex={devant ? 0 : -1}
+              tabIndex={estDevant ? 0 : -1}
               onClick={() => onOuvrir(i)}
               aria-label={libellesVisionneuse.agrandir(v.legende)}
               className={cn(
-                "block w-full rounded-lg text-left transition-shadow duration-500",
-                devant && "shadow-lift [&>article]:ring-1 [&>article]:ring-terre-500/60",
+                "block w-full rounded-lg text-left transition-shadow duration-700",
+                estDevant && "shadow-lift [&>article]:ring-1 [&>article]:ring-terre-500/60",
               )}
             >
               {v.carte}

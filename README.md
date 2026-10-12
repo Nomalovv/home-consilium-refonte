@@ -297,8 +297,11 @@ Le mouvement est permanent et visible, avec deux mises en scène :
 - **tablette et grand écran** — un **anneau 3D** : les vignettes sont posées sur
   un demi-cercle (`perspective`, `rotateY`, `translateZ`), celle de devant fait
   face et porte seule le texte, les latérales sont inclinées, reculées et
-  atténuées. L'anneau tourne **lentement et sans arrêt** : chaque cran dure
-  5 s, à vitesse constante (transition linéaire de la même durée), en boucle ;
+  assombries. L'anneau tourne **lentement et sans arrêt** (une vignette toutes
+  les 5 s en moyenne), en ralentissant quand une vignette passe devant. Les
+  positions sont calculées à chaque image (`requestAnimationFrame`) et les
+  vignettes ne partagent pas de scène 3D : la plus proche du centre est
+  toujours au-dessus, opaque, et rien ne la traverse ;
 - **téléphone** — une **bande** qui défile en continu : deux copies de la liste
   glissent d'une demi-longueur, donc une boucle sans coupure.
 

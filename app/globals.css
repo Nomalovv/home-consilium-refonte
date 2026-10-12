@@ -284,7 +284,8 @@
     perspective: 1400px;
     -webkit-perspective: 1400px;
     perspective-origin: 50% 45%;
-    transform-style: preserve-3d;
+    /* Pas de `preserve-3d` : chaque vignette est aplatie et empilée selon son
+       z-index, sinon les latérales inclinées traverseraient celle de devant. */
     --rayon: 330px;
     /* Le débord latéral est rogné sans créer de défilement de page. */
     overflow-x: clip;
@@ -305,8 +306,8 @@
   /**
    * Une vignette posée sur le demi-cercle : `--sin` / `--cos` donnent sa
    * place sur l'arc, `--angle` son inclinaison, `--echelle` son éloignement.
-   * Les quatre variables sont calculées en JavaScript une fois par vignette
-   * et par pas — jamais à chaque image.
+   * Les variables, l'opacité et le z-index sont posés à chaque image par la
+   * boucle d'animation du composant : aucune transition CSS ici.
    */
   .anneau-carte {
     position: absolute;
@@ -316,14 +317,20 @@
       translateX(calc(var(--rayon) * var(--sin)))
       translateZ(calc(var(--rayon) * (var(--cos) - 1))) rotateY(var(--angle))
       scale(var(--echelle));
-    /* Un cran dure tout l'intervalle, à vitesse constante : l'anneau tourne
-       lentement et sans arrêt au lieu d'avancer par à-coups. */
-    transition:
-      transform var(--duree-slide, 5000ms) linear,
-      opacity var(--duree-slide, 5000ms) linear;
     will-change: transform, opacity;
     backface-visibility: hidden;
     -webkit-backface-visibility: hidden;
+  }
+
+  /** Voile couleur de fond qui assombrit les vignettes latérales (`--voile`). */
+  .anneau-carte::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: 28px; /* = rounded-lg des cartes */
+    background-color: rgb(var(--hc-bg));
+    opacity: var(--voile, 0);
+    pointer-events: none;
   }
 
   /** Repli sans 3D : les vignettes s'alignent à plat, sans inclinaison. */
@@ -622,10 +629,8 @@
     scroll-behavior: auto !important;
   }
 
-  /* Exception voulue : le carrousel des réalisations tourne toujours, lentement. */
-  .anneau-carte {
-    transition-duration: var(--duree-slide, 5000ms) !important;
-  }
+  /* Exception voulue : le carrousel des réalisations tourne toujours, lentement
+     (l'anneau est animé en JavaScript, seule la bande est concernée ici). */
   .bande-piste {
     animation-duration: var(--duree-bande, 32s) !important;
     animation-iteration-count: infinite !important;

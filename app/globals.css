@@ -316,9 +316,11 @@
       translateX(calc(var(--rayon) * var(--sin)))
       translateZ(calc(var(--rayon) * (var(--cos) - 1))) rotateY(var(--angle))
       scale(var(--echelle));
+    /* Un cran dure tout l'intervalle, à vitesse constante : l'anneau tourne
+       lentement et sans arrêt au lieu d'avancer par à-coups. */
     transition:
-      transform 900ms cubic-bezier(0.22, 1, 0.36, 1),
-      opacity 900ms cubic-bezier(0.22, 1, 0.36, 1);
+      transform var(--duree-slide, 5000ms) linear,
+      opacity var(--duree-slide, 5000ms) linear;
     will-change: transform, opacity;
     backface-visibility: hidden;
     -webkit-backface-visibility: hidden;
@@ -597,14 +599,6 @@
   }
 }
 
-/* Mouvement réduit : la bande s'arrête net, l'anneau ne glisse plus. */
-@media (prefers-reduced-motion: reduce) {
-  .bande-piste {
-    animation: none !important;
-    transform: none !important;
-  }
-}
-
 /* Navigateurs sans backdrop-filter : surface opaque */
 @supports not (backdrop-filter: blur(1px)) {
   .glass,
@@ -626,5 +620,14 @@
     animation-iteration-count: 1 !important;
     transition-duration: 0.001ms !important;
     scroll-behavior: auto !important;
+  }
+
+  /* Exception voulue : le carrousel des réalisations tourne toujours, lentement. */
+  .anneau-carte {
+    transition-duration: var(--duree-slide, 5000ms) !important;
+  }
+  .bande-piste {
+    animation-duration: var(--duree-bande, 32s) !important;
+    animation-iteration-count: infinite !important;
   }
 }

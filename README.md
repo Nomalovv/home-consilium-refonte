@@ -72,13 +72,13 @@ Support **clair / sombre complet** : les tokens CSS suivent
   réellement composé (voile + photo) et compare — 232 lignes contrôlées en
   clair et en sombre, de 360 à 1536 px, toutes au-dessus du seuil AA.
 - `prefers-reduced-motion` respecté partout (blobs, flottements, fumée,
-  transitions, timeline, accordéons, transitions de page, rotation du
-  carrousel). La photo du hero est fixe : aucun parallaxe, aucune animation
-  d'entrée.
+  transitions, timeline, accordéons, transitions de page), **sauf** la rotation
+  lente du carrousel de l'accueil, qui tourne toujours (choix assumé). La photo
+  du hero est fixe : aucun parallaxe, aucune animation d'entrée.
 - Mouvement automatique (carrousel de l'accueil) : sans commande, choix
-  assumé ; arrêt hors écran, en arrière-plan et sous `prefers-reduced-motion`.
+  assumé ; arrêt hors écran, en arrière-plan et pendant qu'une photo est ouverte.
 - Visionneuse d'images : `role="dialog"` + `aria-modal`, focus pris puis rendu
-  à l'élément déclencheur, fermeture automatique, par `Échap` ou par un clic,
+  à l'élément déclencheur, fermeture par `Échap`, la croix ou un clic,
   défilement du corps bloqué.
 - Navigation clavier, cibles tactiles ≥ 44px (hors liens en ligne dans une
   phrase, couverts par l'exception 2.5.8), ARIA, lien d'évitement, gestion du
@@ -297,37 +297,35 @@ Le mouvement est permanent et visible, avec deux mises en scène :
 - **tablette et grand écran** — un **anneau 3D** : les vignettes sont posées sur
   un demi-cercle (`perspective`, `rotateY`, `translateZ`), celle de devant fait
   face et porte seule le texte, les latérales sont inclinées, reculées et
-  atténuées. Chaque vignette reste 5 s au premier plan, en boucle infinie ;
+  atténuées. L'anneau tourne **lentement et sans arrêt** : chaque cran dure
+  5 s, à vitesse constante (transition linéaire de la même durée), en boucle ;
 - **téléphone** — une **bande** qui défile en continu : deux copies de la liste
   glissent d'une demi-longueur, donc une boucle sans coupure.
 
 Aucun bouton : ni précédent / suivant, ni pause. **Un clic ou une tape sur une
-image l'affiche en grand pendant 5 s**, puis la visionneuse se referme d'elle-même
-et le défilement reprend : image entière (`object-contain`, jamais déformée),
-légende, badge « Aperçu » le cas échéant, fine barre de temps restant. `Échap`,
-la croix ou un clic n'importe où la ferment plus tôt.
+image l'affiche en grand, sans limite de temps** : image entière
+(`object-contain`, jamais déformée), légende, badge « Aperçu » le cas échéant.
+`Échap`, la croix ou un clic n'importe où la ferment, et le défilement reprend.
 
 | Geste | Effet |
 | --- | --- |
-| Clic / tape sur une image | affichage en grand **5 s**, puis reprise du défilement |
+| Clic / tape sur une image | affichage en grand jusqu'à la fermeture ; le carrousel attend |
 | Flèches clavier, glissement | un cran, sans arrêter le défilement |
 | Onglet en arrière-plan, carrousel hors de l'écran | arrêt automatique |
-| `prefers-reduced-motion: reduce` | **aucun** mouvement automatique : anneau fixe, navigable à la main, message explicite — l'agrandissement reste disponible |
+| `prefers-reduced-motion: reduce` | le carrousel tourne quand même (exception voulue dans `globals.css`) |
 
-Trois réglages, dans `content/entreprise.ts` :
+Deux réglages, dans `content/entreprise.ts` :
 
 ```ts
 export const carrouselRealisations = {
   // …
-  dureeSlideMs: 5000,             // temps au premier plan de l'anneau
-  dureeAgrandiMs: 5000,           // affichage en grand après un clic
+  dureeSlideMs: 5000,             // durée d'un cran d'anneau (vitesse)
   dureeBandeParVignetteMs: 5000,  // vitesse de la bande, sur téléphone
 };
 ```
 
 Seules `transform` et `opacity` sont animées : l'anneau ne rend qu'au changement
-de cran, la bande est une animation CSS pure (aucun rendu React par image).
-L'annonce `aria-live` n'est émise qu'à l'arrêt, jamais pendant la rotation. Les
+de cran, la bande est une animation CSS pure (aucun rendu React par image). Les
 points de progression et le compteur n'apparaissent qu'à partir de la tablette :
 la bande du téléphone défile en continu, elle n'a pas de crans. Sans support de
 `transform-style: preserve-3d`, l'anneau retombe proprement sur un alignement à

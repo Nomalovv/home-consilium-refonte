@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState, type CSSProperties } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import { visionneuse } from "@/content/interface";
 import { useEchap, useReducedMotion, useVerrouScroll } from "@/lib/hooks";
@@ -18,9 +18,7 @@ export type ImageVisionneuse = {
 /**
  * Visionneuse plein écran.
  *
- * Affiche une image en grand pendant `dureeMs`, puis se referme d'elle-même ;
- * une fine barre montre le temps restant. Aucune commande de navigation : on
- * peut seulement fermer plus tôt (Échap, la croix ou un clic n'importe où).
+ * Affiche une image en grand, sans limite de temps : elle reste ouverte\n * jusqu'à ce qu'on la ferme (Échap, la croix ou un clic n'importe où).\n * Aucune commande de navigation.
  *
  * `role="dialog"` + `aria-modal`, focus pris puis rendu à l'élément qui a
  * ouvert la fenêtre, défilement du corps de page bloqué. L'image garde ses
@@ -28,21 +26,14 @@ export type ImageVisionneuse = {
  */
 export function Visionneuse({
   image,
-  dureeMs,
   onFermer,
 }: {
   image: ImageVisionneuse;
-  dureeMs: number;
   onFermer: () => void;
 }) {
   const boutonFermer = useRef<HTMLButtonElement>(null);
   const [monte, setMonte] = useState(false);
   const mouvementReduit = useReducedMotion();
-
-  /* Le parent recrée `onFermer` à chaque rendu : on garde la dernière version
-     sans relancer le minuteur. */
-  const fermerRef = useRef(onFermer);
-  fermerRef.current = onFermer;
 
   useVerrouScroll(true);
   useEchap(true, onFermer);
@@ -55,19 +46,12 @@ export function Visionneuse({
     return () => precedent?.focus?.();
   }, []);
 
-  /* Fermeture automatique. */
-  useEffect(() => {
-    const id = window.setTimeout(() => fermerRef.current(), dureeMs);
-    return () => window.clearTimeout(id);
-  }, [dureeMs]);
-
   return (
     <div
       role="dialog"
       aria-modal="true"
       aria-label={visionneuse.aria}
       onClick={onFermer}
-      style={{ "--duree-slide": `${dureeMs}ms` } as CSSProperties}
       className={cn(
         "fixed inset-0 z-[100] flex cursor-pointer flex-col items-center justify-center gap-4 p-4 sm:gap-5 sm:p-6",
         "bg-[rgb(26_22_19_/_0.92)] backdrop-blur-md",
@@ -119,14 +103,6 @@ export function Visionneuse({
           </span>
         </figcaption>
       </figure>
-
-      {/* Temps restant avant la fermeture automatique. */}
-      <span
-        aria-hidden="true"
-        className="block h-1 w-40 overflow-hidden rounded-full bg-white/15"
-      >
-        <span className="block h-full w-full origin-left animate-progression rounded-full bg-creme/80" />
-      </span>
     </div>
   );
 }

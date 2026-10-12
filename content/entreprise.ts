@@ -390,21 +390,13 @@ export const carrouselRealisations = {
   aria: "Carrousel des réalisations",
 
   /* --- Défilement automatique ------------------------------------------ */
-  /** Temps passé par chaque vignette au premier plan de l'anneau. */
+  /** Durée d'un cran de l'anneau, parcouru lentement et à vitesse constante. */
   dureeSlideMs: 5000,
-  /** Durée d'affichage en grand d'une photo cliquée, avant fermeture. */
-  dureeAgrandiMs: 5000,
   /** Bande du téléphone : temps de passage d'une vignette. */
   dureeBandeParVignetteMs: 5000,
   /** Compteur de position, façon « 01 / 07 ». */
   compteur: (position: number, total: number) =>
     `${String(position).padStart(2, "0")} / ${String(total).padStart(2, "0")}`,
-  /** Annonce vocale, seulement quand le défilement est à l'arrêt. */
-  annonce: (position: number, total: number) =>
-    `Vignette ${position} sur ${total}`,
-  /** Affiché quand le système demande moins d'animations. */
-  mouvementReduit:
-    "Défilement automatique désactivé : votre appareil demande moins d'animations.",
   lien: "Voir toutes les réalisations",
   href: "/realisations",
   /** État vide : court, sans faux projets ni faux visuels. */

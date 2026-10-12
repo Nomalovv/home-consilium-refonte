@@ -24,7 +24,6 @@ import {
   type SlideApercu,
 } from "@/content/entreprise";
 import { visionneuse as libellesVisionneuse } from "@/content/interface";
-import { useReducedMotion } from "@/lib/hooks";
 import { asset, cn } from "@/lib/utils";
 
 /** Une vignette du carrousel, avec ce qu'il faut pour l'agrandir. */
@@ -44,12 +43,7 @@ type Vignette = {
  * **bande qui défile en boucle** sur téléphone. Les deux sont animés en
  * `transform` / `opacity` seulement, sans aucun rendu React par image.
  *
- * Un clic sur une vignette l'affiche en grand pendant `dureeAgrandiMs`, puis
- * la visionneuse se referme d'elle-même et le défilement reprend.
- *
- * Le défilement ne s'arrête que hors écran, en arrière-plan, et pas du tout
- * sous `prefers-reduced-motion` (l'anneau reste alors navigable au clavier et
- * au glissement).
+ * Chaque cran dure tout l'intervalle, à vitesse constante : l'anneau tourne\n * lentement et sans arrêt, y compris sous `prefers-reduced-motion` (choix\n * assumé). Il ne s'arrête que hors écran, en arrière-plan, ou pendant qu'une\n * photo est ouverte.\n *\n * Un clic sur une vignette l'affiche en grand, sans limite de temps : la\n * visionneuse reste ouverte jusqu'à ce qu'on la ferme.
  *
  * Seuls les projets réellement photographiés sont affichés. Tant qu'il n'y en
  * a aucun, la section montre des vignettes d'**aperçu** — des illustrations
@@ -177,7 +171,7 @@ function Piste({
   vignettes: Vignette[];
   apercu?: boolean;
 }) {
-  const { dureeSlideMs, dureeAgrandiMs, dureeBandeParVignetteMs } =
+  const { dureeSlideMs, dureeBandeParVignetteMs } =
     carrouselRealisations;
   const total = vignettes.length;
 
@@ -190,7 +184,6 @@ function Piste({
   const [ongletVisible, setOngletVisible] = useState(true);
   const [vue, setVue] = useState<number | null>(null);
 
-  const mouvementReduit = useReducedMotion();
 
   const tourner = useCallback(
     (pas: 1 | -1) => {
@@ -224,7 +217,7 @@ function Piste({
   }, []);
 
   const enPause = vue !== null || !dansLeChamp || !ongletVisible;
-  const defilementAuto = !mouvementReduit && !enPause && total > 1;
+  const defilementAuto = !enPause && total > 1;
 
   /* Rotation automatique : un minuteur par cran, relancé à chaque reprise. */
   useEffect(() => {
@@ -352,20 +345,6 @@ function Piste({
           </p>
         </div>
 
-        {mouvementReduit && (
-          <p className="mt-3 text-[13px] text-ink-muted">
-            {carrouselRealisations.mouvementReduit}
-          </p>
-        )}
-
-        {/*
-          Annonce vocale seulement à l'arrêt : pendant la rotation, une annonce
-          toutes les quelques secondes serait insupportable.
-        */}
-        <p className="sr-only" aria-live="polite">
-          {mouvementReduit ? carrouselRealisations.annonce(actif + 1, total) : ""}
-        </p>
-
         <div className="mt-4 flex flex-wrap items-center gap-x-3 gap-y-3 sm:mt-5">
           {/* En aperçu, la section garde son appel à l'action. */}
           {apercu && (
@@ -395,7 +374,6 @@ function Piste({
       {vue !== null && (
         <Visionneuse
           image={vignettes[vue].image}
-          dureeMs={dureeAgrandiMs}
           onFermer={() => setVue(null)}
         />
       )}
@@ -440,10 +418,16 @@ function Anneau({
         const ecart = ecartCirculaire(i, actif, total);
         const devant = ecart === 0;
         const cachee = Math.abs(ecart) > PROFONDEUR;
+        /* En rotation normale, la vignette qui arrive au bout de l'arc vient de
+           faire le tour : elle saute à sa place au lieu de traverser l'anneau. */
+        const bouclee = ecart === Math.floor(total / 2);
         return (
           <div
             key={v.cle}
-            style={placement(ecart)}
+            style={{
+              ...placement(ecart),
+              ...(bouclee && { transitionProperty: "none" }),
+            }}
             aria-hidden={!devant}
             className={cn(
               "anneau-carte w-[min(46%,420px)]",

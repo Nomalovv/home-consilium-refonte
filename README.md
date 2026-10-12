@@ -232,11 +232,11 @@ export const photos = {
   dirigeant: {
     src: "/images/dirigeant.jpg",
     // Décrire ce que l'on voit : c'est lu par les lecteurs d'écran.
-    alt: "Eren, dirigeant de Home Consilium, à son bureau",
-    prenom: "Eren",
+    alt: "Olivier, dirigeant de Home Consilium, à son bureau",
+    prenom: "Olivier",
     experience: "11 ans d'expérience dans le bâtiment",
     experienceCourte: "11 ans d'expérience",
-    etiquette: "Eren · 11 ans d'expérience dans le bâtiment",
+    etiquette: "Olivier · 11 ans d'expérience dans le bâtiment",
   },
 };
 ```

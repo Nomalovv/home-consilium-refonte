@@ -232,7 +232,7 @@ export type PhotoPortrait = Photo & {
   etiquette: string;
 };
 
-const dirigeantPrenom = "Eren";
+const dirigeantPrenom = "Olivier";
 const dirigeantExperience = "11 ans d'expérience dans le bâtiment";
 const dirigeantExperienceCourte = "11 ans d'expérience";
 
@@ -278,7 +278,7 @@ export const photos: {
  */
 export const sectionDirigeant = {
   surtitre: "Qui est derrière Home Consilium",
-  titre: "Eren, votre interlocuteur unique",
+  titre: "Olivier, votre interlocuteur unique",
   paragraphes: [
     "Fort de près de 10 ans d'expérience dans le bâtiment et la rénovation, j'ai choisi de devenir courtier en travaux pour mettre mon expérience terrain au service de mes clients. Mon rôle : vous accompagner, sélectionner les bons professionnels et vous aider à avancer sereinement dans votre projet.",
   ],

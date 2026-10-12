@@ -280,11 +280,11 @@ export const sectionDirigeant = {
   surtitre: "Qui est derrière Home Consilium",
   titre: "Olivier, votre interlocuteur unique",
   paragraphes: [
-    "Fort de près de 10 ans d'expérience dans le bâtiment et la rénovation, j'ai choisi de devenir courtier en travaux pour mettre mon expérience terrain au service de mes clients. Mon rôle : vous accompagner, sélectionner les bons professionnels et vous aider à avancer sereinement dans votre projet.",
+    "Fort de 11 ans d'expérience dans le bâtiment et la rénovation, j'ai choisi de devenir courtier en travaux pour mettre mon expérience terrain au service de mes clients. Mon rôle : vous accompagner, sélectionner les bons professionnels et vous aider à avancer sereinement dans votre projet.",
   ],
   /** Version courte affichée sous `sm`. */
   paragraphesCourts: [
-    "Fort de près de 10 ans d'expérience dans le bâtiment et la rénovation, j'ai choisi de devenir courtier en travaux pour mettre mon expérience terrain au service de mes clients. Mon rôle : vous accompagner, sélectionner les bons professionnels et vous aider à avancer sereinement dans votre projet.",
+    "Fort de 11 ans d'expérience dans le bâtiment et la rénovation, j'ai choisi de devenir courtier en travaux pour mettre mon expérience terrain au service de mes clients. Mon rôle : vous accompagner, sélectionner les bons professionnels et vous aider à avancer sereinement dans votre projet.",
   ],
 } as const;
 

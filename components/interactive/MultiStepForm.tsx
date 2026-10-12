@@ -5,7 +5,7 @@ import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { AnimatePresence, motion } from "framer-motion";
 import { sujetsContact } from "@/content/services";
-import { contact, zoneIntervention } from "@/content/entreprise";
+import { contact, formulaire, zoneIntervention } from "@/content/entreprise";
 import { Button, ButtonLink } from "@/components/ui/Button";
 import { Erreur, Input, Label, Select, Textarea } from "@/components/ui/Input";
 import { useReducedMotion } from "@/lib/hooks";
@@ -42,12 +42,17 @@ const LIBELLES_STADE: Record<string, string> = {
 };
 
 /**
- * Aucun backend n'est fourni avec ce site. Si `NEXT_PUBLIC_FORM_ENDPOINT` est
- * défini, le formulaire y est envoyé en POST JSON ; sinon il bascule sur un
- * envoi par email (mailto:) afin que la demande parvienne réellement à
- * Home Consilium plutôt que de se perdre dans le vide.
+ * Aucun backend n'est fourni avec ce site. Par ordre de priorité :
+ * - une clé Web3Forms (`formulaire.cleWeb3Forms`) : la demande arrive par
+ *   email à l'adresse pro, sans que le visiteur quitte la page ;
+ * - `NEXT_PUBLIC_FORM_ENDPOINT` : envoi en POST JSON vers ce point d'accès ;
+ * - sinon, repli sur un envoi par email (mailto:) afin que la demande
+ *   parvienne réellement à Home Consilium plutôt que de se perdre.
  */
-const ENDPOINT = process.env.NEXT_PUBLIC_FORM_ENDPOINT;
+const WEB3FORMS = "https://api.web3forms.com/submit";
+const ENDPOINT = formulaire.cleWeb3Forms
+  ? WEB3FORMS
+  : process.env.NEXT_PUBLIC_FORM_ENDPOINT;
 
 export default function MultiStepForm() {
   const params = useSearchParams();
@@ -141,12 +146,35 @@ export default function MultiStepForm() {
       return;
     }
 
+    // Champ piège invisible : un humain le laisse vide, un robot le remplit.
+    const piege = new FormData(e.currentTarget as HTMLFormElement).get("botcheck");
+    if (piege) {
+      setEnvoi("ok");
+      return;
+    }
+
     setEnvoi("en-cours");
     try {
+      const corps = formulaire.cleWeb3Forms
+        ? {
+            access_key: formulaire.cleWeb3Forms,
+            subject: formulaire.objet(libelleSujet, donnees.ville),
+            from_name: formulaire.expediteur,
+            // « Répondre » dans la messagerie écrit directement au client.
+            replyto: donnees.email,
+            Prénom: donnees.prenom,
+            Nom: donnees.nom,
+            Téléphone: donnees.telephone,
+            Email: donnees.email,
+            Sujet: libelleSujet,
+            Commune: donnees.ville,
+            Projet: donnees.message,
+          }
+        : donnees;
       const reponse = await fetch(ENDPOINT, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(donnees),
+        headers: { "Content-Type": "application/json", Accept: "application/json" },
+        body: JSON.stringify(corps),
       });
       setEnvoi(reponse.ok ? "ok" : "erreur");
     } catch {
@@ -197,6 +225,16 @@ export default function MultiStepForm() {
       noValidate
       className="glass glass-lg glass-readable rounded-xl p-5 sm:p-6 md:p-10"
     >
+      {/* Champ piège anti-robots : caché aux humains et aux lecteurs d'écran. */}
+      <input
+        type="checkbox"
+        name="botcheck"
+        tabIndex={-1}
+        autoComplete="off"
+        aria-hidden="true"
+        className="hidden"
+      />
+
       {/* Barre de progression */}
       <div className="mb-6 sm:mb-8">
         <div className="flex items-center justify-between gap-3">

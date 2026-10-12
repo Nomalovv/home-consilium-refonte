@@ -52,6 +52,23 @@ export const contact = {
   horairesCourt: "Lun-ven 8h-19h",
 } as const;
 
+/**
+ * Envoi du formulaire de contact par Web3Forms (https://web3forms.com).
+ *
+ * La clé s'obtient gratuitement en saisissant l'adresse pro sur web3forms.com :
+ * elle arrive par email, et toutes les demandes seront envoyées à cette
+ * adresse. Elle est faite pour être publique (visible dans le code du site),
+ * ce n'est pas un mot de passe. Vide : le formulaire ouvre la messagerie du
+ * visiteur à la place.
+ */
+export const formulaire = {
+  cleWeb3Forms: "",
+  /** Objet des emails reçus. */
+  objet: (sujet: string, ville: string) =>
+    `Nouvelle demande de devis — ${sujet} (${ville})`,
+  expediteur: "Site Home Consilium",
+} as const;
+
 /** Aucun lien de réseau social réel n'existe : on n'affiche rien plutôt que des liens morts. */
 export const reseauxSociaux: { nom: string; url: string }[] = [];
 

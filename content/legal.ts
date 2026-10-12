@@ -82,6 +82,7 @@ export const confidentialite = {
       titre: "Destinataires des données",
       paragraphes: [
         "Home Consilium et, si nécessaire, les prestataires consultés pour l'établissement des devis — auxquels seules les informations pertinentes pour votre projet sont transmises.",
+        "Les demandes envoyées depuis le formulaire transitent par le service Web3Forms, qui les transmet par email à Home Consilium.",
       ],
     },
     {

@@ -32,25 +32,24 @@ type Vignette = {
   cle: string;
   legende: string;
   carte: ReactNode;
-  /** Image principale puis, le cas échéant, le reste de la galerie du projet. */
-  images: ImageVisionneuse[];
+  /** Image affichée en grand au clic. */
+  image: ImageVisionneuse;
 };
 
 /**
  * Carrousel de réalisations de l'accueil.
  *
- * Le mouvement est permanent et visible : un **anneau 3D** qui tourne d'un
- * cran toutes les `dureeSlideMs` à partir de la tablette, une **bande qui
- * défile en boucle** sur téléphone. Les deux sont animés en `transform` /
- * `opacity` seulement, sans aucun rendu React par image : l'anneau ne bouge
- * qu'au changement de cran, la bande est une animation CSS pure.
+ * Le mouvement est permanent, sans aucune commande : un **anneau 3D** qui
+ * tourne d'un cran toutes les `dureeSlideMs` à partir de la tablette, une
+ * **bande qui défile en boucle** sur téléphone. Les deux sont animés en
+ * `transform` / `opacity` seulement, sans aucun rendu React par image.
  *
- * Un clic sur une vignette ouvre la visionneuse plein écran ; le carrousel
- * s'arrête tant qu'elle est ouverte et repart à sa fermeture.
+ * Un clic sur une vignette l'affiche en grand pendant `dureeAgrandiMs`, puis
+ * la visionneuse se referme d'elle-même et le défilement reprend.
  *
- * WCAG 2.2.2 : bouton Pause / Lecture toujours atteignable, arrêt au survol,
- * au focus, hors écran et en arrière-plan, aucun mouvement automatique sous
- * `prefers-reduced-motion` (l'anneau reste navigable à la main).
+ * Le défilement ne s'arrête que hors écran, en arrière-plan, et pas du tout
+ * sous `prefers-reduced-motion` (l'anneau reste alors navigable au clavier et
+ * au glissement).
  *
  * Seuls les projets réellement photographiés sont affichés. Tant qu'il n'y en
  * a aucun, la section montre des vignettes d'**aperçu** — des illustrations
@@ -86,10 +85,7 @@ function vignetteDeProjet(projet: Projet): Vignette {
     cle: projet.titre,
     legende,
     carte: <CarteRealisation projet={projet} className="w-full" />,
-    images: [
-      { src: projet.image, alt, legende },
-      ...(projet.images ?? []).map((src) => ({ src, alt, legende })),
-    ],
+    image: { src: projet.image, alt, legende },
   };
 }
 
@@ -98,14 +94,12 @@ function vignetteDApercu(slide: SlideApercu): Vignette {
     cle: slide.image,
     legende: slide.legende,
     carte: <CarteApercu slide={slide} />,
-    images: [
-      {
-        src: slide.image,
-        alt: slide.alt,
-        legende: slide.legende,
-        badge: carrouselRealisations.badgeApercu,
-      },
-    ],
+    image: {
+      src: slide.image,
+      alt: slide.alt,
+      legende: slide.legende,
+      badge: carrouselRealisations.badgeApercu,
+    },
   };
 }
 
@@ -183,60 +177,27 @@ function Piste({
   vignettes: Vignette[];
   apercu?: boolean;
 }) {
-  const { dureeSlideMs, dureePauseMs, dureeBandeParVignetteMs } =
+  const { dureeSlideMs, dureeAgrandiMs, dureeBandeParVignetteMs } =
     carrouselRealisations;
   const total = vignettes.length;
 
   const bloc = useRef<HTMLDivElement>(null);
-  const figeRef = useRef<number | null>(null);
   const departToucher = useRef<number | null>(null);
 
   const [actif, setActif] = useState(0);
   const [decalageBande, setDecalageBande] = useState(0);
-  const [pauseManuelle, setPauseManuelle] = useState(false);
-  const [figeJusqua, setFigeJusqua] = useState<number | null>(null);
-  const [restant, setRestant] = useState(0);
-  const [survol, setSurvol] = useState(false);
   const [dansLeChamp, setDansLeChamp] = useState(false);
   const [ongletVisible, setOngletVisible] = useState(true);
   const [vue, setVue] = useState<number | null>(null);
-  const [cycle, setCycle] = useState(0);
 
   const mouvementReduit = useReducedMotion();
 
-  /* Toutes les images agrandissables, dans l'ordre des vignettes. */
-  const imagesVisionneuse = vignettes.flatMap((v) => v.images);
-  const departVisionneuse: number[] = [];
-  vignettes.reduce((n, v) => {
-    departVisionneuse.push(n);
-    return n + v.images.length;
-  }, 0);
-
-  /** Fige le défilement après une navigation manuelle. */
-  const figer = useCallback(() => {
-    const cible = Date.now() + dureePauseMs;
-    if (figeRef.current && cible - figeRef.current < 1000) return;
-    figeRef.current = cible;
-    setFigeJusqua(cible);
-    setRestant(Math.ceil(dureePauseMs / 1000));
-  }, [dureePauseMs]);
-
   const tourner = useCallback(
-    (pas: 1 | -1, parLaPersonne: boolean) => {
+    (pas: 1 | -1) => {
       setActif((i) => (i + pas + total) % total);
       setDecalageBande((d) => d - pas);
-      if (parLaPersonne) figer();
     },
-    [total, figer],
-  );
-
-  const allerA = useCallback(
-    (i: number) => {
-      setDecalageBande((d) => d - ecartCirculaire(i, actif, total) * -1);
-      setActif(i);
-      figer();
-    },
-    [actif, total, figer],
+    [total],
   );
 
   /* Arrêt quand la section n'est plus à l'écran. */
@@ -262,45 +223,23 @@ function Piste({
     return () => document.removeEventListener("visibilitychange", surChangement);
   }, []);
 
-  /* Compte à rebours du figeage, puis reprise. */
-  useEffect(() => {
-    if (figeJusqua === null) return;
-    const tic = () => {
-      const secondes = Math.ceil((figeJusqua - Date.now()) / 1000);
-      if (secondes <= 0) {
-        figeRef.current = null;
-        setFigeJusqua(null);
-        setRestant(0);
-        setCycle((c) => c + 1);
-      } else {
-        setRestant(secondes);
-      }
-    };
-    tic();
-    const id = window.setInterval(tic, 500);
-    return () => window.clearInterval(id);
-  }, [figeJusqua]);
+  const enPause = vue !== null || !dansLeChamp || !ongletVisible;
+  const defilementAuto = !mouvementReduit && !enPause && total > 1;
 
-  const visionneuseOuverte = vue !== null;
-  const enPause =
-    pauseManuelle || figeJusqua !== null || survol || visionneuseOuverte;
-  const defilementAuto =
-    !mouvementReduit && !enPause && dansLeChamp && ongletVisible && total > 1;
-
-  /* Rotation automatique : un minuteur par cran, remis à zéro à chaque arrêt. */
+  /* Rotation automatique : un minuteur par cran, relancé à chaque reprise. */
   useEffect(() => {
     if (!defilementAuto) return;
-    const id = window.setTimeout(() => tourner(1, false), dureeSlideMs);
+    const id = window.setTimeout(() => tourner(1), dureeSlideMs);
     return () => window.clearTimeout(id);
-  }, [defilementAuto, actif, cycle, dureeSlideMs, tourner]);
+  }, [defilementAuto, actif, dureeSlideMs, tourner]);
 
   const surToucheAnneau = (e: React.KeyboardEvent) => {
     if (e.key === "ArrowRight") {
       e.preventDefault();
-      tourner(1, true);
+      tourner(1);
     } else if (e.key === "ArrowLeft") {
       e.preventDefault();
-      tourner(-1, true);
+      tourner(-1);
     }
   };
 
@@ -314,18 +253,8 @@ function Piste({
     departToucher.current = null;
     if (depart === null || fin === undefined) return;
     if (Math.abs(fin - depart) < 44) return;
-    tourner(fin < depart ? 1 : -1, true);
+    tourner(fin < depart ? 1 : -1);
   };
-
-  /** Le survol n'existe qu'à la souris : sur un écran tactile, il collerait. */
-  const surEntree = (e: React.PointerEvent) => {
-    if (e.pointerType === "mouse") setSurvol(true);
-  };
-  const surSortie = (e: React.PointerEvent) => {
-    if (e.pointerType === "mouse") setSurvol(false);
-  };
-
-  const ouvrir = (indexVignette: number) => setVue(departVisionneuse[indexVignette]);
 
   return (
     <Section id="realisations" aria={carrouselRealisations.titre}>
@@ -377,65 +306,43 @@ function Piste({
           vignettes={vignettes}
           decalage={decalageBande}
           enPause={enPause}
-          onOuvrir={ouvrir}
+          onOuvrir={setVue}
           onDepartToucher={surDepartToucher}
           onFinToucher={surFinToucher}
-          onEntree={surEntree}
-          onSortie={surSortie}
-          onFocus={() => setSurvol(true)}
-          onBlur={() => setSurvol(false)}
         />
 
         {/* Tablette et plus : demi-arc de cercle en rotation. */}
         <Anneau
           vignettes={vignettes}
           actif={actif}
-          onOuvrir={ouvrir}
+          onOuvrir={setVue}
           onTouche={surToucheAnneau}
           onDepartToucher={surDepartToucher}
           onFinToucher={surFinToucher}
-          onEntree={surEntree}
-          onSortie={surSortie}
-          onFocus={() => setSurvol(true)}
-          onBlur={() => setSurvol(false)}
         />
 
-        {/* Points de progression et compteur : l'anneau a des crans, pas la bande. */}
-        <div className="mt-4 hidden items-center gap-3 md:flex">
-          <ul className="flex flex-1 flex-wrap items-center gap-0.5">
+        {/* Progression et compteur, purement indicatifs : l'anneau a des crans, pas la bande. */}
+        <div aria-hidden="true" className="mt-4 hidden items-center gap-3 md:flex">
+          <ul className="flex flex-1 flex-wrap items-center gap-1.5">
             {vignettes.map((v, i) => (
-              <li key={v.cle}>
-                <button
-                  type="button"
-                  onClick={() => allerA(i)}
-                  aria-label={carrouselRealisations.allerA(i + 1)}
-                  aria-current={i === actif ? "true" : undefined}
-                  className="group flex h-11 items-center px-1"
-                >
+              <li
+                key={v.cle}
+                className={cn(
+                  "block h-1.5 overflow-hidden rounded-full transition-all duration-500 ease-doux",
+                  i === actif
+                    ? "w-10 bg-terre-200 dark:bg-terre-700/60"
+                    : "w-4 bg-terre-300/80 dark:bg-terre-700",
+                )}
+              >
+                {i === actif && (
                   <span
+                    key={`${actif}-${defilementAuto ? 1 : 0}`}
                     className={cn(
-                      "block h-1.5 overflow-hidden rounded-full transition-all duration-500 ease-doux",
-                      i === actif
-                        ? "w-10 bg-terre-200 dark:bg-terre-700/60"
-                        : "w-4 bg-terre-300/80 group-hover:bg-terre-500 dark:bg-terre-700",
+                      "block h-full w-full origin-left rounded-full bg-terre-600 dark:bg-terre-300",
+                      defilementAuto ? "animate-progression" : "scale-x-0",
                     )}
-                  >
-                    {i === actif && (
-                      <span
-                        key={`${actif}-${cycle}`}
-                        className={cn(
-                          "block h-full w-full origin-left rounded-full bg-terre-600 dark:bg-terre-300",
-                          defilementAuto || enPause
-                            ? "animate-progression"
-                            : "scale-x-0",
-                        )}
-                        style={{
-                          animationPlayState: enPause ? "paused" : "running",
-                        }}
-                      />
-                    )}
-                  </span>
-                </button>
+                  />
+                )}
               </li>
             ))}
           </ul>
@@ -445,24 +352,10 @@ function Piste({
           </p>
         </div>
 
-        {/* État du défilement : figeage en cours, ou mouvement réduit. */}
-        {mouvementReduit ? (
+        {mouvementReduit && (
           <p className="mt-3 text-[13px] text-ink-muted">
             {carrouselRealisations.mouvementReduit}
           </p>
-        ) : (
-          (figeJusqua !== null || pauseManuelle) && (
-            <p className="mt-3 flex items-center gap-2 text-[13px] text-ink-muted">
-              <span
-                aria-hidden="true"
-                className="inline-block h-1.5 w-1.5 rounded-full bg-terre-600"
-              />
-              {carrouselRealisations.etiquettePause}
-              {figeJusqua !== null && !pauseManuelle && (
-                <> · {carrouselRealisations.repriseDans(restant)}</>
-              )}
-            </p>
-          )
         )}
 
         {/*
@@ -470,42 +363,15 @@ function Piste({
           toutes les quelques secondes serait insupportable.
         */}
         <p className="sr-only" aria-live="polite">
-          {!defilementAuto ? carrouselRealisations.annonce(actif + 1, total) : ""}
+          {mouvementReduit ? carrouselRealisations.annonce(actif + 1, total) : ""}
         </p>
 
         <div className="mt-4 flex flex-wrap items-center gap-x-3 gap-y-3 sm:mt-5">
-          <div className="flex items-center gap-2">
-            <BoutonPiste
-              libelle={carrouselRealisations.precedent}
-              onClick={() => tourner(-1, true)}
-              sens="precedent"
-            />
-            <BoutonPiste
-              libelle={carrouselRealisations.suivant}
-              onClick={() => tourner(1, true)}
-              sens="suivant"
-            />
-            <BoutonPauseLecture
-              enPause={pauseManuelle}
-              onClick={() => {
-                setPauseManuelle((p) => {
-                  if (p) {
-                    figeRef.current = null;
-                    setFigeJusqua(null);
-                    setCycle((c) => c + 1);
-                  }
-                  return !p;
-                });
-              }}
-            />
-          </div>
-
           {/* En aperçu, la section garde son appel à l'action. */}
           {apercu && (
             <ButtonLink
               href={carrouselRealisations.etatVideHref}
               variante="secondaire"
-              className="sm:ms-auto"
             >
               {carrouselRealisations.etatVideLien}
             </ButtonLink>
@@ -513,10 +379,7 @@ function Piste({
 
           <Link
             href={carrouselRealisations.href}
-            className={cn(
-              "lien-souligne cible-tactile group inline-flex items-center gap-2 font-semibold text-terre-700 dark:text-terre-300",
-              !apercu && "ms-auto",
-            )}
+            className="lien-souligne cible-tactile group ms-auto inline-flex items-center gap-2 font-semibold text-terre-700 dark:text-terre-300"
           >
             {carrouselRealisations.lien}
             <span
@@ -531,9 +394,8 @@ function Piste({
 
       {vue !== null && (
         <Visionneuse
-          images={imagesVisionneuse}
-          index={vue}
-          onIndex={setVue}
+          image={vignettes[vue].image}
+          dureeMs={dureeAgrandiMs}
           onFermer={() => setVue(null)}
         />
       )}
@@ -557,10 +419,6 @@ function Anneau({
   onTouche,
   onDepartToucher,
   onFinToucher,
-  onEntree,
-  onSortie,
-  onFocus,
-  onBlur,
 }: {
   vignettes: Vignette[];
   actif: number;
@@ -568,10 +426,6 @@ function Anneau({
   onTouche: (e: React.KeyboardEvent) => void;
   onDepartToucher: (e: React.TouchEvent) => void;
   onFinToucher: (e: React.TouchEvent) => void;
-  onEntree: (e: React.PointerEvent) => void;
-  onSortie: (e: React.PointerEvent) => void;
-  onFocus: () => void;
-  onBlur: () => void;
 }) {
   const total = vignettes.length;
   return (
@@ -579,10 +433,6 @@ function Anneau({
       onKeyDown={onTouche}
       onTouchStart={onDepartToucher}
       onTouchEnd={onFinToucher}
-      onPointerEnter={onEntree}
-      onPointerLeave={onSortie}
-      onFocusCapture={onFocus}
-      onBlurCapture={onBlur}
       className="anneau mt-6 hidden h-[clamp(330px,33vw,470px)] md:block"
     >
       <span aria-hidden="true" className="anneau-ombre" />
@@ -636,10 +486,6 @@ function Bande({
   onOuvrir,
   onDepartToucher,
   onFinToucher,
-  onEntree,
-  onSortie,
-  onFocus,
-  onBlur,
 }: {
   vignettes: Vignette[];
   decalage: number;
@@ -647,20 +493,12 @@ function Bande({
   onOuvrir: (i: number) => void;
   onDepartToucher: (e: React.TouchEvent) => void;
   onFinToucher: (e: React.TouchEvent) => void;
-  onEntree: (e: React.PointerEvent) => void;
-  onSortie: (e: React.PointerEvent) => void;
-  onFocus: () => void;
-  onBlur: () => void;
 }) {
   const copies = [0, 1];
   return (
     <div
       onTouchStart={onDepartToucher}
       onTouchEnd={onFinToucher}
-      onPointerEnter={onEntree}
-      onPointerLeave={onSortie}
-      onFocusCapture={onFocus}
-      onBlurCapture={onBlur}
       className="bande mt-5 md:hidden"
     >
       <div
@@ -693,79 +531,6 @@ function Bande({
         </div>
       </div>
     </div>
-  );
-}
-
-function BoutonPiste({
-  libelle,
-  onClick,
-  sens,
-}: {
-  libelle: string;
-  onClick: () => void;
-  sens: "precedent" | "suivant";
-}) {
-  return (
-    <button
-      type="button"
-      onClick={onClick}
-      aria-label={libelle}
-      className={cn(
-        "glass glass-sm cible-tactile inline-flex h-11 w-11 items-center justify-center rounded-full",
-        "text-ardoise-900 transition-all duration-300 ease-doux dark:text-ardoise-100",
-        "hover:-translate-y-0.5 hover:shadow-lift motion-reduce:hover:translate-y-0",
-      )}
-    >
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-        <path
-          d={sens === "precedent" ? "M14.5 5 8 12l6.5 7" : "M9.5 5 16 12l-6.5 7"}
-          stroke="currentColor"
-          strokeWidth="2"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        />
-      </svg>
-    </button>
-  );
-}
-
-/** Commande explicite exigée par le critère WCAG 2.2.2 (mouvement automatique). */
-function BoutonPauseLecture({
-  enPause,
-  onClick,
-}: {
-  enPause: boolean;
-  onClick: () => void;
-}) {
-  return (
-    <button
-      type="button"
-      onClick={onClick}
-      aria-pressed={enPause}
-      aria-label={
-        enPause ? carrouselRealisations.ariaLecture : carrouselRealisations.ariaPause
-      }
-      className={cn(
-        "glass glass-sm cible-tactile inline-flex h-11 items-center gap-2 rounded-full px-3.5",
-        "text-[13.5px] font-semibold text-ardoise-900 dark:text-ardoise-100",
-        "transition-all duration-300 ease-doux hover:-translate-y-0.5 hover:shadow-lift",
-        "motion-reduce:hover:translate-y-0",
-      )}
-    >
-      <svg width="16" height="16" viewBox="0 0 24 24" aria-hidden="true">
-        {enPause ? (
-          <path d="M8 5.5 18.5 12 8 18.5z" fill="currentColor" />
-        ) : (
-          <g fill="currentColor">
-            <rect x="7" y="5.5" width="4" height="13" rx="1.5" />
-            <rect x="13" y="5.5" width="4" height="13" rx="1.5" />
-          </g>
-        )}
-      </svg>
-      {enPause
-        ? carrouselRealisations.boutonLecture
-        : carrouselRealisations.boutonPause}
-    </button>
   );
 }
 

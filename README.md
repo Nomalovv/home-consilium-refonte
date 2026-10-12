@@ -75,11 +75,11 @@ Support **clair / sombre complet** : les tokens CSS suivent
   transitions, timeline, accordéons, transitions de page, rotation du
   carrousel). La photo du hero est fixe : aucun parallaxe, aucune animation
   d'entrée.
-- Mouvement automatique (carrousel de l'accueil) : bouton Pause / Lecture
-  toujours atteignable, arrêt au survol, au focus, hors écran et en
-  arrière-plan — critère WCAG 2.2.2.
-- Visionneuse d'images : `role="dialog"` + `aria-modal`, focus piégé puis rendu
-  à l'élément déclencheur, fermeture par `Échap`, défilement du corps bloqué.
+- Mouvement automatique (carrousel de l'accueil) : sans commande, choix
+  assumé ; arrêt hors écran, en arrière-plan et sous `prefers-reduced-motion`.
+- Visionneuse d'images : `role="dialog"` + `aria-modal`, focus pris puis rendu
+  à l'élément déclencheur, fermeture automatique, par `Échap` ou par un clic,
+  défilement du corps bloqué.
 - Navigation clavier, cibles tactiles ≥ 44px (hors liens en ligne dans une
   phrase, couverts par l'exception 2.5.8), ARIA, lien d'évitement, gestion du
   focus au changement de route (`PageTransition`).
@@ -297,34 +297,31 @@ Le mouvement est permanent et visible, avec deux mises en scène :
 - **tablette et grand écran** — un **anneau 3D** : les vignettes sont posées sur
   un demi-cercle (`perspective`, `rotateY`, `translateZ`), celle de devant fait
   face et porte seule le texte, les latérales sont inclinées, reculées et
-  atténuées. L'anneau tourne d'un cran toutes les 3,2 s, en boucle infinie ;
+  atténuées. Chaque vignette reste 5 s au premier plan, en boucle infinie ;
 - **téléphone** — une **bande** qui défile en continu : deux copies de la liste
   glissent d'une demi-longueur, donc une boucle sans coupure.
 
-**Un clic ou une tape sur une image ouvre la visionneuse plein écran** :
-image entière (`object-contain`, jamais déformée), légende, badge « Aperçu » le
-cas échéant, compteur, précédent / suivant, glissement horizontal, `Échap`, clic
-à côté ou croix pour fermer, focus piégé puis rendu à la vignette d'origine,
-défilement de la page bloqué. Si un projet a d'autres photos (`images`), la
-visionneuse les enchaîne.
+Aucun bouton : ni précédent / suivant, ni pause. **Un clic ou une tape sur une
+image l'affiche en grand pendant 5 s**, puis la visionneuse se referme d'elle-même
+et le défilement reprend : image entière (`object-contain`, jamais déformée),
+légende, badge « Aperçu » le cas échéant, fine barre de temps restant. `Échap`,
+la croix ou un clic n'importe où la ferment plus tôt.
 
 | Geste | Effet |
 | --- | --- |
-| Clic / tape sur une image | ouvre la visionneuse ; le carrousel s'arrête le temps de la consultation puis **repart aussitôt** |
-| Survol à la souris, focus clavier sur une vignette | pause tant que le pointeur ou le focus y reste |
-| Précédent / suivant, point de progression, flèches, glissement | figeage **30 s**, avec compte à rebours affiché, puis reprise |
-| Bouton **Pause / Lecture** | figeage aussi longtemps qu'on veut (`aria-pressed`) |
+| Clic / tape sur une image | affichage en grand **5 s**, puis reprise du défilement |
+| Flèches clavier, glissement | un cran, sans arrêter le défilement |
 | Onglet en arrière-plan, carrousel hors de l'écran | arrêt automatique |
-| `prefers-reduced-motion: reduce` | **aucun** mouvement automatique : anneau fixe, navigable à la main, message explicite — la visionneuse reste disponible |
+| `prefers-reduced-motion: reduce` | **aucun** mouvement automatique : anneau fixe, navigable à la main, message explicite — l'agrandissement reste disponible |
 
 Trois réglages, dans `content/entreprise.ts` :
 
 ```ts
 export const carrouselRealisations = {
   // …
-  dureeSlideMs: 3200,             // un cran d'anneau
-  dureePauseMs: 30000,            // figeage après une navigation manuelle
-  dureeBandeParVignetteMs: 5200,  // vitesse de la bande, sur téléphone
+  dureeSlideMs: 5000,             // temps au premier plan de l'anneau
+  dureeAgrandiMs: 5000,           // affichage en grand après un clic
+  dureeBandeParVignetteMs: 5000,  // vitesse de la bande, sur téléphone
 };
 ```
 

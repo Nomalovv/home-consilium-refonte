@@ -385,36 +385,20 @@ export const carrouselRealisations = {
   surtitre: "En images",
   titre: "Des chantiers, pas des images de catalogue",
   intro:
-    "Les projets que nous avons suivis, photographiés sur place et publiés avec l'accord des clients concernés. Faites défiler pour les parcourir.",
-  introCourte: "Nos chantiers, photographiés sur place. Faites défiler.",
-  /** Libellés accessibles des commandes du carrousel. */
+    "Les projets que nous avons suivis, photographiés sur place et publiés avec l'accord des clients concernés. Touchez une photo pour la voir en grand.",
+  introCourte: "Nos chantiers, photographiés sur place. Touchez une photo pour l'agrandir.",
   aria: "Carrousel des réalisations",
-  precedent: "Voir les réalisations précédentes",
-  suivant: "Voir les réalisations suivantes",
 
   /* --- Défilement automatique ------------------------------------------ */
-  /** Temps d'affichage d'une vignette avant que l'anneau tourne d'un cran. */
-  dureeSlideMs: 3200,
-  /**
-   * Durée du figeage après une navigation manuelle (précédent / suivant,
-   * point, flèche, glissement). Ouvrir une image ne déclenche pas de figeage :
-   * le carrousel s'arrête le temps de la visionneuse, puis repart aussitôt.
-   */
-  dureePauseMs: 30000,
+  /** Temps passé par chaque vignette au premier plan de l'anneau. */
+  dureeSlideMs: 5000,
+  /** Durée d'affichage en grand d'une photo cliquée, avant fermeture. */
+  dureeAgrandiMs: 5000,
   /** Bande du téléphone : temps de passage d'une vignette. */
-  dureeBandeParVignetteMs: 5200,
-  boutonPause: "Pause",
-  boutonLecture: "Lecture",
-  ariaPause: "Mettre en pause le défilement automatique",
-  ariaLecture: "Reprendre le défilement automatique",
-  etiquettePause: "En pause",
-  /** Compte à rebours affiché pendant un figeage temporaire. */
-  repriseDans: (secondes: number) => `reprise dans ${secondes} s`,
+  dureeBandeParVignetteMs: 5000,
   /** Compteur de position, façon « 01 / 07 ». */
   compteur: (position: number, total: number) =>
     `${String(position).padStart(2, "0")} / ${String(total).padStart(2, "0")}`,
-  /** Libellé accessible d'un point de progression. */
-  allerA: (position: number) => `Aller à la vignette ${position}`,
   /** Annonce vocale, seulement quand le défilement est à l'arrêt. */
   annonce: (position: number, total: number) =>
     `Vignette ${position} sur ${total}`,

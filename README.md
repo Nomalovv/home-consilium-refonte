@@ -294,14 +294,13 @@ génériques (« Exemple · Cuisine »).
 
 Le mouvement est permanent et visible, avec deux mises en scène :
 
-- **tablette et grand écran** — un **anneau 3D** : les vignettes sont posées sur
-  un demi-cercle (`perspective`, `rotateY`, `translateZ`), celle de devant fait
-  face et porte seule le texte, les latérales sont inclinées, reculées et
-  assombries. L'anneau tourne **lentement et sans arrêt** (une vignette toutes
-  les 5 s en moyenne), en ralentissant quand une vignette passe devant. Les
-  positions sont calculées à chaque image (`requestAnimationFrame`) et les
-  vignettes ne partagent pas de scène 3D : la plus proche du centre est
-  toujours au-dessus, opaque, et rien ne la traverse ;
+- **tablette et grand écran** — une **file** de vignettes côte à côte, séparées
+  d'un espace constant : **aucune ne passe jamais sur une autre**. Celle du
+  centre est en grand et porte seule le texte, les suivantes sont plus petites
+  et assombries, les bords s'estompent. La file défile **lentement et sans
+  arrêt** (une vignette toutes les 5 s en moyenne), en ralentissant quand une
+  vignette passe au centre. Les positions sont calculées à chaque image
+  (`requestAnimationFrame`) à partir de la largeur réelle des vignettes ;
 - **téléphone** — une **bande** qui défile en continu : deux copies de la liste
   glissent d'une demi-longueur, donc une boucle sans coupure.
 
@@ -322,18 +321,16 @@ Deux réglages, dans `content/entreprise.ts` :
 ```ts
 export const carrouselRealisations = {
   // …
-  dureeSlideMs: 5000,             // durée d'un cran d'anneau (vitesse)
+  dureeSlideMs: 5000,             // temps moyen par vignette (vitesse de la file)
   dureeBandeParVignetteMs: 5000,  // vitesse de la bande, sur téléphone
 };
 ```
 
-Seules `transform` et `opacity` sont animées : l'anneau ne rend qu'au changement
-de cran, la bande est une animation CSS pure (aucun rendu React par image). Les
-points de progression et le compteur n'apparaissent qu'à partir de la tablette :
-la bande du téléphone défile en continu, elle n'a pas de crans. Sans support de
-`transform-style: preserve-3d`, l'anneau retombe proprement sur un alignement à
-plat. Le carrousel des vraies photos se comporte exactement comme celui de
-l'aperçu.
+Seules `transform` et `opacity` sont animées : la file ne rend qu'au changement
+de vignette centrale, la bande est une animation CSS pure (aucun rendu React par
+image). Les points de progression et le compteur n'apparaissent qu'à partir de
+la tablette. Le carrousel des vraies photos se comporte exactement comme celui
+de l'aperçu.
 
 L'aperçu disparaît **tout seul** dès qu'un projet de `realisations.projets` a
 une image : le carrousel montre alors les vraies réalisations. Pour le retirer sans

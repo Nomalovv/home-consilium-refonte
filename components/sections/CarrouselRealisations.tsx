@@ -145,14 +145,16 @@ function CarteApercu({ slide }: { slide: SlideApercu }) {
   );
 }
 
-/** Écart angulaire entre deux vignettes de l'anneau. */
-const PAS_ANGULAIRE = 30;
-/** Au-delà de cet écart, une vignette est invisible. */
-const ECART_MAX = 2.5;
+/** Espace constant entre deux vignettes, en pixels : elles ne se touchent jamais. */
+const ESPACE = 28;
+/** Réduction par cran d'écart (jusqu'à deux crans). */
+const REDUCTION = 0.18;
+/** Largeur de référence avant la première mesure (rendu serveur). */
+const LARGEUR_DEFAUT = 380;
 /**
- * Ralentissement devant (0 = vitesse constante, 1 = arrêt complet) : l'anneau
- * ne s'arrête jamais, mais s'attarde sur la vignette de devant et passe plus
- * vite entre deux.
+ * Ralentissement au centre (0 = vitesse constante, 1 = arrêt complet) : la
+ * file ne s'arrête jamais, mais s'attarde sur la vignette du centre et passe
+ * plus vite entre deux.
  */
 const ATTARDEMENT = 0.65;
 
@@ -162,32 +164,43 @@ function ecartContinu(i: number, position: number, total: number): number {
   return brut >= total / 2 ? brut - total : brut;
 }
 
-/**
- * Les vignettes restent opaques (sinon, en croisant, l'une se verrait à
- * travers l'autre) : les latérales sont assombries par un voile couleur de
- * fond, et seules celles du fond, déjà cachées, s'effacent.
- */
-function voileA(distance: number): number {
-  return Math.min(distance, 2) * 0.32;
-}
-function opaciteA(distance: number): number {
-  if (distance <= 2) return 1;
-  return Math.max(0, 1 - (distance - 2) / (ECART_MAX - 2));
+/** Échelle d'une vignette selon sa distance au centre. */
+function echelleA(distance: number): number {
+  return 1 - REDUCTION * Math.min(distance, 2);
 }
 
-/** Place une vignette sur le demi-cercle (variables lues par `.anneau-carte`). */
-function placement(ecart: number): CSSProperties {
-  const angle = ecart * PAS_ANGULAIRE;
-  const rad = (angle * Math.PI) / 180;
+/**
+ * Intégrale de l'échelle de 0 à `d`. Le centre d'une vignette est posé à
+ * `largeur × aire(d) + ESPACE × d` du milieu : comme l'échelle varie
+ * linéairement, la distance entre deux voisines vaut exactement la moitié de
+ * leurs deux largeurs plus `ESPACE`. Elles restent donc côte à côte, sans
+ * jamais se chevaucher, à tout instant du défilement.
+ */
+function aire(d: number): number {
+  const a = Math.min(d, 2);
+  return a - (REDUCTION * a * a) / 2 + Math.max(0, d - 2) * echelleA(2);
+}
+
+/**
+ * Les latérales sont assombries par un voile couleur de fond ; la vignette
+ * qui boucle d'un bout à l'autre de la file est effacée pendant son saut.
+ */
+function voileA(distance: number): number {
+  return Math.min(distance, 2) * 0.3;
+}
+function opaciteA(distance: number, total: number): number {
+  return Math.max(0, Math.min(1, (total / 2 - distance) / 0.5));
+}
+
+/** Place une vignette dans la file (variables lues par `.anneau-carte`). */
+function placement(ecart: number, total: number, largeur: number): CSSProperties {
   const distance = Math.abs(ecart);
+  const x = Math.sign(ecart) * (largeur * aire(distance) + ESPACE * distance);
   return {
-    "--sin": Math.sin(rad).toFixed(4),
-    "--cos": Math.cos(rad).toFixed(4),
-    "--angle": `${(-angle).toFixed(2)}deg`,
-    "--echelle": (1 - Math.min(distance, 3) * 0.12).toFixed(3),
-    // La plus proche du centre passe toujours au-dessus : rien ne la coupe.
+    "--x": `${x.toFixed(1)}px`,
+    "--echelle": echelleA(distance).toFixed(4),
     zIndex: Math.round(1000 - distance * 100),
-    opacity: opaciteA(distance).toFixed(3),
+    opacity: opaciteA(distance, total).toFixed(3),
     "--voile": voileA(distance).toFixed(3),
   } as CSSProperties;
 }
@@ -392,17 +405,16 @@ function Piste({
 }
 
 /**
- * Anneau 3D — tablette et grand écran.
+ * File défilante — tablette et grand écran.
  *
- * Les vignettes sont posées sur un demi-cercle : celle de devant fait face et
- * porte seule le texte, les latérales sont inclinées, reculées et atténuées.
+ * Les vignettes sont alignées côte à côte, séparées d'un espace constant :
+ * aucune ne passe jamais sur une autre. Celle du centre est en grand et porte
+ * seule le texte ; plus on s'en éloigne, plus elles sont petites et
+ * assombries, et les bords de la file s'estompent.
  *
- * La rotation est continue : une boucle `requestAnimationFrame` calcule à
- * chaque image la position de chaque vignette sur l'arc, sans aucun rendu
- * React (seul le changement de vignette de devant en déclenche un). Les
- * vignettes ne partagent pas de scène 3D (`preserve-3d`) : chacune est
- * aplatie et empilée selon sa distance au centre, donc une vignette latérale
- * inclinée ne traverse jamais celle de devant.
+ * Le défilement est continu : une boucle `requestAnimationFrame` calcule à
+ * chaque image la place et la taille de chaque vignette, sans aucun rendu
+ * React (seul le changement de vignette centrale en déclenche un).
  *
  * Les latérales sont sorties de l'arbre d'accessibilité et du parcours
  * clavier, la vignette de devant restant le seul élément actionnable.
@@ -439,6 +451,18 @@ function Anneau({
   const avance = useRef(0);
   const manuel = useRef(crans);
   const devant = useRef(actif);
+  /* Largeur réelle d'une vignette au centre : l'écartement en dépend. */
+  const [largeur, setLargeur] = useState(LARGEUR_DEFAUT);
+
+  useEffect(() => {
+    const el = cartes.current[0];
+    if (!el || typeof ResizeObserver === "undefined") return;
+    const obs = new ResizeObserver(() => {
+      if (el.offsetWidth > 0) setLargeur(el.offsetWidth);
+    });
+    obs.observe(el);
+    return () => obs.disconnect();
+  }, []);
 
   useEffect(() => {
     let id = 0;
@@ -446,7 +470,7 @@ function Anneau({
 
     const image = (maintenant: number) => {
       if (enMouvement && precedent !== null) {
-        // Un écart énorme (onglet repris, machine lente) ne fait pas sauter l'anneau.
+        // Un écart énorme (onglet repris, machine lente) ne fait pas sauter la file.
         avance.current += Math.min(maintenant - precedent, 100) / dureeCranMs;
       }
       precedent = maintenant;
@@ -466,14 +490,14 @@ function Anneau({
         const el = cartes.current[i];
         if (!el) continue;
         const ecart = ecartContinu(i, position, total);
-        const style = placement(ecart) as Record<string, string | number>;
+        const style = placement(ecart, total, largeur) as Record<string, string | number>;
         for (const [cle, valeur] of Object.entries(style)) {
           el.style.setProperty(
             cle === "zIndex" ? "z-index" : cle,
             String(valeur),
           );
         }
-        el.style.pointerEvents = Math.abs(ecart) > 2 ? "none" : "";
+        el.style.pointerEvents = Math.abs(ecart) > 1.5 ? "none" : "";
       }
 
       const nouveau = ((Math.round(position) % total) + total) % total;
@@ -487,7 +511,7 @@ function Anneau({
 
     id = requestAnimationFrame(image);
     return () => cancelAnimationFrame(id);
-  }, [enMouvement, dureeCranMs, crans, total, onActif]);
+  }, [enMouvement, dureeCranMs, crans, total, largeur, onActif]);
 
   return (
     <div
@@ -507,10 +531,10 @@ function Anneau({
             }}
             // Position de départ, avant la première image : identique à chaque
             // rendu, pour que React ne réécrive jamais ce que la boucle a posé.
-            style={placement(ecartContinu(i, 0, total))}
+            style={placement(ecartContinu(i, 0, total), total, LARGEUR_DEFAUT)}
             aria-hidden={!estDevant}
             className={cn(
-              "anneau-carte w-[min(46%,420px)]",
+              "anneau-carte w-[min(34%,380px)]",
               !estDevant && "[&_[data-legende]]:opacity-0",
               "[&_[data-legende]]:transition-opacity [&_[data-legende]]:duration-500",
             )}

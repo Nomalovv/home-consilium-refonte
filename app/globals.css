@@ -271,41 +271,37 @@
   }
 
   /* ------------------------------------------------------------------ */
-  /* Carrousel des réalisations : anneau 3D (tablette et plus) et bande  */
-  /* défilante (téléphone). Tout est animé en `transform` / `opacity`.   */
+  /* Carrousel des réalisations : file défilante (tablette et plus) et   */
+  /* bande défilante (téléphone). Tout est animé en `transform` /        */
+  /* `opacity`.                                                          */
   /* ------------------------------------------------------------------ */
 
   /**
-   * Scène 3D de l'anneau. Le rayon pilote l'écartement des vignettes : il
-   * grandit avec l'écran pour que le demi-arc reste lisible sans déborder.
+   * File de vignettes côte à côte. Les bords s'estompent pour que les
+   * vignettes entrent et sortent en douceur ; le débord latéral est rogné sans
+   * créer de défilement de page.
    */
   .anneau {
     position: relative;
-    perspective: 1400px;
-    -webkit-perspective: 1400px;
-    perspective-origin: 50% 45%;
-    /* Pas de `preserve-3d` : chaque vignette est aplatie et empilée selon son
-       z-index, sinon les latérales inclinées traverseraient celle de devant. */
-    --rayon: 330px;
-    /* Le débord latéral est rogné sans créer de défilement de page. */
     overflow-x: clip;
-  }
-
-  @media (min-width: 1024px) {
-    .anneau {
-      --rayon: 470px;
-    }
-  }
-
-  @media (min-width: 1280px) {
-    .anneau {
-      --rayon: 560px;
-    }
+    -webkit-mask-image: linear-gradient(
+      to right,
+      transparent,
+      #000 12%,
+      #000 88%,
+      transparent
+    );
+    mask-image: linear-gradient(
+      to right,
+      transparent,
+      #000 12%,
+      #000 88%,
+      transparent
+    );
   }
 
   /**
-   * Une vignette posée sur le demi-cercle : `--sin` / `--cos` donnent sa
-   * place sur l'arc, `--angle` son inclinaison, `--echelle` son éloignement.
+   * Une vignette de la file : `--x` donne sa place, `--echelle` sa taille.
    * Les variables, l'opacité et le z-index sont posés à chaque image par la
    * boucle d'animation du composant : aucune transition CSS ici.
    */
@@ -313,13 +309,9 @@
     position: absolute;
     left: 50%;
     top: 50%;
-    transform: translate(-50%, -50%)
-      translateX(calc(var(--rayon) * var(--sin)))
-      translateZ(calc(var(--rayon) * (var(--cos) - 1))) rotateY(var(--angle))
-      scale(var(--echelle));
+    transform: translate(-50%, -50%) translateX(var(--x, 0px))
+      scale(var(--echelle, 1));
     will-change: transform, opacity;
-    backface-visibility: hidden;
-    -webkit-backface-visibility: hidden;
   }
 
   /** Voile couleur de fond qui assombrit les vignettes latérales (`--voile`). */
@@ -331,14 +323,6 @@
     background-color: rgb(var(--hc-bg));
     opacity: var(--voile, 0);
     pointer-events: none;
-  }
-
-  /** Repli sans 3D : les vignettes s'alignent à plat, sans inclinaison. */
-  @supports not (transform-style: preserve-3d) {
-    .anneau-carte {
-      transform: translate(-50%, -50%)
-        translateX(calc(var(--rayon) * var(--sin))) scale(var(--echelle));
-    }
   }
 
   /** Ombre portée douce sous la vignette de devant. */
